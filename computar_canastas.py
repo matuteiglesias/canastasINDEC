@@ -82,7 +82,7 @@ CB_defl_Q = CB_defl_Q.unstack()
 CB_defl_Q.index = CB_defl_Q.index - pd.to_timedelta(CB_defl_Q.index.day - 15, unit='d') - pd.DateOffset(months=1)
 
 CB_defl_Q = CB_defl_Q.stack().reset_index()
-CB_defl_Q.to_csv('./../data/CB_Reg_defl_Q.csv', index = False)
+CB_defl_Q.to_csv('./data/CB_Reg_defl_Q.csv', index = False)
 # # precios de 2016-1-1
 
 
@@ -104,7 +104,7 @@ CB_hoy = CB_hoy.round(-1).astype(int)
 CB_hoy.index.name = 'Q'
 tabla_CB_hoy = CB_hoy.loc[mes_actual].stack()
 CB_hoy = CB_hoy.stack().reset_index()
-CB_hoy.to_csv('./../data/CB_Reg_defl_m.csv', index = False)
+CB_hoy.to_csv('./data/CB_Reg_defl_m.csv', index = False)
 
 #### IMAGEN TABLITA:
 
@@ -131,7 +131,7 @@ CB_nom_Q = CB_defl_Q.merge(cpi_Q.reset_index())
 CB_nom_Q[['CBA_ARScorr', 'CBT_ARScorr']] = CB_nom_Q[['CBA', 'CBT']].mul(CB_nom_Q['index'] / cpi_ref, 0).round().astype(int)
 CB_nom_Q[['CBA_'+mes_actual, 'CBT_'+mes_actual]] = CB_nom_Q[['CBA', 'CBT']].mul(cpi_actual/ cpi_ref, 0).round().astype(int)
 CB_nom_Q = CB_nom_Q.rename(columns = {'CBA': 'CBA_'+ref, 'CBT': 'CBT_'+ref})
-CB_nom_Q.to_csv('./../data/CB_Reg_nom_Q.csv', index = False)
+CB_nom_Q.to_csv('./data/CB_Reg_nom_Q.csv', index = False)
 
 
 
