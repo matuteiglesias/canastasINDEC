@@ -1,0 +1,102 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_OUTPUT_EXCMD	mixed	/number, pattern, mixed, or combineV2/
+!_TAG_OUTPUT_FILESEP	slash	/slash or backslash/
+!_TAG_OUTPUT_MODE	u-ctags	/u-ctags or e-ctags/
+!_TAG_PATTERN_LENGTH_LIMIT	96	/0 for no limit/
+!_TAG_PROC_CWD	/home/matias/repos/canastasINDEC/	//
+!_TAG_PROGRAM_AUTHOR	Universal Ctags Team	//
+!_TAG_PROGRAM_NAME	Universal Ctags	/Derived from Exuberant Ctags/
+!_TAG_PROGRAM_URL	https://ctags.io/	/official site/
+!_TAG_PROGRAM_VERSION	5.9.0	//
+CB	Computar Canastas.py	/^CB = pd.concat([CBAr.stack(), CBTr.stack()], axis = 1)$/;"	v
+CB	computar_canastas.py	/^CB = pd.concat([CBAr.stack(), CBTr.stack()], axis = 1)$/;"	v
+CBAr	Computar Canastas.py	/^CBAr = pd.read_csv(link_CBA)$/;"	v
+CBAr	Computar Canastas.py	/^CBAr.index = pd.to_datetime(CBAr.indice_tiempo); CBAr = CBAr.drop('indice_tiempo', axis = 1)$/;"	v
+CBAr	computar_canastas.py	/^CBAr = pd.read_csv(link_CBA)$/;"	v
+CBAr	computar_canastas.py	/^CBAr.index = pd.to_datetime(CBAr.indice_tiempo); CBAr = CBAr.drop('indice_tiempo', axis = 1)$/;"	v
+CBTr	Computar Canastas.py	/^CBTr = pd.read_csv(link_CBT)$/;"	v
+CBTr	Computar Canastas.py	/^CBTr.index = pd.to_datetime(CBTr.indice_tiempo); CBTr = CBTr.drop('indice_tiempo', axis = 1)$/;"	v
+CBTr	computar_canastas.py	/^CBTr = pd.read_csv(link_CBT)$/;"	v
+CBTr	computar_canastas.py	/^CBTr.index = pd.to_datetime(CBTr.indice_tiempo); CBTr = CBTr.drop('indice_tiempo', axis = 1)$/;"	v
+CB_defl	Computar Canastas.py	/^CB_defl = CB_defl.fillna(CB_defl.mean())$/;"	v
+CB_defl	Computar Canastas.py	/^CB_defl = CB_defl.reindex(cpi_M.loc['2003':].index)$/;"	v
+CB_defl	Computar Canastas.py	/^CB_defl = CB_i.drop('Indice de Precios', axis = 1).div($/;"	v
+CB_defl	computar_canastas.py	/^CB_defl = CB_defl.fillna(CB_defl.mean())$/;"	v
+CB_defl	computar_canastas.py	/^CB_defl = CB_defl.reindex(cpi_M.loc['2003':].index)$/;"	v
+CB_defl	computar_canastas.py	/^CB_defl = CB_i.drop('Indice de Precios', axis = 1).div($/;"	v
+CB_defl_Q	Computar Canastas.py	/^CB_defl_Q = CB_defl.stack().groupby([pd.Grouper(level = 0,freq = 'Q'), pd.Grouper(level = 1)]).m/;"	v
+CB_defl_Q	Computar Canastas.py	/^CB_defl_Q = CB_defl_Q.stack().reset_index()$/;"	v
+CB_defl_Q	Computar Canastas.py	/^CB_defl_Q = CB_defl_Q.unstack()$/;"	v
+CB_defl_Q	computar_canastas.py	/^CB_defl_Q = CB_defl.stack().groupby([pd.Grouper(level = 0,freq = 'Q'), pd.Grouper(level = 1)]).m/;"	v
+CB_defl_Q	computar_canastas.py	/^CB_defl_Q = CB_defl_Q.stack().reset_index()$/;"	v
+CB_defl_Q	computar_canastas.py	/^CB_defl_Q = CB_defl_Q.unstack()$/;"	v
+CB_hoy	Computar Canastas.py	/^CB_hoy = CB_defl*(cpi_actual\/cpi_ref)$/;"	v
+CB_hoy	Computar Canastas.py	/^CB_hoy = CB_hoy.round(-1).astype(int)$/;"	v
+CB_hoy	Computar Canastas.py	/^CB_hoy = CB_hoy.stack().reset_index()$/;"	v
+CB_hoy	computar_canastas.py	/^CB_hoy = CB_defl*(cpi_actual\/cpi_ref)$/;"	v
+CB_hoy	computar_canastas.py	/^CB_hoy = CB_hoy.round(-1).astype(int)$/;"	v
+CB_hoy	computar_canastas.py	/^CB_hoy = CB_hoy.stack().reset_index()$/;"	v
+CB_i	Computar Canastas.py	/^CB_i = pd.concat([CB.unstack(), cpi_M_CB], axis = 1)$/;"	v
+CB_i	computar_canastas.py	/^CB_i = pd.concat([CB.unstack(), cpi_M_CB], axis = 1)$/;"	v
+CB_nom_Q	Computar Canastas.py	/^CB_nom_Q = CB_defl_Q.merge(cpi_Q.reset_index())$/;"	v
+CB_nom_Q	Computar Canastas.py	/^CB_nom_Q = CB_nom_Q.rename(columns = {'CBA': 'CBA_'+ref, 'CBT': 'CBT_'+ref})$/;"	v
+CB_nom_Q	computar_canastas.py	/^CB_nom_Q = CB_defl_Q.merge(cpi_Q.reset_index())$/;"	v
+CB_nom_Q	computar_canastas.py	/^CB_nom_Q = CB_nom_Q.rename(columns = {'CBA': 'CBA_'+ref, 'CBT': 'CBT_'+ref})$/;"	v
+ax	Computar Canastas.py	/^ax = axs[0]$/;"	v
+ax	Computar Canastas.py	/^ax = axs[1]$/;"	v
+axs	Computar Canastas.py	/^fig, axs = plt.subplots(1, 2, figsize = (11, 4))$/;"	v
+axs	computar_canastas.py	/^fig, axs = plt.subplots(1, figsize = (7, 5))$/;"	v
+canastasINDEC	README.md	/^# canastasINDEC$/;"	c
+cb	Computar Canastas.py	/^cb = CB_defl.loc[mostrar_mes].stack()$/;"	v
+cpi_M	Computar Canastas.py	/^cpi_M = pd.read_csv('https:\/\/raw.githubusercontent.com\/matuteiglesias\/IPC-Argentina\/main\/d/;"	v
+cpi_M	computar_canastas.py	/^cpi_M = pd.read_csv('https:\/\/raw.githubusercontent.com\/matuteiglesias\/IPC-Argentina\/main\/d/;"	v
+cpi_M_CB	Computar Canastas.py	/^cpi_M_CB = cpi_M.loc[CB.unstack().index]$/;"	v
+cpi_M_CB	computar_canastas.py	/^cpi_M_CB = cpi_M.loc[CB.unstack().index]$/;"	v
+cpi_Q	Computar Canastas.py	/^cpi_Q = pd.read_csv('https:\/\/raw.githubusercontent.com\/matuteiglesias\/IPC-Argentina\/main\/d/;"	v
+cpi_Q	computar_canastas.py	/^cpi_Q = pd.read_csv('https:\/\/raw.githubusercontent.com\/matuteiglesias\/IPC-Argentina\/main\/d/;"	v
+cpi_actual	Computar Canastas.py	/^cpi_actual = cpi_M.loc[mes_actual]['index'][0]$/;"	v
+cpi_actual	computar_canastas.py	/^cpi_actual = cpi_M.loc[mes_actual]['index'][0]$/;"	v
+cpi_ref	Computar Canastas.py	/^cpi_ref = cpi_M.loc[ref]['index'][0] ## OJO porque los modelos vienen entrenados con sueldos de /;"	v
+cpi_ref	Computar Canastas.py	/^cpi_ref = cpi_M.loc[ref]['index'][0]$/;"	v
+cpi_ref	computar_canastas.py	/^cpi_ref = cpi_M.loc[ref]['index'][0] ## OJO porque los modelos vienen entrenados con sueldos de /;"	v
+cpi_ref	computar_canastas.py	/^cpi_ref = cpi_M.loc[ref]['index'][0]$/;"	v
+cpi_ult_mes_CB	Computar Canastas.py	/^cpi_ult_mes_CB = cpi_M.loc[ultimo_mes]['index']$/;"	v
+data	Computar Canastas.py	/^data = CB_defl.dropna()$/;"	v
+data	computar_canastas.py	/^data = CB_defl.dropna()$/;"	v
+dt	Computar Canastas.py	/^from datetime import datetime as dt$/;"	x	nameref:unknown:datetime
+dt	computar_canastas.py	/^from datetime import datetime as dt$/;"	x	nameref:unknown:datetime
+engel	Computar Canastas.py	/^engel = (data['CBT']\/data['CBA'])$/;"	v
+fig	Computar Canastas.py	/^fig = df2img.plot_dataframe($/;"	v
+fig	Computar Canastas.py	/^fig, axs = plt.subplots(1, 2, figsize = (11, 4))$/;"	v
+fig	computar_canastas.py	/^fig = df2img.plot_dataframe($/;"	v
+fig	computar_canastas.py	/^fig, axs = plt.subplots(1, figsize = (7, 5))$/;"	v
+link_CBA	Computar Canastas.py	/^link_CBA = 'https:\/\/infra.datos.gob.ar\/catalog\/sspm\/dataset\/445\/distribution\/445.1\/down/;"	v
+link_CBA	computar_canastas.py	/^link_CBA = 'https:\/\/infra.datos.gob.ar\/catalog\/sspm\/dataset\/445\/distribution\/445.1\/down/;"	v
+link_CBT	Computar Canastas.py	/^link_CBT = 'https:\/\/infra.datos.gob.ar\/catalog\/sspm\/dataset\/446\/distribution\/446.1\/down/;"	v
+link_CBT	computar_canastas.py	/^link_CBT = 'https:\/\/infra.datos.gob.ar\/catalog\/sspm\/dataset\/446\/distribution\/446.1\/down/;"	v
+mes_actual	Computar Canastas.py	/^mes_actual = today.strftime("%Y-%m")$/;"	v
+mes_actual	computar_canastas.py	/^mes_actual = today.strftime("%Y-%m")$/;"	v
+mlines	Computar Canastas.py	/^import matplotlib.lines as mlines$/;"	I	nameref:module:matplotlib.lines
+mlines	computar_canastas.py	/^import matplotlib.lines as mlines$/;"	I	nameref:module:matplotlib.lines
+mostrar_mes	Computar Canastas.py	/^mostrar_mes = '2010-11'$/;"	v
+mostrar_mes	Computar Canastas.py	/^mostrar_mes = ultimo_mes.strftime("%Y-%m")$/;"	v
+mpatches	Computar Canastas.py	/^import matplotlib.patches as mpatches$/;"	I	nameref:module:matplotlib.patches
+mpatches	computar_canastas.py	/^import matplotlib.patches as mpatches$/;"	I	nameref:module:matplotlib.patches
+pd	Computar Canastas.py	/^import pandas as pd$/;"	I	nameref:module:pandas
+pd	computar_canastas.py	/^import pandas as pd$/;"	I	nameref:module:pandas
+plt	Computar Canastas.py	/^import matplotlib.pyplot as plt$/;"	I	nameref:module:matplotlib.pyplot
+plt	computar_canastas.py	/^import matplotlib.pyplot as plt$/;"	I	nameref:module:matplotlib.pyplot
+pts1	Computar Canastas.py	/^pts1 = mlines.Line2D([], [], lw = 0, marker = 's', c = '#1f77b4', markersize = 2, label = 'CB AL/;"	v
+pts1	Computar Canastas.py	/^pts1 = mlines.Line2D([], [], lw = 0, marker = 's', c = 'k', markersize = 2, label = 'INV COEF EN/;"	v
+pts1	computar_canastas.py	/^pts1 = mlines.Line2D([], [], lw = 0, marker = 's', c = '#1f77b4', markersize = 2, label = 'CB AL/;"	v
+pts2	Computar Canastas.py	/^pts2 = mlines.Line2D([], [], lw = 0, marker = 's', c = '#ff7f0e', markersize = 2, label = 'CB TO/;"	v
+pts2	computar_canastas.py	/^pts2 = mlines.Line2D([], [], lw = 0, marker = 's', c = '#ff7f0e', markersize = 2, label = 'CB TO/;"	v
+ref	Computar Canastas.py	/^ref = '2016-01'$/;"	v
+ref	computar_canastas.py	/^ref = '2016-01'$/;"	v
+tabla	Computar Canastas.py	/^tabla = pd.concat([cb*(cpi_M.loc[mostrar_mes]['index'][0]\/cpi_ref), $/;"	v
+tabla_CB_hoy	Computar Canastas.py	/^tabla_CB_hoy = CB_hoy.loc[mes_actual].stack()$/;"	v
+tabla_CB_hoy	computar_canastas.py	/^tabla_CB_hoy = CB_hoy.loc[mes_actual].stack()$/;"	v
+today	Computar Canastas.py	/^today = dt.today()$/;"	v
+today	computar_canastas.py	/^today = dt.today()$/;"	v
+ultimo_mes	Computar Canastas.py	/^ultimo_mes = CB.index.get_level_values('Mes').max()$/;"	v
