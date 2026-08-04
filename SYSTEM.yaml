@@ -27,17 +27,20 @@ upstream:
 downstream:
 - repo.indice-pobreza-uba
 canonical_commands:
-- python scripts/verify_snapshot.py
-- python computar_canastas.py
+- make check
+- make smoke
+- make regenerate
 generated_paths:
 - data/
 - CB.jpg
 verification:
   status: partial
   last_verified: '2026-08-04'
-  command: python scripts/verify_snapshot.py
+  command: make check
   unknowns:
+  - Make targets require execution from a local checkout
   - methodological repair is required before consequential downstream reuse
+  - source compatibility and IPC dependency require a live regeneration
 maintenance:
   cadence: annual
   next_review: '2027-02-01'
