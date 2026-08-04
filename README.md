@@ -1,65 +1,65 @@
-# Canastas básicas regionales — INDEC
+# Canastas regionales — artefacto analítico derivado
 
-Serie mensual de Canasta Básica Alimentaria (CBA) y Canasta Básica Total (CBT) organizada por región de Argentina.
+Este repositorio conserva una transformación histórica de las series regionales de Canasta Básica Alimentaria (CBA) y Canasta Básica Total (CBT). **`data/CB_Reg_defl_m.csv` no es una serie oficial observada de canastas mensuales.**
 
-> **Estado:** snapshot en mantenimiento. El output versionado llega hasta diciembre de 2025, pero la fuente, las unidades y el pipeline no fueron revalidados en 2026. La presencia de fechas futuras respecto de la última ejecución no demuestra que sean observaciones oficiales.
+> **Estado:** mantenimiento correctivo. El artefacto comprometido llega hasta diciembre de 2025, pero los valores observados identificables llegan hasta julio de 2025. Desde agosto de 2025 la cola repite valores por región. La fuente y el pipeline no fueron reejecutados en esta revisión.
 
-## Producto principal
+## Qué representa realmente el archivo principal
+
+`computar_canastas.py`:
+
+1. descarga series nominales regionales;
+2. las deflacta con el índice de `IPC-Argentina` a una referencia de enero de 2016;
+3. reindexa el resultado sobre el calendario del IPC desde 2003;
+4. completa faltantes con medias de columna;
+5. vuelve a expresar **toda la historia** al nivel de precios del mes de ejecución;
+6. escribe el resultado en `data/CB_Reg_defl_m.csv`.
+
+Por lo tanto, el archivo mezcla:
+
+- datos derivados de publicaciones oficiales;
+- períodos anteriores al inicio declarado de la fuente regional;
+- imputación por medias;
+- la fecha y proyecciones disponibles en `IPC-Argentina`;
+- una expresión monetaria dependiente del mes en que se ejecutó el script.
+
+No debe utilizarse para citar niveles oficiales corrientes de CBA o CBT.
+
+## Estado verificable
+
+La declaración auditable vive en [`DATA_STATUS.json`](DATA_STATUS.json). Para comprobar que el snapshot comprometido conserva las fronteras declaradas:
+
+```bash
+python scripts/verify_snapshot.py
+```
+
+El chequeo es local y sin red. Valida:
+
+- esquema y cobertura del CSV;
+- seis regiones por período;
+- fecha máxima;
+- cola sintética repetida desde agosto de 2025.
+
+No valida la fuente oficial ni la corrección metodológica de la transformación.
+
+## Uso recomendado
+
+Para análisis nuevos, preferir las series oficiales nominales como entrada y construir un producto nuevo con:
+
+- procedencia y fecha de descarga;
+- períodos observados separados de imputaciones y proyecciones;
+- unidad monetaria explícita;
+- una política de deflación versionada;
+- un manifest de ejecución.
+
+Este repositorio puede seguir siendo útil como evidencia histórica del método, pero no debe propagarse como una capa de datos actuales sin esa reparación.
+
+## Dependencia
+
+El pipeline consume:
 
 ```text
-data/CB_Reg_defl_m.csv
+IPC-Argentina/data/info/indice_precios_M.csv
 ```
 
-El archivo utiliza un formato largo con las columnas:
-
-| Columna | Contenido |
-|---|---|
-| `Q` | período mensual |
-| `Region` | región estadística |
-| `CBA` | valor de la canasta alimentaria |
-| `CBT` | valor de la canasta total |
-
-Las regiones incluidas son Cuyo, Gran Buenos Aires, Noreste, Noroeste, Pampeana y Patagonia.
-
-## Uso rápido
-
-```python
-import pandas as pd
-
-canastas = pd.read_csv(
-    "data/CB_Reg_defl_m.csv",
-    parse_dates=["Q"],
-)
-
-print(canastas.groupby("Region").tail(1))
-```
-
-## Interpretación y procedencia
-
-Este repositorio conserva una **serie procesada derivada de publicaciones del INDEC**. No es una publicación oficial y no debe utilizarse sin verificar:
-
-- la unidad y base monetaria;
-- la composición de los hogares de referencia;
-- la fecha del último dato observado;
-- la metodología de prolongación o deflación;
-- cambios en los archivos fuente.
-
-En el tramo final del CSV existen valores repetidos durante varios meses. Esos registros requieren revisión antes de tratarlos como datos observados.
-
-## Autoridad y límites
-
-El repositorio posee el snapshot y su transformación histórica. INDEC conserva la autoridad sobre las canastas publicadas; los análisis posteriores deben citar tanto la fuente oficial como el commit de este repositorio.
-
-## Próxima revisión útil
-
-1. identificar el script o notebook canónico que genera `CB_Reg_defl_m.csv`;
-2. recuperar las fuentes y metadatos exactos;
-3. declarar observaciones, interpolaciones y proyecciones por separado;
-4. agregar una verificación de cobertura y unidades;
-5. decidir si la actualización automática debe reactivarse.
-
-Hasta completar esa revisión, usar el archivo como snapshot histórico versionado.
-
-## Posible cambio de nombre
-
-`canastasINDEC` describe el tema, pero `canastas-indec-regionales` explicaría mejor el producto y su alcance geográfico.
+Si esa serie contiene meses proyectados, esos meses pueden propagarse a este output. La frescura de este repositorio nunca puede ser mayor que la de esa dependencia.
