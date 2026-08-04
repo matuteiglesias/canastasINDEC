@@ -1,0 +1,9 @@
+{
+  "schema": "regional-basket-period-dictionary/v1",
+  "id": "canastasindec-periods/v1",
+  "periods": {
+    "month": {"key": "YYYY-MM", "csv_representative_date": "first calendar day", "meaning": "calendar month"},
+    "quarter": {"key": "YYYY-Qn", "legacy_representative_date": "15th day of the middle month", "meaning": "mean of available monthly values grouped by calendar quarter"}
+  },
+  "warning": "Legacy column Q contains dates at both frequencies; frequency must be declared by the artifact contract."
+}

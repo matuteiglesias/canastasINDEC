@@ -42,6 +42,29 @@ El chequeo es local y sin red. Valida:
 
 No valida la fuente oficial ni la corrección metodológica de la transformación.
 
+## Linaje y contrato de lanzamiento
+
+La [clasificación de familias](docs/BASKET_PRODUCT_FAMILIES.md), el
+[grafo de transformaciones](contracts/lineage_graph.json) y los diccionarios en
+`contracts/` documentan el snapshot sin cambiar sus valores. La clasificación
+por celda del artefacto principal se reproduce localmente con:
+
+```bash
+make basket-lineage-report
+```
+
+Una entrega **completamente sintética** demuestra el sobre de manifiesto y el
+preflight de compatibilidad, sin representar umbrales reales:
+
+```bash
+make release-fixture
+make release-check
+```
+
+La [evaluación del slice](docs/POVERTY_SLICE_BASKET_READINESS.md) explica por
+qué todavía no puede emitirse un candidato real reproducible. Ninguno de estos
+comandos consulta la red ni sobrescribe los CSV reales comprometidos.
+
 ## Uso recomendado
 
 Para análisis nuevos, preferir las series oficiales nominales como entrada y construir un producto nuevo con:

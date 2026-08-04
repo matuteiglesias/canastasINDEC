@@ -1,0 +1,24 @@
+{
+  "schema": "regional-basket-lineage-graph/v1",
+  "methodology_version": "legacy-script@2f80dfb",
+  "nodes": [
+    {"id": "source.cba", "kind": "official_observed_nominal", "location": "https://infra.datos.gob.ar/catalog/sspm/dataset/445/distribution/445.1/download/canasta-basica-alimentaria-regiones-del-pais.csv"},
+    {"id": "source.cbt", "kind": "official_observed_nominal", "location": "https://infra.datos.gob.ar/catalog/sspm/dataset/446/distribution/446.1/download/canasta-basica-total-regiones-del-pais.csv"},
+    {"id": "price.monthly", "kind": "price_dependency", "location": "IPC-Argentina/data/info/indice_precios_M.csv", "identity": "unresolved"},
+    {"id": "price.quarterly", "kind": "price_dependency", "location": "IPC-Argentina/data/info/indice_precios_Q.csv", "identity": "unresolved"},
+    {"id": "derived.reference_monthly", "kind": "constant_reference_reexpression"},
+    {"id": "derived.imputed_monthly", "kind": "imputed_history"},
+    {"id": "data.CB_Reg_defl_Q", "kind": "quarterly_conversion", "path": "data/CB_Reg_defl_Q.csv"},
+    {"id": "data.CB_Reg_defl_m", "kind": "projected_or_synthetic_extension", "path": "data/CB_Reg_defl_m.csv"},
+    {"id": "data.CB_Reg_nom_Q", "kind": "historical_unresolved", "path": "data/CB_Reg_nom_Q.csv"}
+  ],
+  "edges": [
+    {"id": "combine-source-measures", "from": ["source.cba", "source.cbt"], "to": "derived.reference_monthly", "operation": "parse indice_tiempo; stack source region columns; outer concatenate CBA and CBT", "evidence": "computar_canastas.py:8-21"},
+    {"id": "reexpress-2016-01", "from": ["derived.reference_monthly", "price.monthly"], "to": "derived.reference_monthly", "operation": "value / monthly index * index(2016-01)", "evidence": "computar_canastas.py:23-42"},
+    {"id": "backcast-and-impute", "from": "derived.reference_monthly", "to": "derived.imputed_monthly", "operation": "reindex to price calendar from 2003; fill every missing cell with its column mean", "parameters": {"start": "2003-01", "scope": "measure-region column"}, "evidence": "computar_canastas.py:44,77"},
+    {"id": "quarter-mean", "from": "derived.imputed_monthly", "to": "data.CB_Reg_defl_Q", "operation": "calendar-quarter arithmetic mean; label middle-month day 15", "evidence": "computar_canastas.py:80-87"},
+    {"id": "execution-reference", "from": ["derived.imputed_monthly", "price.monthly"], "to": "data.CB_Reg_defl_m", "operation": "multiply by CPI(execution month)/CPI(2016-01), round to tens", "evidence": "computar_canastas.py:96-108"},
+    {"id": "quarter-mixed-reference", "from": ["data.CB_Reg_defl_Q", "price.quarterly", "price.monthly"], "to": "data.CB_Reg_nom_Q", "operation": "merge quarterly CPI; emit 2016 reference, quarter-corrected and execution-month-reference columns", "evidence": "computar_canastas.py:126-134"}
+  ],
+  "limitations": ["No immutable source retrieval evidence", "No source observation IDs", "No explicit missing-region branch beyond generic cell mean fill", "Committed outputs were generated in different runs and have different maximum periods"]
+}

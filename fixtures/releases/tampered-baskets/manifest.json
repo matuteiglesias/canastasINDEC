@@ -1,0 +1,65 @@
+{
+  "artifact_id": "fixture.regional-baskets-derived/v1",
+  "cell_status_policy": {
+    "approved_allowed": [
+      "observed",
+      "derived"
+    ],
+    "vocabulary": [
+      "observed",
+      "derived",
+      "imputed",
+      "interpolated",
+      "projected",
+      "synthetic",
+      "unresolved"
+    ]
+  },
+  "coverage": {
+    "frequency": "monthly_with_quarterly_derivative",
+    "measures": [
+      "CBA",
+      "CBT"
+    ],
+    "period_end": "2020-03",
+    "period_start": "2020-01",
+    "regions": [
+      "fixture_north",
+      "fixture_south"
+    ]
+  },
+  "files": {
+    "monthly.csv": {
+      "sha256": "62505c60e44f5aa4714eef1f2ccaf483b86d13e53f9e11b6530fc1a0a123e610"
+    },
+    "quarterly.csv": {
+      "sha256": "0473a520a733889480072f87d66f74f2f0de965b5bb33cf59f5d2cbf4e07101a"
+    },
+    "reference.csv": {
+      "sha256": "d149b41282593c34bdf5f1ee4e724833b152e293ea19fa5ddca76b1ccbee5179"
+    },
+    "regions.json": {
+      "sha256": "871d8170736823db17d3fb0ad812ecd20850bbb4334e36d5c0fcdb072addc36a"
+    }
+  },
+  "monetary_reference": {
+    "formula": "value * 200 / 100",
+    "nominal": "nominal-fixture-ARS",
+    "price_artifact_id": "fixture.price-index/v1",
+    "price_artifact_sha256": "67abf6bbe2753071b1e282275e1055143bbfb3706126134d5ff199e4f2d588fa",
+    "rounding": "exact integers",
+    "transformed": "fixture-price-level-200"
+  },
+  "region_dictionary": {
+    "id": "fixture-regions/v1",
+    "path": "regions.json"
+  },
+  "release_id": "intentionally-invalid-tampered-v1",
+  "schema": "research-artifact-manifest/v1",
+  "status": "synthetic",
+  "unit": {
+    "basis": "one fictional reference adult",
+    "currency": "FIXTURE_ARS"
+  },
+  "warning": "Entire release is invented and demonstrates mechanics only; it is not an approved or real poverty threshold."
+}

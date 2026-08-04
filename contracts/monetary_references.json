@@ -1,0 +1,15 @@
+{
+  "schema": "regional-basket-monetary-contract/v1",
+  "price_artifact": {
+    "id": "unresolved:IPC-Argentina/data/info/indice_precios_M.csv@regeneration-run",
+    "hash": null,
+    "release_blocking": true,
+    "reason": "The producing run did not record an immutable upstream revision or file hash."
+  },
+  "outputs": {
+    "data/CB_Reg_defl_Q.csv": {"kind": "constant_reference_reexpression", "source_currency": "ARS", "source_period": "per source observation month", "output_reference": "IPC level January 2016", "formula": "nominal_value / CPI(source_month) * CPI(2016-01)", "reversible": false, "rounding": "none in CSV"},
+    "data/CB_Reg_defl_m.csv": {"kind": "constant_reference_reexpression", "source_currency": "ARS", "source_period": "per source observation month", "output_reference": "IPC level of producing execution month; inferred 2025-10 from evidence, not independently pinned", "formula": "(nominal_value / CPI(source_month) * CPI(2016-01)) * CPI(execution_month) / CPI(2016-01)", "reversible": false, "rounding": "nearest ARS 10, then integer"},
+    "data/CB_Reg_nom_Q.csv": {"kind": "mixed_reference_legacy", "source_currency": "ARS", "source_period": "quarter", "output_reference": "column-specific: 2016-01, quarter CPI, or 2023-01", "formula": "see transformation graph", "reversible": false, "rounding": "reference columns unrounded; corrected/current columns nearest integer"}
+  },
+  "approved_release_policy": "Blocked until the upstream price artifact and monetary reference are immutable and Matías approves them."
+}

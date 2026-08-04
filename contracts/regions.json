@@ -1,0 +1,15 @@
+{
+  "schema": "regional-basket-region-dictionary/v1",
+  "id": "canastasindec-regions-6/v1",
+  "adult_equivalent": {"basis": "one reference adult", "source_definition": "unresolved; requires source-vintage approval"},
+  "regions": [
+    {"id": "cuyo", "label_es": "Cuyo", "source_labels": ["cuyo"]},
+    {"id": "gran_buenos_aires", "label_es": "Gran Buenos Aires", "source_labels": ["gran_buenos_aires"]},
+    {"id": "noreste", "label_es": "Noreste", "source_labels": ["noreste"]},
+    {"id": "noroeste", "label_es": "Noroeste", "source_labels": ["noroeste"]},
+    {"id": "pampeana", "label_es": "Pampeana", "source_labels": ["pampeana"]},
+    {"id": "patagonia", "label_es": "Patagonia", "source_labels": ["patagonia"]}
+  ],
+  "coverage": {"required_each_period": ["cuyo", "gran_buenos_aires", "noreste", "noroeste", "pampeana", "patagonia"]},
+  "warning": "Labels are documented from committed outputs; no mapping is newly approved."
+}
