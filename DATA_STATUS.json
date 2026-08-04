@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "audited_at": "2026-08-04",
+  "artifact": "data/CB_Reg_defl_m.csv",
+  "artifact_max_period": "2025-12-01",
+  "source_observations_identified_through": "2025-07-01",
+  "synthetic_tail_from": "2025-08-01",
+  "source_nominal_regional_series_begin": "2016-04-01",
+  "artifact_begin": "2003-01-01",
+  "transformation": {
+    "price_reference": "CPI level of the execution month",
+    "missing_periods": "filled with column means after reindexing",
+    "cpi_dependency": "IPC-Argentina/data/info/indice_precios_M.csv"
+  },
+  "last_artifact_update_evidence": {
+    "commit": "2f80dfbde2e8e7f629223a270f33d83c4fbfbde3",
+    "committed_at": "2025-10-01"
+  },
+  "automation": {
+    "configured_in_repository": false,
+    "last_successful_run": "unknown"
+  },
+  "classification": "derived-analytical-artifact-not-official-current-series",
+  "failure_policy": "Do not use this artifact as official observed CBA/CBT levels. Treat all periods according to the declared transformation and synthetic boundaries."
+}
