@@ -1,0 +1,17 @@
+{
+  "artifact_type": "research.argentina-price-composite/v1",
+  "files": {
+    "monthly_prices.csv": {
+      "bytes": 128,
+      "sha256": "50adadd3bbfdf7c852240391f89b290787a74e1f23be7cbadd89b52d99b2de2c"
+    }
+  },
+  "method_id": "research.argentina-price-composite/legacy-compatible-v1",
+  "monetary_reference_id": "research.argentina-price-composite/legacy-compatible-v1@2016-01=100",
+  "release_id": "fixture-price-candidate-v1",
+  "schema": "research-artifact-manifest/v1",
+  "status": "candidate",
+  "warnings": [
+    "fixture provenance warning"
+  ]
+}

@@ -1,0 +1,69 @@
+{
+  "schema": "regional-basket-source-lock/v1",
+  "snapshots": [
+    {
+      "actual_schema": [
+        "indice_tiempo",
+        "gran_buenos_aires",
+        "cuyo",
+        "noreste",
+        "noroeste",
+        "pampeana",
+        "patagonia"
+      ],
+      "byte_size": 213,
+      "cache_file": "fixtures/candidate_inputs/445.1.csv",
+      "dataset_id": "445",
+      "dataset_page": "fixture://dataset",
+      "distribution_id": "445.1",
+      "http_headers": {
+        "content-type": "text/csv"
+      },
+      "license": "fixture only",
+      "parser_id": "datos-gob-ar-regional-wide-csv/v1",
+      "period_end": "2024-03-01",
+      "period_start": "2016-01-01",
+      "publisher": "fixture only",
+      "publisher_catalog": "fixture only",
+      "requested_url": "fixture://csv",
+      "resolved_url": "fixture://csv",
+      "retrieved_at_utc": "2026-08-04T00:00:00Z",
+      "row_count": 24,
+      "sha256": "eefdd5365068111955257c79217ff890ca4bcbb83159d7e184872d627ee6a33b",
+      "source_id": "indec_cba_regional_monthly",
+      "unit_metadata": "deliberately unresolved fixture wording"
+    },
+    {
+      "actual_schema": [
+        "indice_tiempo",
+        "gran_buenos_aires",
+        "cuyo",
+        "noreste",
+        "noroeste",
+        "pampeana",
+        "patagonia"
+      ],
+      "byte_size": 231,
+      "cache_file": "fixtures/candidate_inputs/446.1.csv",
+      "dataset_id": "446",
+      "dataset_page": "fixture://dataset",
+      "distribution_id": "446.1",
+      "http_headers": {
+        "content-type": "text/csv"
+      },
+      "license": "fixture only",
+      "parser_id": "datos-gob-ar-regional-wide-csv/v1",
+      "period_end": "2024-03-01",
+      "period_start": "2016-01-01",
+      "publisher": "fixture only",
+      "publisher_catalog": "fixture only",
+      "requested_url": "fixture://csv",
+      "resolved_url": "fixture://csv",
+      "retrieved_at_utc": "2026-08-04T00:00:00Z",
+      "row_count": 24,
+      "sha256": "d9d1533a9c8efbcac8d04ac813e3f0f13e52dd89889792c4516750290394cef9",
+      "source_id": "indec_cbt_regional_monthly",
+      "unit_metadata": "deliberately unresolved fixture wording"
+    }
+  ]
+}
