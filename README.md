@@ -65,6 +65,28 @@ La [evaluación del slice](docs/POVERTY_SLICE_BASKET_READINESS.md) explica por
 qué todavía no puede emitirse un candidato real reproducible. Ninguno de estos
 comandos consulta la red ni sobrescribe los CSV reales comprometidos.
 
+## Constructor de candidatos observado-nominales
+
+La adquisición queda separada de la construcción. `basket-source-lock` es la
+única etapa que contacta las distribuciones oficiales 445.1 y 446.1; el
+candidato se reconstruye sin red desde ese lock y una **copia inmutable** de un
+release candidato de precios. Nunca consulta una rama de `IPC-Argentina` ni
+ejecuta un checkout hermano:
+
+```bash
+make basket-source-probe
+make basket-source-lock
+make basket-source-lock-check SOURCE_LOCK=run/source_lock.json
+make basket-candidate SOURCE_LOCK=run/source_lock.json PRICE_RELEASE=/copias/ipc-release-id
+make basket-candidate-check RELEASE_DIR=artifacts/basket_releases/release-id
+make poverty-basket-2024q1 RELEASE_DIR=artifacts/basket_releases/release-id
+```
+
+El núcleo incluye solamente meses completos observados en fuente, sin backcast,
+relleno ni cola repetida. La conversión a referencia enero de 2016 y las medias
+trimestrales son derivados separados. El bundle 2024-Q1 es sólo un insumo de
+investigación de seis regiones: no calcula pobreza ni inventa un mapa provincial.
+
 ## Uso recomendado
 
 Para análisis nuevos, preferir las series oficiales nominales como entrada y construir un producto nuevo con:
