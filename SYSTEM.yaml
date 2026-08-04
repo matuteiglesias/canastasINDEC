@@ -1,0 +1,43 @@
+# This file declares the repository boundary and its place in the GitHub estate.
+schema_version: 1
+id: publicdata.prices.baskets
+repository:
+  id: repo.canastasindec
+  github: matuteiglesias/canastasINDEC
+domain: public-data
+system: publicdata.prices
+role: derived-basket-artifact-producer
+lifecycle: maintenance
+authority:
+  status: proposed
+  owns:
+  - versioned derived regional basket artifact and transformation history
+  - synthetic-tail and dependency declarations
+  does_not_own:
+  - official CBA/CBT authority
+  - direct observed monthly basket series
+  - independent price-index truth
+interfaces:
+  consumes:
+  - artifact:publicdata.price-index@1
+  produces:
+  - artifact:publicdata.regional-baskets-derived@1
+upstream:
+- repo.ipc-argentina
+downstream:
+- repo.indice-pobreza-uba
+canonical_commands:
+- python scripts/verify_snapshot.py
+- python computar_canastas.py
+generated_paths:
+- data/
+- CB.jpg
+verification:
+  status: partial
+  last_verified: '2026-08-04'
+  command: python scripts/verify_snapshot.py
+  unknowns:
+  - methodological repair is required before consequential downstream reuse
+maintenance:
+  cadence: annual
+  next_review: '2027-02-01'
