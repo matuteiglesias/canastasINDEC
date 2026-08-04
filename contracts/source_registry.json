@@ -1,0 +1,132 @@
+{
+  "schema_version": 1,
+  "registry_id": "registry:research.argentina-regional-basket-sources@1",
+  "recorded_at_utc": "2026-08-04T10:17:00Z",
+  "purpose": "Pin the official regional CBA/CBT source distributions and the immutable analytical price artifact required for candidate releases.",
+  "sources": [
+    {
+      "source_id": "indec_cba_regional_monthly",
+      "authority": "Instituto Nacional de Estadistica y Censos (INDEC)",
+      "publisher_catalog": "Datos Argentina / Subsecretaria de Programacion Macroeconomica",
+      "artifact_role": "observed_nominal_cba",
+      "dataset_id": "445",
+      "distribution_id": "445.1",
+      "dataset_page": "https://datos.gob.ar/dataset/sspm-canasta-basica-alimentaria-regiones-pais",
+      "retrieval": {
+        "kind": "direct_csv",
+        "url": "https://infra.datos.gob.ar/catalog/sspm/dataset/445/distribution/445.1/download/canasta-basica-alimentaria-regiones-del-pais.csv"
+      },
+      "frequency": "monthly",
+      "expected_start": "2016-04-01",
+      "expected_period_column": "indice_tiempo",
+      "expected_region_columns": [
+        "gran_buenos_aires",
+        "cuyo",
+        "noreste",
+        "noroeste",
+        "pampeana",
+        "patagonia"
+      ],
+      "candidate_unit": "ARS_per_equivalent_adult",
+      "unit_verification_policy": "Confirm exact source metadata wording and preserve it in the snapshot manifest; a metadata wording gap is a warning, not permission to change values.",
+      "license": "Creative Commons Attribution 4.0",
+      "authority_class": "official_source",
+      "operational_status": "stable_catalog_distribution"
+    },
+    {
+      "source_id": "indec_cbt_regional_monthly",
+      "authority": "Instituto Nacional de Estadistica y Censos (INDEC)",
+      "publisher_catalog": "Datos Argentina / Subsecretaria de Programacion Macroeconomica",
+      "artifact_role": "observed_nominal_cbt",
+      "dataset_id": "446",
+      "distribution_id": "446.1",
+      "dataset_page": "https://datos.gob.ar/dataset/sspm-canasta-basica-total-regiones-pais",
+      "retrieval": {
+        "kind": "direct_csv",
+        "url": "https://infra.datos.gob.ar/catalog/sspm/dataset/446/distribution/446.1/download/canasta-basica-total-regiones-del-pais.csv"
+      },
+      "frequency": "monthly",
+      "expected_start": "2016-04-01",
+      "expected_period_column": "indice_tiempo",
+      "expected_region_columns": [
+        "gran_buenos_aires",
+        "cuyo",
+        "noreste",
+        "noroeste",
+        "pampeana",
+        "patagonia"
+      ],
+      "candidate_unit": "ARS_per_equivalent_adult",
+      "unit_verification_policy": "Confirm exact source metadata wording and preserve it in the snapshot manifest; a metadata wording gap is a warning, not permission to change values.",
+      "license": "Creative Commons Attribution 4.0",
+      "authority_class": "official_source",
+      "operational_status": "stable_catalog_distribution"
+    },
+    {
+      "source_id": "argentina_price_composite_candidate",
+      "authority": "matuteiglesias/IPC-Argentina analytical producer",
+      "artifact_role": "monetary_conversion_dependency",
+      "artifact_type": "research.argentina-price-composite/v1",
+      "required_method_id": "research.argentina-price-composite/legacy-compatible-v1",
+      "required_monetary_reference_id": "research.argentina-price-composite/legacy-compatible-v1@2016-01=100",
+      "retrieval": {
+        "kind": "copied_immutable_release_directory_or_archive",
+        "forbidden": [
+          "runtime raw.githubusercontent.com main branch",
+          "runtime sibling checkout",
+          "unversioned latest alias"
+        ]
+      },
+      "accepted_statuses_for_candidate_build": [
+        "candidate",
+        "reviewed",
+        "approved"
+      ],
+      "accepted_warning_policy": "Candidate price releases with machine-readable warnings are permitted; checksum, method-identity, period-coverage, or monetary-reference failures are not.",
+      "authority_class": "analytical_dependency",
+      "operational_status": "awaiting_pinned_candidate_release"
+    }
+  ],
+  "canonical_regions": [
+    {
+      "region_id": "gran_buenos_aires",
+      "display_name": "Gran Buenos Aires",
+      "source_column": "gran_buenos_aires"
+    },
+    {
+      "region_id": "cuyo",
+      "display_name": "Cuyo",
+      "source_column": "cuyo"
+    },
+    {
+      "region_id": "noreste",
+      "display_name": "Noreste",
+      "source_column": "noreste"
+    },
+    {
+      "region_id": "noroeste",
+      "display_name": "Noroeste",
+      "source_column": "noroeste"
+    },
+    {
+      "region_id": "pampeana",
+      "display_name": "Pampeana",
+      "source_column": "pampeana"
+    },
+    {
+      "region_id": "patagonia",
+      "display_name": "Patagonia",
+      "source_column": "patagonia"
+    }
+  ],
+  "geography_note": "These are INDEC basket regions, not province indexes. Province-to-region mapping is a separate geography contract. Buenos Aires province cannot be assigned wholesale because Gran Buenos Aires and Pampeana require subprovincial classification.",
+  "source_lock_policy": {
+    "record_resolved_url": true,
+    "record_retrieval_timestamp": true,
+    "record_http_metadata": true,
+    "hash_downloaded_bytes": true,
+    "record_actual_schema_and_coverage": true,
+    "require_cba_and_cbt_for_core_candidate": true,
+    "require_all_six_regions_for_each_core_candidate_period": true
+  }
+}
