@@ -1,0 +1,20 @@
+{
+  "coverage": {
+    "required_each_period": [
+      "fixture_north",
+      "fixture_south"
+    ]
+  },
+  "id": "fixture-regions/v1",
+  "regions": [
+    {
+      "id": "fixture_north",
+      "label": "Fixture North"
+    },
+    {
+      "id": "fixture_south",
+      "label": "Fixture South"
+    }
+  ],
+  "schema": "regional-basket-region-dictionary/v1"
+}

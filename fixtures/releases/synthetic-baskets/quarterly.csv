@@ -1,0 +1,5 @@
+period,region_id,measure,value_ars,status,source_observation_id,transformation_chain_id,monetary_reference,methodology_version,warnings
+2020-Q1,fixture_north,CBA,110.0,derived,,fixture-quarter-mean/v1,nominal-fixture-ARS,fixture/v1,synthetic demonstration
+2020-Q1,fixture_north,CBT,242.0,derived,,fixture-quarter-mean/v1,nominal-fixture-ARS,fixture/v1,synthetic demonstration
+2020-Q1,fixture_south,CBA,130.0,derived,,fixture-quarter-mean/v1,nominal-fixture-ARS,fixture/v1,synthetic demonstration; input includes imputation
+2020-Q1,fixture_south,CBT,273.0,derived,,fixture-quarter-mean/v1,nominal-fixture-ARS,fixture/v1,synthetic demonstration

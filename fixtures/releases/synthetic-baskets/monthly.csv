@@ -1,0 +1,13 @@
+period,region_id,measure,value_ars,status,source_observation_id,transformation_chain_id,monetary_reference,methodology_version,warnings
+2020-01,fixture_north,CBA,100,observed,fixture-source:2020-01:fixture_north:CBA,fixture-monthly/v1,nominal-fixture-ARS,fixture/v1,synthetic demonstration; not a real threshold
+2020-01,fixture_north,CBT,220,observed,fixture-source:2020-01:fixture_north:CBT,fixture-monthly/v1,nominal-fixture-ARS,fixture/v1,synthetic demonstration; not a real threshold
+2020-01,fixture_south,CBA,120,observed,fixture-source:2020-01:fixture_south:CBA,fixture-monthly/v1,nominal-fixture-ARS,fixture/v1,synthetic demonstration; not a real threshold
+2020-01,fixture_south,CBT,252,observed,fixture-source:2020-01:fixture_south:CBT,fixture-monthly/v1,nominal-fixture-ARS,fixture/v1,synthetic demonstration; not a real threshold
+2020-02,fixture_north,CBA,110,observed,fixture-source:2020-02:fixture_north:CBA,fixture-monthly/v1,nominal-fixture-ARS,fixture/v1,synthetic demonstration; not a real threshold
+2020-02,fixture_north,CBT,242,observed,fixture-source:2020-02:fixture_north:CBT,fixture-monthly/v1,nominal-fixture-ARS,fixture/v1,synthetic demonstration; not a real threshold
+2020-02,fixture_south,CBA,130,imputed,,fixture-monthly/v1,nominal-fixture-ARS,fixture/v1,synthetic demonstration; not a real threshold; declared fixture imputation from adjacent months
+2020-02,fixture_south,CBT,273,observed,fixture-source:2020-02:fixture_south:CBT,fixture-monthly/v1,nominal-fixture-ARS,fixture/v1,synthetic demonstration; not a real threshold
+2020-03,fixture_north,CBA,120,observed,fixture-source:2020-03:fixture_north:CBA,fixture-monthly/v1,nominal-fixture-ARS,fixture/v1,synthetic demonstration; not a real threshold
+2020-03,fixture_north,CBT,264,observed,fixture-source:2020-03:fixture_north:CBT,fixture-monthly/v1,nominal-fixture-ARS,fixture/v1,synthetic demonstration; not a real threshold
+2020-03,fixture_south,CBA,140,observed,fixture-source:2020-03:fixture_south:CBA,fixture-monthly/v1,nominal-fixture-ARS,fixture/v1,synthetic demonstration; not a real threshold
+2020-03,fixture_south,CBT,294,observed,fixture-source:2020-03:fixture_south:CBT,fixture-monthly/v1,nominal-fixture-ARS,fixture/v1,synthetic demonstration; not a real threshold

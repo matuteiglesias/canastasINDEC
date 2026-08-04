@@ -1,0 +1,13 @@
+period,region_id,measure,value_ars,status,source_observation_id,transformation_chain_id,monetary_reference,methodology_version,warnings
+2020-01,fixture_north,CBA,200,derived,,fixture-reference-x2/v1,fixture-price-level-200,fixture/v1,synthetic demonstration; not a real threshold; mechanics-only factor 2; input_status=observed
+2020-01,fixture_north,CBT,440,derived,,fixture-reference-x2/v1,fixture-price-level-200,fixture/v1,synthetic demonstration; not a real threshold; mechanics-only factor 2; input_status=observed
+2020-01,fixture_south,CBA,240,derived,,fixture-reference-x2/v1,fixture-price-level-200,fixture/v1,synthetic demonstration; not a real threshold; mechanics-only factor 2; input_status=observed
+2020-01,fixture_south,CBT,504,derived,,fixture-reference-x2/v1,fixture-price-level-200,fixture/v1,synthetic demonstration; not a real threshold; mechanics-only factor 2; input_status=observed
+2020-02,fixture_north,CBA,220,derived,,fixture-reference-x2/v1,fixture-price-level-200,fixture/v1,synthetic demonstration; not a real threshold; mechanics-only factor 2; input_status=observed
+2020-02,fixture_north,CBT,484,derived,,fixture-reference-x2/v1,fixture-price-level-200,fixture/v1,synthetic demonstration; not a real threshold; mechanics-only factor 2; input_status=observed
+2020-02,fixture_south,CBA,260,derived,,fixture-reference-x2/v1,fixture-price-level-200,fixture/v1,synthetic demonstration; not a real threshold; declared fixture imputation from adjacent months; mechanics-only factor 2; input_status=imputed
+2020-02,fixture_south,CBT,546,derived,,fixture-reference-x2/v1,fixture-price-level-200,fixture/v1,synthetic demonstration; not a real threshold; mechanics-only factor 2; input_status=observed
+2020-03,fixture_north,CBA,240,derived,,fixture-reference-x2/v1,fixture-price-level-200,fixture/v1,synthetic demonstration; not a real threshold; mechanics-only factor 2; input_status=observed
+2020-03,fixture_north,CBT,528,derived,,fixture-reference-x2/v1,fixture-price-level-200,fixture/v1,synthetic demonstration; not a real threshold; mechanics-only factor 2; input_status=observed
+2020-03,fixture_south,CBA,280,derived,,fixture-reference-x2/v1,fixture-price-level-200,fixture/v1,synthetic demonstration; not a real threshold; mechanics-only factor 2; input_status=observed
+2020-03,fixture_south,CBT,588,derived,,fixture-reference-x2/v1,fixture-price-level-200,fixture/v1,synthetic demonstration; not a real threshold; mechanics-only factor 2; input_status=observed
