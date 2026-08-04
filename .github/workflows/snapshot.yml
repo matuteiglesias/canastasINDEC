@@ -1,0 +1,32 @@
+name: Regional basket snapshot quality
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: basket-snapshot-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  snapshot:
+    name: Verify committed derived basket artifact
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+
+      - name: Verify structure and synthetic-tail declaration
+        run: python3 scripts/verify_snapshot.py
+
+      - name: Compile Python entry points
+        run: python3 -m compileall -q computar_canastas.py scripts
