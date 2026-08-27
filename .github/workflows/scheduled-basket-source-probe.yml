@@ -1,0 +1,59 @@
+name: Scheduled basket source probe
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "7 10 * * 1"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: scheduled-basket-source-probe
+  cancel-in-progress: false
+
+jobs:
+  source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Verify committed snapshot
+        run: make check
+
+      - name: Probe official basket source distributions
+        run: make basket-source-probe
+
+      - name: Lock currently available source bytes
+        run: make basket-source-lock
+
+      - name: Summarize source-side maintenance state
+        if: always()
+        run: |
+          {
+            echo "## Scheduled basket source probe"
+            echo
+            echo "This job exercises the source side of the governed basket path. Candidate basket production still requires one exact immutable IPC price release; that cross-repo distribution boundary is intentionally not guessed here."
+            echo
+            echo '```text'
+            find artifacts build -maxdepth 4 -type f -printf '%p\n' 2>/dev/null | sort | head -150 || true
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload source-lock evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: basket-source-lock-candidate
+          path: |
+            artifacts
+            build
+          if-no-files-found: warn
+          retention-days: 14
