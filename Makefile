@@ -63,7 +63,7 @@ basket-candidate-smoke: basket-candidate-check
 
 basket-candidate-v2:
 	@test -n "$(PRICE_RELEASE)" || (echo "PRICE_RELEASE must be a copied immutable research.argentina-monetary-conversion/v1 release" >&2; exit 2)
-	$(PY) -m basket_release build-v2 --source-lock "$(SOURCE_LOCK)" --price-release "$(PRICE_RELEASE)"
+	$(PY) -m basket_release build-v2 --source-lock "$(SOURCE_LOCK)" --price-release "$(PRICE_RELEASE)" $(if $(filter 1 true yes,$(ALLOW_THIN_PRICE_COVERAGE)),--allow-thin-price-coverage,)
 
 basket-candidate-v2-check:
 	@test -n "$(RELEASE_DIR)" || (echo "RELEASE_DIR is required" >&2; exit 2)

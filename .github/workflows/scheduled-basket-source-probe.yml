@@ -49,7 +49,7 @@ jobs:
           PY
 
       - name: Build basket candidate from exact IPC parent
-        run: make basket-candidate-v2 SOURCE_LOCK=run/source_lock.json PRICE_RELEASE="$IPC_RELEASE"
+        run: make basket-candidate-v2 SOURCE_LOCK=run/source_lock.json PRICE_RELEASE="$IPC_RELEASE" ALLOW_THIN_PRICE_COVERAGE=1
 
       - name: Independently validate basket candidate
         run: |

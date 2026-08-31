@@ -65,7 +65,12 @@ def _verify_v2_files(root: Path, manifest: dict) -> None:
             raise BuildError(f"corrupted_or_incompatible_price_release: {name}")
 
 
-def load_v2_price_release(root: Path, required: set[str]) -> tuple[dict, dict[str, tuple[str, str]], str]:
+def load_v2_price_release(
+    root: Path,
+    required: set[str],
+    *,
+    allow_thin_coverage: bool = False,
+) -> tuple[dict, dict[str, tuple[str, str]], str, list[str]]:
     root = Path(root).resolve(); manifest_path = root / "manifest.json"
     manifest_bytes = manifest_path.read_bytes(); manifest = json.loads(manifest_bytes)
     if manifest.get("schema") != "research-artifact-manifest/v1":
@@ -97,18 +102,36 @@ def load_v2_price_release(root: Path, required: set[str]) -> tuple[dict, dict[st
     missing = required - prices.keys()
     if missing:
         raise BuildError(f"missing_required_price_period: {sorted(missing)}")
-    thin = sorted(p for p in required if not prices[p][2])
-    if thin:
-        raise BuildError(f"price_period_not_approved_mode_eligible: {thin}")
-    return manifest, {p: (v[0], v[1]) for p, v in prices.items()}, sha(manifest_bytes)
+    ineligible = sorted(p for p in required if not prices[p][2])
+    accepted_thin = [p for p in ineligible if prices[p][1] == "thin_coverage"]
+    rejected = [p for p in ineligible if p not in accepted_thin or not allow_thin_coverage]
+    if rejected:
+        raise BuildError(f"price_period_not_approved_mode_eligible: {rejected}")
+    return (
+        manifest,
+        {p: (v[0], v[1]) for p, v in prices.items()},
+        sha(manifest_bytes),
+        accepted_thin,
+    )
 
 
-def build_v2(lock_path: Path, price_root: Path, output_parent: Path, integration_parent: Path | None = None) -> tuple[Path, Path | None]:
+def build_v2(
+    lock_path: Path,
+    price_root: Path,
+    output_parent: Path,
+    integration_parent: Path | None = None,
+    *,
+    allow_thin_price_coverage: bool = False,
+) -> tuple[Path, Path | None]:
     lock, source_rows = load_portable_locked_sources(lock_path); core, coverage = complete_core(source_rows)
     periods = {r["period"] for r in core}
-    price_manifest, prices, price_hash = load_v2_price_release(price_root, periods | {"2016-01-01"})
+    price_manifest, prices, price_hash, thin_periods = load_v2_price_release(
+        price_root,
+        periods | {"2016-01-01"},
+        allow_thin_coverage=allow_thin_price_coverage,
+    )
     inherited = list(price_manifest.get("warnings", []))
-    warnings = WARNINGS + (["incomplete_period_omitted_outside_requested_slice"] if coverage["incomplete_periods"] else []) + (["price_candidate_has_provenance_warnings"] if inherited else [])
+    warnings = WARNINGS + (["incomplete_period_omitted_outside_requested_slice"] if coverage["incomplete_periods"] else []) + (["price_candidate_has_provenance_warnings"] if inherited else []) + (["thin_price_coverage_accepted_for_candidate"] if thin_periods else [])
     provenance_time = max(s["retrieved_at_utc"] for s in lock["snapshots"])
     identity_seed = {"sources": [s["sha256"] for s in lock["snapshots"]], "price_manifest_sha256": price_hash, "method_id": METHOD_ID}
     release_id = "regional-baskets-v2-price-" + sha(canonical_json(identity_seed))[:16]
@@ -140,10 +163,13 @@ def build_v2(lock_path: Path, price_root: Path, output_parent: Path, integration
     _write_csv(root/"reference_2016_01_quarterly.csv",["period","representative_date","region_id","measure","value_2016_01","unit","monetary_reference_id","value_status","monthly_input_periods","price_release_id","release_id"],quarterly)
     _write_csv(root/"cell_lineage.csv",["period","region_id","measure","source_id","source_snapshot_sha256","source_cell_identity","price_release_id","price_manifest_sha256","price_period","price_row_status","formula"],lineage)
     (root/"coverage.json").write_bytes(canonical_json(coverage)); (root/"source_lock.json").write_bytes(canonical_json(lock))
-    dependency={"release_id":price_manifest["release_id"],"manifest_sha256":price_hash,"artifact_type":PRICE_ARTIFACT,"method_id":PRICE_METHOD,"monetary_reference_id":MONETARY_REFERENCE_ID,"warnings":inherited}
+    dependency={"release_id":price_manifest["release_id"],"manifest_sha256":price_hash,"artifact_type":PRICE_ARTIFACT,"method_id":PRICE_METHOD,"monetary_reference_id":MONETARY_REFERENCE_ID,"warnings":inherited,"thin_coverage_periods_used":thin_periods,"eligibility_mode":"candidate_allow_thin" if thin_periods else "approved_only"}
     (root/"price_dependency_lock.json").write_bytes(canonical_json(dependency))
     qa={"result":"pass_with_warnings" if warnings else "pass","warnings":warnings,"hard_failures":[],"scientific_poverty_execution_performed":False}
-    (root/"qa.json").write_bytes(canonical_json(qa)); (root/"limitations.md").write_text("# Limitations\n\nCandidate research artifact using the curated official-panel v2 monetary reference. It is not an official basket publication or poverty result. Six basket regions are not provincial indexes; Buenos Aires requires subprovincial classification between Gran Buenos Aires and Pampeana.\n",encoding="utf-8")
+    thin_note = ""
+    if thin_periods:
+        thin_note = " The candidate accepts explicitly labeled thin-coverage IPC rows for these required periods: " + ", ".join(thin_periods) + ". Those rows remain ineligible for approved-mode use."
+    (root/"qa.json").write_bytes(canonical_json(qa)); (root/"limitations.md").write_text("# Limitations\n\nCandidate research artifact using the curated official-panel v2 monetary reference. It is not an official basket publication or poverty result. Six basket regions are not provincial indexes; Buenos Aires requires subprovincial classification between Gran Buenos Aires and Pampeana." + thin_note + "\n",encoding="utf-8")
     compatibility={"artifact_type":ARTIFACT_TYPE,"method_id":METHOD_ID,"monetary_reference_id":MONETARY_REFERENCE_ID,"geography_contract":"geography entity -> exactly one basket region_id","buenos_aires_requires_subprovincial_classification":True}
     (root/"compatibility.json").write_bytes(canonical_json(compatibility))
     payload_names=[p.name for p in root.iterdir()]
