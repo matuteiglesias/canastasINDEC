@@ -1,13 +1,6 @@
 name: Scheduled basket source probe
 
 on:
-  # Temporary hook for the first end-to-end IPC → basket proof. Remove after
-  # verifying the merged workflow; durable cadence remains Monday + UI.
-  push:
-    branches:
-      - main
-    paths:
-      - .github/workflows/scheduled-basket-source-probe.yml
   workflow_dispatch:
   schedule:
     - cron: "7 10 * * 1"
