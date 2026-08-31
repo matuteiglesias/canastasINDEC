@@ -1,11 +1,6 @@
 name: Scheduled basket source probe
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - .github/workflows/scheduled-basket-source-probe.yml
   workflow_dispatch:
   schedule:
     - cron: "7 10 * * 1"
