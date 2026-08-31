@@ -22,10 +22,10 @@ from .core import (
     _write_csv,
     canonical_json,
     complete_core,
-    load_locked_sources,
     sha,
     write_checksums,
 )
+from .portable_sources import load_portable_locked_sources
 
 ARTIFACT_TYPE = "research.argentina-regional-baskets/v1"
 INTEGRATION_ARTIFACT_TYPE = "research.argentina-regional-baskets-poverty-input/v1"
@@ -104,7 +104,7 @@ def load_v2_price_release(root: Path, required: set[str]) -> tuple[dict, dict[st
 
 
 def build_v2(lock_path: Path, price_root: Path, output_parent: Path, integration_parent: Path | None = None) -> tuple[Path, Path | None]:
-    lock, source_rows = load_locked_sources(lock_path); core, coverage = complete_core(source_rows)
+    lock, source_rows = load_portable_locked_sources(lock_path); core, coverage = complete_core(source_rows)
     periods = {r["period"] for r in core}
     price_manifest, prices, price_hash = load_v2_price_release(price_root, periods | {"2016-01-01"})
     inherited = list(price_manifest.get("warnings", []))
