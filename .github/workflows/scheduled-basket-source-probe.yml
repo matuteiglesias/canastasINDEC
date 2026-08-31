@@ -1,6 +1,13 @@
 name: Scheduled basket source probe
 
 on:
+  # Temporary hook for the first end-to-end IPC → basket proof. Remove after
+  # verifying the merged workflow; durable cadence remains Monday + UI.
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/scheduled-basket-source-probe.yml
   workflow_dispatch:
   schedule:
     - cron: "7 10 * * 1"
@@ -25,38 +32,63 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Verify committed snapshot
-        run: make check
+      - name: Verify committed snapshot and contracts
+        run: |
+          make check
+          python -m unittest discover -s tests
 
-      - name: Discover, parse and lock official source bytes once
+      - name: Discover, parse and lock official basket source bytes once
         run: make basket-source-lock
 
-      - name: Verify exact relocatable source lock
+      - name: Verify exact relocatable basket source lock
         run: make basket-source-lock-check SOURCE_LOCK=run/source_lock.json
+
+      - name: Discover and lock one immutable IPC conversion release
+        run: |
+          python -m basket_release.ipc_discovery --output run/ipc_release --lock run/ipc_release_lock.json
+          python - <<'PY'
+          import os
+          from basket_release.ipc_discovery import resolve_locked_release
+          release = resolve_locked_release('run/ipc_release_lock.json')
+          with open(os.environ['GITHUB_ENV'], 'a', encoding='utf-8') as fh:
+              fh.write(f"IPC_RELEASE={release}\n")
+          print(f"Locked IPC release: {release}")
+          PY
+
+      - name: Build basket candidate from exact IPC parent
+        run: make basket-candidate-v2 SOURCE_LOCK=run/source_lock.json PRICE_RELEASE="$IPC_RELEASE"
+
+      - name: Independently validate basket candidate
+        run: |
+          release=$(find artifacts/basket_releases -mindepth 1 -maxdepth 1 -type d | sort | tail -1)
+          test -n "$release"
+          make basket-candidate-v2-check RELEASE_DIR="$release"
 
       - name: Summarize source-side maintenance state
         if: always()
         run: |
           {
-            echo "## Scheduled basket source probe"
+            echo "## Scheduled basket source + IPC handoff"
             echo
-            echo 'This job performs one exact discovery/download/parse pass and preserves the resulting run/ directory as a relocatable evidence bundle. It avoids probing and then downloading a potentially changed dynamic source again.'
+            echo 'This job performs one exact basket-source acquisition and discovers one immutable IPC GitHub Release through its discovery manifest. The consumer verifies asset and manifest hashes and persists run/ipc_release_lock.json before using the already-governed v2 basket builder.'
             echo
-            echo 'Candidate basket production still requires one exact immutable IPC price release; that cross-repo distribution boundary is intentionally not guessed here.'
+            echo 'A successful run proves the durable cross-repo IPC → canastas seam. It does not promote either candidate to reviewed/approved status.'
             echo
             echo '```text'
-            find run artifacts build -maxdepth 4 -type f -printf '%p\n' 2>/dev/null | sort | head -200 || true
+            find run artifacts build -maxdepth 5 -type f -printf '%p\n' 2>/dev/null | sort | head -300 || true
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
 
-      - name: Upload exact source-lock evidence
+      - name: Upload exact handoff evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: basket-source-lock-candidate
+          name: basket-ipc-handoff-candidate
           path: |
             run/source_lock.json
             run/source_snapshots
+            run/ipc_release_lock.json
+            run/ipc_release
             artifacts
             build
           if-no-files-found: warn
