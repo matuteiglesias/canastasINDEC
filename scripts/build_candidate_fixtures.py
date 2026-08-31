@@ -7,6 +7,7 @@ ROOT=Path(__file__).parents[1]; FIX=ROOT/"fixtures/candidate_inputs"; FIX.mkdir(
 regions=("gran_buenos_aires","cuyo","noreste","noroeste","pampeana","patagonia")
 def csvwrite(path, fields, rows):
     with path.open("w",newline="",encoding="utf-8") as h: w=csv.DictWriter(h,fields,lineterminator="\n");w.writeheader();w.writerows(rows)
+def identity(path): return {"path":path.name,"size":path.stat().st_size,"sha256":hashlib.sha256(path.read_bytes()).hexdigest()}
 snaps=[]
 for dist,measure in (("445.1","CBA"),("446.1","CBT")):
     fields=["indice_tiempo",*regions]; rows=[]
@@ -16,7 +17,21 @@ for dist,measure in (("445.1","CBA"),("446.1","CBT")):
     path=FIX/f"{dist}.csv";csvwrite(path,fields,rows); data=path.read_bytes(); digest=hashlib.sha256(data).hexdigest()
     snaps.append({"source_id":f"indec_{measure.lower()}_regional_monthly","dataset_id":dist.split('.')[0],"distribution_id":dist,"dataset_page":"fixture://dataset","requested_url":"fixture://csv","resolved_url":"fixture://csv","retrieved_at_utc":"2026-08-04T00:00:00Z","byte_size":len(data),"sha256":digest,"http_headers":{"content-type":"text/csv"},"parser_id":"datos-gob-ar-regional-wide-csv/v1","actual_schema":fields,"period_start":"2016-01-01","period_end":"2024-03-01","row_count":24,"publisher":"fixture only","publisher_catalog":"fixture only","license":"fixture only","unit_metadata":"deliberately unresolved fixture wording","cache_file":str(path.relative_to(ROOT))})
 (FIX/"source_lock.json").write_text(json.dumps({"schema":"regional-basket-source-lock/v1","snapshots":snaps},indent=2,sort_keys=True)+"\n")
+
+# Legacy-compatible price fixture retained unchanged.
 price=FIX/"price_release";price.mkdir(exist_ok=True)
 csvwrite(price/"monthly_prices.csv",["period","price_index","value_status"],[{"period":"2016-01-01","price_index":"100","value_status":"observed"},{"period":"2024-01-01","price_index":"400","value_status":"observed"},{"period":"2024-02-01","price_index":"410","value_status":"observed"},{"period":"2024-03-01","price_index":"420","value_status":"observed"}])
 p=price/"monthly_prices.csv"; manifest={"schema":"research-artifact-manifest/v1","artifact_type":"research.argentina-price-composite/v1","release_id":"fixture-price-candidate-v1","status":"candidate","method_id":"research.argentina-price-composite/legacy-compatible-v1","monetary_reference_id":"research.argentina-price-composite/legacy-compatible-v1@2016-01=100","warnings":["fixture provenance warning"],"files":{"monthly_prices.csv":{"bytes":p.stat().st_size,"sha256":hashlib.sha256(p.read_bytes()).hexdigest()}}};(price/"manifest.json").write_text(json.dumps(manifest,indent=2,sort_keys=True)+"\n")
+
+# Independent copied fixture for IPC-Argentina curated official-panel v2 handoff.
+v2=FIX/"price_release_v2";v2.mkdir(exist_ok=True)
+conversion=v2/"monthly_conversion_factors.csv"
+csvwrite(conversion,["period","reference_period","consensus_index","factor_period_to_reference","factor_reference_to_period","coverage_class","approved_mode_eligible"],[
+    {"period":"2016-01-01","reference_period":"2016-01-01","consensus_index":"100","factor_period_to_reference":"1","factor_reference_to_period":"1","coverage_class":"strong_coverage","approved_mode_eligible":"true"},
+    {"period":"2024-01-01","reference_period":"2016-01-01","consensus_index":"400","factor_period_to_reference":"0.25","factor_reference_to_period":"4","coverage_class":"acceptable_coverage","approved_mode_eligible":"true"},
+    {"period":"2024-02-01","reference_period":"2016-01-01","consensus_index":"410","factor_period_to_reference":str(100/410),"factor_reference_to_period":"4.1","coverage_class":"acceptable_coverage","approved_mode_eligible":"true"},
+    {"period":"2024-03-01","reference_period":"2016-01-01","consensus_index":"420","factor_period_to_reference":str(100/420),"factor_reference_to_period":"4.2","coverage_class":"acceptable_coverage","approved_mode_eligible":"true"},
+])
+v2_manifest={"schema":"research-artifact-manifest/v1","artifact_type":"research.argentina-monetary-conversion/v1","release_id":"fixture-v2-conversion-candidate","status":"candidate","method_id":"research.argentina-price-consensus/curated-official-panel-v2","monetary_reference_id":"research.argentina-price-consensus/curated-official-panel-v2@2016-01=100","warnings":["fixture provenance warning"],"files":[identity(conversion)]}
+(v2/"manifest.json").write_text(json.dumps(v2_manifest,indent=2,sort_keys=True)+"\n")
 print(FIX)

@@ -40,9 +40,9 @@ jobs:
           {
             echo "## Scheduled basket source probe"
             echo
-            echo "This job performs one exact discovery/download/parse pass and preserves the resulting `run/` directory as a relocatable evidence bundle. It avoids probing and then downloading a potentially changed dynamic source again."
+            echo 'This job performs one exact discovery/download/parse pass and preserves the resulting run/ directory as a relocatable evidence bundle. It avoids probing and then downloading a potentially changed dynamic source again.'
             echo
-            echo "Candidate basket production still requires one exact immutable IPC price release; that cross-repo distribution boundary is intentionally not guessed here."
+            echo 'Candidate basket production still requires one exact immutable IPC price release; that cross-repo distribution boundary is intentionally not guessed here.'
             echo
             echo '```text'
             find run artifacts build -maxdepth 4 -type f -printf '%p\n' 2>/dev/null | sort | head -200 || true
