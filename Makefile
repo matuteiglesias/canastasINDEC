@@ -45,11 +45,11 @@ basket-source-lock:
 	rm -rf "$(BASKET_SOURCE_SNAPSHOTS)" "$(BASKET_SOURCE_RUNTIME_LOCK)" "$(SOURCE_LOCK)"
 	mkdir -p "$$(dirname "$(SOURCE_LOCK)")"
 	$(PY) -m basket_release source-lock --cache "$(BASKET_SOURCE_SNAPSHOTS)" --lock "$(BASKET_SOURCE_RUNTIME_LOCK)"
-	$(PY) scripts/portable_source_lock.py export --runtime "$(BASKET_SOURCE_RUNTIME_LOCK)" --output "$(SOURCE_LOCK)"
+	PYTHONPATH=. $(PY) scripts/portable_source_lock.py export --runtime "$(BASKET_SOURCE_RUNTIME_LOCK)" --output "$(SOURCE_LOCK)"
 	rm -f "$(BASKET_SOURCE_RUNTIME_LOCK)"
 
 basket-source-lock-check:
-	$(PY) scripts/portable_source_lock.py check --lock "$(SOURCE_LOCK)"
+	PYTHONPATH=. $(PY) scripts/portable_source_lock.py check --lock "$(SOURCE_LOCK)"
 
 basket-candidate:
 	@test -n "$(PRICE_RELEASE)" || (echo "PRICE_RELEASE is required; SOURCE_LOCK defaults to $(SOURCE_LOCK)" >&2; exit 2)
