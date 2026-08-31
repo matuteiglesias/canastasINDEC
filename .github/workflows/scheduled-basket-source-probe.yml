@@ -28,10 +28,7 @@ jobs:
       - name: Verify committed snapshot
         run: make check
 
-      - name: Probe official basket source distributions
-        run: make basket-source-probe
-
-      - name: Lock currently available source bytes
+      - name: Discover, parse and lock official source bytes once
         run: make basket-source-lock
 
       - name: Verify exact relocatable source lock
@@ -43,7 +40,7 @@ jobs:
           {
             echo "## Scheduled basket source probe"
             echo
-            echo "This job exercises and verifies the source side of the governed basket path. The uploaded `run/` directory is one relocatable evidence bundle: its source lock names snapshots relative to itself."
+            echo "This job performs one exact discovery/download/parse pass and preserves the resulting `run/` directory as a relocatable evidence bundle. It avoids probing and then downloading a potentially changed dynamic source again."
             echo
             echo "Candidate basket production still requires one exact immutable IPC price release; that cross-repo distribution boundary is intentionally not guessed here."
             echo
