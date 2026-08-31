@@ -42,7 +42,8 @@ class IpcV2HandoffTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             copied=Path(tmp)/"price"; shutil.copytree(FIX/"price_release_v2",copied)
             table=copied/"monthly_conversion_factors.csv"
-            rows=list(csv.DictReader(table.open()))
+            with table.open(newline="",encoding="utf-8") as handle:
+                rows=list(csv.DictReader(handle))
             rows[-1]["approved_mode_eligible"]="false"; rows[-1]["coverage_class"]="thin_coverage"
             with table.open("w",newline="",encoding="utf-8") as handle:
                 writer=csv.DictWriter(handle,fieldnames=rows[0],lineterminator="\n"); writer.writeheader(); writer.writerows(rows)
@@ -51,6 +52,33 @@ class IpcV2HandoffTests(unittest.TestCase):
             (copied/"manifest.json").write_text(json.dumps(manifest,indent=2,sort_keys=True)+"\n")
             with self.assertRaisesRegex(BuildError,"price_period_not_approved_mode_eligible"):
                 load_v2_price_release(copied,{"2024-03-01"})
+
+    def test_thin_price_period_is_explicitly_preserved_in_candidate_provenance(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp); copied=root/"price"; shutil.copytree(FIX/"price_release_v2",copied)
+            table=copied/"monthly_conversion_factors.csv"
+            with table.open(newline="",encoding="utf-8") as handle:
+                rows=list(csv.DictReader(handle))
+            rows[-1]["approved_mode_eligible"]="false"; rows[-1]["coverage_class"]="thin_coverage"
+            with table.open("w",newline="",encoding="utf-8") as handle:
+                writer=csv.DictWriter(handle,fieldnames=rows[0],lineterminator="\n"); writer.writeheader(); writer.writerows(rows)
+            manifest=json.loads((copied/"manifest.json").read_text())
+            manifest["files"][0]={"path":table.name,"size":table.stat().st_size,"sha256":hashlib.sha256(table.read_bytes()).hexdigest()}
+            (copied/"manifest.json").write_text(json.dumps(manifest,indent=2,sort_keys=True)+"\n")
+
+            release,_=build_v2(
+                FIX/"source_lock.json",
+                copied,
+                root/"releases",
+                allow_thin_price_coverage=True,
+            )
+            result=validate_v2_candidate(release)
+            candidate=json.loads((release/"manifest.json").read_text())
+            dependency=candidate["price_dependency"]
+            self.assertIn("thin_price_coverage_accepted_for_candidate",result["warnings"])
+            self.assertEqual(dependency["thin_coverage_periods_used"],["2024-03-01"])
+            self.assertEqual(dependency["eligibility_mode"],"candidate_allow_thin")
+            self.assertIn("2024-03-01",(release/"limitations.md").read_text())
 
     def test_v2_builder_consumes_relocated_portable_source_lock(self):
         with tempfile.TemporaryDirectory() as tmp:
