@@ -34,25 +34,30 @@ jobs:
       - name: Lock currently available source bytes
         run: make basket-source-lock
 
+      - name: Verify exact source lock
+        run: make basket-source-lock-check SOURCE_LOCK=run/source_lock.json
+
       - name: Summarize source-side maintenance state
         if: always()
         run: |
           {
             echo "## Scheduled basket source probe"
             echo
-            echo "This job exercises the source side of the governed basket path. Candidate basket production still requires one exact immutable IPC price release; that cross-repo distribution boundary is intentionally not guessed here."
+            echo "This job exercises and verifies the source side of the governed basket path. Candidate basket production still requires one exact immutable IPC price release; that cross-repo distribution boundary is intentionally not guessed here."
             echo
             echo '```text'
-            find artifacts build -maxdepth 4 -type f -printf '%p\n' 2>/dev/null | sort | head -150 || true
+            find run .cache/basket_sources artifacts build -maxdepth 4 -type f -printf '%p\n' 2>/dev/null | sort | head -200 || true
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
 
-      - name: Upload source-lock evidence
+      - name: Upload exact source-lock evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: basket-source-lock-candidate
           path: |
+            run/source_lock.json
+            .cache/basket_sources
             artifacts
             build
           if-no-files-found: warn
