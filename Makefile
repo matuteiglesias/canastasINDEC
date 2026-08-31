@@ -1,4 +1,7 @@
 PY ?= python3
+SOURCE_LOCK ?= run/source_lock.json
+BASKET_SOURCE_RUNTIME_LOCK ?= run/source_lock.runtime.json
+BASKET_SOURCE_SNAPSHOTS ?= run/source_snapshots
 
 .PHONY: help check smoke regenerate release-fixture release-check basket-lineage-report basket-source-probe basket-source-lock basket-source-lock-check basket-candidate basket-candidate-check basket-candidate-smoke poverty-basket-2024q1 poverty-basket-2024q1-check candidate-fixtures
 
@@ -12,7 +15,7 @@ help:
 	@echo "  make release-check         Validate the synthetic release and negative case"
 	@echo "  make basket-lineage-report Report committed lineage/status counts offline"
 	@echo "  make basket-source-probe    Probe both official source distributions"
-	@echo "  make basket-source-lock     Download and pin both official sources"
+	@echo "  make basket-source-lock     Download and pin both official sources into one relocatable lock bundle"
 	@echo "  make basket-candidate       Build from SOURCE_LOCK and copied PRICE_RELEASE"
 	@echo "  make basket-candidate-check Validate RELEASE_DIR offline"
 	@echo ""
@@ -37,13 +40,17 @@ basket-source-probe:
 	$(PY) -m basket_release source-probe
 
 basket-source-lock:
-	$(PY) -m basket_release source-lock
+	rm -rf "$(BASKET_SOURCE_SNAPSHOTS)" "$(BASKET_SOURCE_RUNTIME_LOCK)" "$(SOURCE_LOCK)"
+	mkdir -p "$$(dirname "$(SOURCE_LOCK)")"
+	$(PY) -m basket_release source-lock --cache "$(BASKET_SOURCE_SNAPSHOTS)" --lock "$(BASKET_SOURCE_RUNTIME_LOCK)"
+	$(PY) scripts/portable_source_lock.py export --runtime "$(BASKET_SOURCE_RUNTIME_LOCK)" --output "$(SOURCE_LOCK)"
+	rm -f "$(BASKET_SOURCE_RUNTIME_LOCK)"
 
 basket-source-lock-check:
-	$(PY) -m basket_release source-lock-check $(SOURCE_LOCK)
+	$(PY) scripts/portable_source_lock.py check --lock "$(SOURCE_LOCK)"
 
 basket-candidate:
-	@test -n "$(SOURCE_LOCK)" -a -n "$(PRICE_RELEASE)" || (echo "SOURCE_LOCK and copied immutable PRICE_RELEASE are required" >&2; exit 2)
+	@test -n "$(PRICE_RELEASE)" || (echo "PRICE_RELEASE is required; SOURCE_LOCK defaults to $(SOURCE_LOCK)" >&2; exit 2)
 	$(PY) -m basket_release build --source-lock $(SOURCE_LOCK) --price-release $(PRICE_RELEASE)
 
 basket-candidate-check:
