@@ -8,10 +8,28 @@ from pathlib import Path
 
 from .core import BuildError, parse_source, registry_sources, sha
 
+ROOT=Path(__file__).parents[1]
+
 
 def _inside(base: Path, path: Path) -> bool:
     base=base.resolve(); path=path.resolve()
     return path==base or base in path.parents
+
+
+def _resolve_snapshot(lock_base: Path, declared: Path) -> Path:
+    if declared.is_absolute():
+        return declared.resolve()
+    portable=(lock_base/declared).resolve()
+    if not _inside(lock_base,portable):
+        raise BuildError("unsafe_source_snapshot_path")
+    if portable.is_file():
+        return portable
+    # Backward compatibility for committed pre-portable fixtures whose paths
+    # were written relative to the repository root rather than to their lock.
+    legacy=(ROOT/declared).resolve()
+    if _inside(ROOT,legacy) and legacy.is_file():
+        return legacy
+    return portable
 
 
 def load_portable_locked_sources(lock_path: Path) -> tuple[dict,list[dict]]:
@@ -19,15 +37,12 @@ def load_portable_locked_sources(lock_path: Path) -> tuple[dict,list[dict]]:
     lock=json.loads(lock_path.read_text(encoding="utf-8")); all_rows=[]
     if {s.get("distribution_id") for s in lock.get("snapshots",[])} != {"445.1","446.1"}:
         raise BuildError("unparseable_pinned_source: lock must contain 445.1 and 446.1")
-    specs={s["source_id"]:s for s in registry_sources(Path(__file__).parents[1]/"contracts/source_registry.json")}
+    specs={s["source_id"]:s for s in registry_sources(ROOT/"contracts/source_registry.json")}
     for snap in lock["snapshots"]:
-        declared=Path(snap["cache_file"])
-        if declared.is_absolute():
-            path=declared.resolve()
-        else:
-            path=(base/declared).resolve()
-            if not _inside(base,path):
-                raise BuildError(f"unsafe_source_snapshot_path: {snap['source_id']}")
+        try:
+            path=_resolve_snapshot(base,Path(snap["cache_file"]))
+        except BuildError as exc:
+            raise BuildError(f"unsafe_source_snapshot_path: {snap['source_id']}") from exc
         if not path.is_file():
             raise BuildError(f"source_checksum_mismatch: {snap['source_id']}")
         data=path.read_bytes()
