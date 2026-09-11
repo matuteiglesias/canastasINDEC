@@ -1,0 +1,85 @@
+{
+  "accepted": {
+    "canonical_csv_sha256": "4a33ec1d33a764d4776327cb588d98361ecb9145855fdfd09e2c15b6957ebcdc",
+    "manifest": null,
+    "path": "data/CB_Reg_defl_Q.csv",
+    "period_values": {
+      "cuyo": {
+        "CBA": "1387.67136423996",
+        "CBT": "3297.8749473442062"
+      },
+      "gran_buenos_aires": {
+        "CBA": "1557.5378513905534",
+        "CBT": "3478.3469941954804"
+      },
+      "noreste": {
+        "CBA": "1389.7243241937279",
+        "CBT": "2899.7131015315513"
+      },
+      "noroeste": {
+        "CBA": "1356.8149250192644",
+        "CBT": "2813.0221117412"
+      },
+      "pampeana": {
+        "CBA": "1539.2309177268899",
+        "CBT": "3437.471135563215"
+      },
+      "patagonia": {
+        "CBA": "1603.9559492168426",
+        "CBT": "4063.2304605562263"
+      }
+    },
+    "sha256": "114efe353c98bd875bfef882d13a636df32ab92c930c985fe967062d6d0cb002"
+  },
+  "candidate": {
+    "canonical_csv_sha256": "09a3270412bdb9ab710c1f4da6ce5d72ded0255237ad5a8293c857449a8808b2",
+    "manifest": null,
+    "path": "/tmp/tmp.7GXzTRaOkx.csv",
+    "period_values": {
+      "cuyo": {
+        "CBA": "1387.67136423996",
+        "CBT": "3297.8749473442062"
+      },
+      "gran_buenos_aires": {
+        "CBA": "1557.5378513905534",
+        "CBT": "3478.3469941954804"
+      },
+      "noreste": {
+        "CBA": "1389.7243241937279",
+        "CBT": "2899.7131015315513"
+      },
+      "noroeste": {
+        "CBA": "1356.8149250192644",
+        "CBT": "2813.0221117412"
+      },
+      "pampeana": {
+        "CBA": "1539.2309177268899",
+        "CBT": "3437.471135563215"
+      },
+      "patagonia": {
+        "CBA": "1603.9559492168426",
+        "CBT": "4063.2304605562263"
+      }
+    },
+    "sha256": "ff417dd9b116b6d9bff7e3529d74c59a00c7c6a93de7c2f23505458b9911a73a"
+  },
+  "classification": "C",
+  "classification_label": "scientifically_equivalent_target_values_different_parent_or_broader_artifact",
+  "comparison": {
+    "canonical_full_csv_equal": false,
+    "manifest_differences": [],
+    "raw_bytes_equal": false,
+    "target_period_values_equal": true,
+    "target_value_differences": []
+  },
+  "decision_rule": {
+    "A": "full scientific table equal after harmless serialization normalization",
+    "B": "full scientific table equal; supplied lineage metadata differs",
+    "C": "target-period six-region CBA/CBT values equal; broader artifact or lineage differs",
+    "D": "target-period CBA/CBT values differ"
+  },
+  "next_action": "target-period poverty input is scientifically equivalent, but preserve both parent identities and document lineage",
+  "period": "2024-Q3",
+  "promotion_authorized": false,
+  "schema": "research.basket-lineage-comparison/v1"
+}
