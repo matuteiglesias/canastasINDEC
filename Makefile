@@ -83,7 +83,8 @@ engel-paths-commission:
 	@test -n "$(RELEASE_DIR)" || (echo "RELEASE_DIR is required" >&2; exit 2)
 	$(PY) -m basket_release.engel commission-paths \
 	  --release "$(RELEASE_DIR)" \
-	  --output "$(ENGEL_PATH_COMMISSION_OUTPUT)"
+	  --output "$(ENGEL_PATH_COMMISSION_OUTPUT)" \
+	  --benchmarks "$(ENGEL_BENCHMARKS)"
 
 release-fixture:
 	$(PY) scripts/build_fixture_release.py
