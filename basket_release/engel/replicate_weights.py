@@ -90,7 +90,11 @@ def bootstrap_diagnostics(
     reference_population_shares = []
     for weights in maps:
         rep_households = _households_with_weight(household_rows, weights)
-        selection = select_reference_population(rep_households, weight_field="__replicate_weight")
+        selection = select_reference_population(
+            rep_households,
+            weight_field="__replicate_weight",
+            allow_zero_weight=True,
+        )
         reference_population_shares.append(selection["selected_weight_share"])
         structure = aggregate_structure(selection["selected"], profiles)
         for region, row in structure.items():
