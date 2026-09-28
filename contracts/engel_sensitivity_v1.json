@@ -6,7 +6,7 @@
   "parents": {
     "engho_reference": {
       "artifact_type": "research.argentina-engel-reference-structure/v1",
-      "method_id": "research.argentina-engel-reference-structure/engho-2017-18-p29-p48-v1"
+      "method_id": "research.argentina-engel-reference-structure/engho-2017-18-p29-p48-signed-sales-v2"
     },
     "regional_ipc": {
       "artifact_type": "publicdata.indec-ipc-regional-divisions/v1",
