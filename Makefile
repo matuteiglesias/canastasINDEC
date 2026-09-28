@@ -7,8 +7,13 @@ ENGHO_UPSTREAM_RECEIPT ?=
 ENGEL_REFERENCE_OUTPUT ?= artifacts/engel_reference
 ENGEL_COMMISSION_OUTPUT ?= artifacts/engel_commissioning
 ENGEL_BENCHMARKS ?= science/engel_commissioning/benchmarks/registry.json
+ENGEL_REFERENCE_RELEASE ?=
+ENGEL_IPC_RELEASE ?=
+ENGEL_OFFICIAL_BASKET_RELEASE ?=
+ENGEL_SENSITIVITY_OUTPUT ?= artifacts/engel_sensitivity
+ENGEL_PATH_COMMISSION_OUTPUT ?= artifacts/engel_path_commissioning
 
-.PHONY: help check smoke regenerate release-fixture release-check basket-lineage-report basket-source-probe basket-source-lock basket-source-lock-check basket-candidate basket-candidate-check basket-candidate-smoke basket-candidate-v2 basket-candidate-v2-check poverty-basket-2024q1 poverty-basket-2024q1-check poverty-basket-2024q1-v2 poverty-basket-2024q1-v2-check candidate-fixtures engel-reference-test engel-reference-build engel-reference-check engel-reference-commission
+.PHONY: help check smoke regenerate release-fixture release-check basket-lineage-report basket-source-probe basket-source-lock basket-source-lock-check basket-candidate basket-candidate-check basket-candidate-smoke basket-candidate-v2 basket-candidate-v2-check poverty-basket-2024q1 poverty-basket-2024q1-check poverty-basket-2024q1-v2 poverty-basket-2024q1-v2-check candidate-fixtures engel-reference-test engel-reference-build engel-reference-check engel-reference-commission engel-phase-b-test engel-paths-build engel-paths-check engel-paths-commission
 
 help:
 	@echo "canastasINDEC command surface"
@@ -29,12 +34,16 @@ help:
 	@echo "  make engel-reference-build  Build Artifact A from immutable ENGHO_RELEASE"
 	@echo "  make engel-reference-check  Validate RELEASE_DIR as Artifact A"
 	@echo "  make engel-reference-commission Run G1-G4 commissioning on RELEASE_DIR"
+	@echo "  make engel-phase-b-test     Run full-window synthetic Phase-B tests"
+	@echo "  make engel-paths-build      Build Artifact B from frozen reference + IPC + official basket parents"
+	@echo "  make engel-paths-check      Validate RELEASE_DIR as Artifact B"
+	@echo "  make engel-paths-commission Run P/A/M/G5 commissioning on Artifact B"
 	@echo ""
 	@echo "Regeneration depends on IPC-Argentina and external source compatibility."
 
 check:
 	$(PY) scripts/verify_snapshot.py
-	PYTHONPATH=.:tests $(PY) -m unittest discover -s tests -p 'test_engel_reference.py' -v
+	PYTHONPATH=.:tests $(PY) -m unittest discover -s tests -p 'test_engel*.py' -v
 
 smoke: check
 
@@ -52,6 +61,30 @@ engel-reference-check:
 engel-reference-commission:
 	@test -n "$(RELEASE_DIR)" || (echo "RELEASE_DIR is required" >&2; exit 2)
 	$(PY) -m basket_release.engel commission-reference --release "$(RELEASE_DIR)" --output "$(ENGEL_COMMISSION_OUTPUT)" --benchmarks "$(ENGEL_BENCHMARKS)"
+
+engel-phase-b-test:
+	PYTHONPATH=.:tests $(PY) -m unittest discover -s tests -p 'test_engel_phase_b.py' -v
+
+engel-paths-build:
+	@test -n "$(ENGEL_REFERENCE_RELEASE)" || (echo "ENGEL_REFERENCE_RELEASE is required" >&2; exit 2)
+	@test -n "$(ENGEL_IPC_RELEASE)" || (echo "ENGEL_IPC_RELEASE is required" >&2; exit 2)
+	@test -n "$(ENGEL_OFFICIAL_BASKET_RELEASE)" || (echo "ENGEL_OFFICIAL_BASKET_RELEASE is required" >&2; exit 2)
+	$(PY) -m basket_release.engel build-paths \
+	  --reference-release "$(ENGEL_REFERENCE_RELEASE)" \
+	  --ipc-release "$(ENGEL_IPC_RELEASE)" \
+	  --official-basket-release "$(ENGEL_OFFICIAL_BASKET_RELEASE)" \
+	  --output "$(ENGEL_SENSITIVITY_OUTPUT)"
+
+engel-paths-check:
+	@test -n "$(RELEASE_DIR)" || (echo "RELEASE_DIR is required" >&2; exit 2)
+	$(PY) -m basket_release.engel validate-paths "$(RELEASE_DIR)"
+
+engel-paths-commission:
+	@test -n "$(RELEASE_DIR)" || (echo "RELEASE_DIR is required" >&2; exit 2)
+	$(PY) -m basket_release.engel commission-paths \
+	  --release "$(RELEASE_DIR)" \
+	  --output "$(ENGEL_PATH_COMMISSION_OUTPUT)" \
+	  --benchmarks "$(ENGEL_BENCHMARKS)"
 
 release-fixture:
 	$(PY) scripts/build_fixture_release.py

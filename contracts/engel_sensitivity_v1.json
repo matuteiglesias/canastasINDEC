@@ -1,0 +1,83 @@
+{
+  "schema_version": 1,
+  "artifact_type": "research.argentina-regional-baskets-engel-sensitivity/v1",
+  "method_id": "research.argentina-regional-baskets-engel-sensitivity/engho17-fixed-base-regional-ipc-v1",
+  "status": "candidate",
+  "parents": {
+    "engho_reference": {
+      "artifact_type": "research.argentina-engel-reference-structure/v1",
+      "method_id": "research.argentina-engel-reference-structure/engho-2017-18-p29-p48-v1"
+    },
+    "regional_ipc": {
+      "artifact_type": "publicdata.indec-ipc-regional-divisions/v1",
+      "required_index_base": "2016-12=100",
+      "required_value_status": "direct_official_observation"
+    },
+    "official_baskets": {
+      "artifact_type": "research.argentina-regional-baskets/v1",
+      "method_id": "research.argentina-regional-baskets/source-observed-plus-price-consensus-v2"
+    }
+  },
+  "base_period": "2018-05-01",
+  "required_window": {
+    "start": "2018-05-01",
+    "end": "2025-12-01"
+  },
+  "regions": [
+    "gran_buenos_aires",
+    "pampeana",
+    "noreste",
+    "noroeste",
+    "cuyo",
+    "patagonia"
+  ],
+  "division_ids": [
+    "coicop01", "coicop02", "coicop03", "coicop04", "coicop05", "coicop06",
+    "coicop07", "coicop08", "coicop09", "coicop10", "coicop11", "coicop12"
+  ],
+  "price_mapping": {
+    "total_expenditure": "each frozen Phase-A COICOP division share uses its same-id regional IPC division",
+    "food": {
+      "coicop01": "priced with coicop01",
+      "alcoholic_beverages_021": "food under frozen Artifact-A rule; priced with coicop02",
+      "tobacco_022": "non-food; priced with coicop02",
+      "restaurants_111": "non-food; priced with coicop11"
+    },
+    "shared_price_approximations": [
+      "COICOP02 does not separately price alcoholic beverages and tobacco",
+      "COICOP11 does not separately price restaurants and hotels"
+    ],
+    "unknown_unpriced_mass": "forbidden"
+  },
+  "identities": {
+    "ICE_official": "CBT_official / CBA_official",
+    "food_cost_t": "share_coicop01 * relative_price_coicop01 + share_alcohol021 * relative_price_coicop02",
+    "total_cost_t": "sum_d share_d * relative_price_d",
+    "food_share_t": "food_cost_t / total_cost_t",
+    "ICE_engho17_t": "total_cost_t / food_cost_t",
+    "level_factor_r": "ICE_engho17_r,b / ICE_official_r,b",
+    "trajectory_factor_r,t": "(ICE_engho17_r,t / ICE_engho17_r,b) / (ICE_official_r,t / ICE_official_r,b)",
+    "full_factor_r,t": "level_factor_r * trajectory_factor_r,t",
+    "CBT_engho17_r,t": "CBA_official_r,t * ICE_engho17_r,t",
+    "CBT_level_only_r,t": "CBT_official_r,t * level_factor_r",
+    "CBT_level_plus_trajectory_r,t": "CBT_official_r,t * full_factor_r"
+  },
+  "line_path_ids": [
+    "official",
+    "engho17_level_only",
+    "engho17_level_plus_trajectory"
+  ],
+  "forbidden": [
+    "network retrieval",
+    "interpolation",
+    "reference-population recomputation",
+    "article reclassification",
+    "CBA modification",
+    "adult-equivalence calculation",
+    "poverty calculation",
+    "EPH loading",
+    "Census inference",
+    "province or department estimation",
+    "Atlas update"
+  ]
+}

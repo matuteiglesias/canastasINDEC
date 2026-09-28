@@ -9,6 +9,8 @@ from pathlib import Path
 from basket_release.core import BuildError
 from .artifact import build_reference_artifact, validate_reference_artifact
 from .commissioning import commission_reference_artifact
+from .phase_b_artifact import build_sensitivity_artifact, validate_sensitivity_artifact
+from .phase_b_commissioning import commission_sensitivity_artifact
 
 
 def parser() -> argparse.ArgumentParser:
@@ -28,6 +30,20 @@ def parser() -> argparse.ArgumentParser:
     commission.add_argument("--output", type=Path, required=True)
     commission.add_argument("--benchmarks", type=Path)
 
+    paths = sub.add_parser("build-paths", help="build Artifact B Engel level/trajectory threshold paths")
+    paths.add_argument("--reference-release", type=Path, required=True)
+    paths.add_argument("--ipc-release", type=Path, required=True)
+    paths.add_argument("--official-basket-release", type=Path, required=True)
+    paths.add_argument("--output", type=Path, default=Path("artifacts/engel_sensitivity"))
+
+    validate_paths = sub.add_parser("validate-paths", help="validate Artifact B")
+    validate_paths.add_argument("release", type=Path)
+
+    commission_paths = sub.add_parser("commission-paths", help="run Phase-B P/A/M/G5 commissioning")
+    commission_paths.add_argument("--release", type=Path, required=True)
+    commission_paths.add_argument("--output", type=Path, required=True)
+    commission_paths.add_argument("--benchmarks", type=Path)
+
     return p
 
 
@@ -43,9 +59,28 @@ def main(argv=None) -> int:
         }
     elif args.command == "validate-reference":
         result = validate_reference_artifact(args.release)
-    else:
+    elif args.command == "commission-reference":
         result = {
             "commissioning": str(commission_reference_artifact(
+                args.release,
+                args.output,
+                benchmark_registry=args.benchmarks,
+            ))
+        }
+    elif args.command == "build-paths":
+        result = {
+            "release": str(build_sensitivity_artifact(
+                args.reference_release,
+                args.ipc_release,
+                args.official_basket_release,
+                args.output,
+            ))
+        }
+    elif args.command == "validate-paths":
+        result = validate_sensitivity_artifact(args.release)
+    else:
+        result = {
+            "commissioning": str(commission_sensitivity_artifact(
                 args.release,
                 args.output,
                 benchmark_registry=args.benchmarks,

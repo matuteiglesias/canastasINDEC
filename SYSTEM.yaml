@@ -9,7 +9,7 @@ system: argentina-poverty
 role: poverty-threshold-input-and-engel-research-producer
 lifecycle: active-maintenance
 authority:
-  status: current-basket-candidate-authority-plus-diagnostic-engel-phase-a
+  status: current-basket-candidate-authority-plus-diagnostic-engel-phase-a-b
   owns:
   - exact official regional CBA/CBT source locks and provenance
   - six source-native basket/threshold-area identities
@@ -17,23 +17,27 @@ authority:
   - governed basket candidate construction, validation and quarter slicing
   - exact monetary-conversion parent lineage
   - experimental ENGHo reference-population expenditure structure and base Engel diagnostics
+  - experimental ENGHo fixed-base regional IPC level/trajectory threshold sensitivity and commissioning diagnostics
   does_not_own:
   - official CBA/CBT publication authority
   - raw ENGHo microdata custody
   - monetary-reference or IPC methodology
   - province/department to threshold-area geographic membership
   - poverty method, adult equivalence, classification or FGT
-  - Phase-B price trajectories until separately commissioned
+  - promotion of ENGHo sensitivity thresholds to official or production poverty thresholds
 interfaces:
   consumes:
   - artifact:research.argentina-monetary-conversion/v1
     producer: repo.ipc-argentina
   - artifact:publicdata.indec-engho-microdata/v1
     producer: repo.microdatos-eph-indec
+  - artifact:publicdata.indec-ipc-regional-divisions/v1
+    producer: repo.ipc-argentina
   produces:
   - artifact:research.argentina-regional-baskets/v1
   - artifact:research.argentina-regional-baskets-poverty-input/v1
   - artifact:research.argentina-engel-reference-structure/v1
+  - artifact:research.argentina-regional-baskets-engel-sensitivity/v1
   - artifact:publicdata.regional-baskets-derived@1 (legacy compatibility)
 upstream:
 - repo.ipc-argentina
@@ -50,13 +54,17 @@ canonical_commands:
 - make engel-reference-build
 - make engel-reference-check
 - make engel-reference-commission
+- make engel-phase-b-test
+- make engel-paths-build
+- make engel-paths-check
+- make engel-paths-commission
 generated_paths:
 - artifacts/
 - build/
 - run/
 - data/ (legacy)
 verification:
-  status: phase-a-cloud-contract-implemented-real-engel-run-pending
+  status: phase-a-b-cloud-contracts-implemented-real-engel-runs-pending
   last_verified: '2026-09-28'
   notes:
   - exact official basket-source lock and relocatable verification remain unchanged
@@ -64,8 +72,13 @@ verification:
   - ENGHo/Engel Phase A is a separate candidate/diagnostic family
   - Phase A verifies immutable ENGHo parents, selects national weighted p29-p48, accounts expenditures, and implements INDEC replicate-weight diagnostics
   - Phase A never consumes IPC regional divisions or constructs a time-varying ICE/CBT
+  - Phase B consumes only frozen Artifact A, direct official regional-division IPC, and observed nominal basket evidence
+  - Phase B requires the complete 2018-05 through 2025-12 six-region/twelve-division rectangle and performs no interpolation
+  - Phase B exposes separate level-only and level-plus-trajectory line paths, division contributions, and P/A/M/G5 commissioning
+  - official CBA remains unchanged and no poverty operation is performed
   unknowns:
-  - real Phase-A ENGHo/Engel commissioning remains to be executed after cloud implementation
+  - real Phase-A ENGHo/Engel commissioning remains to be executed locally
+  - real Phase-B Artifact B and G5 commissioning remain to be executed locally after Artifact A materialization
   - the current M1 real ENGHo persons-table count warning is lineage only because Phase A does not consume persons
   - durable child publication outside expiring Actions evidence remains tracked in issue #21
   - exact department_2010 to six-region geographic binding remains owned by argentina-geography issue #36
