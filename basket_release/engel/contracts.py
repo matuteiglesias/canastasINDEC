@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 ARTIFACT_TYPE = "research.argentina-engel-reference-structure/v1"
-METHOD_ID = "research.argentina-engel-reference-structure/engho-2017-18-p29-p48-v1"
+METHOD_ID = "research.argentina-engel-reference-structure/engho-2017-18-p29-p48-signed-sales-v2"
 PARENT_ARTIFACT_TYPE = "publicdata.indec-engho-microdata/v1"
 SURVEY_VINTAGE = "2017-2018"
 BASE_PERIOD = "2018-05"
@@ -18,6 +18,7 @@ ARTICLE_VARIABLE = "articulo"
 DIVISION_VARIABLE = "division"
 GROUP_VARIABLE = "grupo"
 IMPUTATION_VARIABLE = "r_imputado"
+NEGATIVE_EXPENDITURE_POLICY = "preserve_signed_sales"
 
 PERCENTILE_LOW = "0.29"
 PERCENTILE_HIGH = "0.48"
