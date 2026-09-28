@@ -91,9 +91,41 @@ def build_article_mapping(article_rows: list[dict[str, str]]) -> dict[str, dict]
     return mapping
 
 
+def _classification_from_hierarchy(code: str, raw_division: str, raw_group: str) -> dict:
+    division = normalize_division(raw_division)
+    group = normalize_group(raw_group, division)
+    division_id = f"coicop{division}"
+    is_alcohol = group == ALCOHOLIC_BEVERAGE_GROUP
+    is_tobacco = group == TOBACCO_GROUP
+    is_restaurant = group == RESTAURANT_GROUP
+    is_hotel = group == HOTEL_GROUP
+    is_food = division == "01" or is_alcohol
+    if is_tobacco or is_restaurant:
+        is_food = False
+    return {
+        "article_code": code,
+        "division_code": division,
+        "division_id": division_id,
+        "group_code": group,
+        "food": is_food,
+        "alcoholic_beverage": is_alcohol,
+        "tobacco": is_tobacco,
+        "restaurant": is_restaurant,
+        "hotel": is_hotel,
+        "article_desc": "",
+        "division_desc": "",
+        "group_desc": "",
+        "article_mapping_fallback": True,
+    }
+
+
 def classify_expenditure_row(row: dict[str, str], mapping: dict[str, dict]) -> dict:
     code = str(row.get(ARTICLE_VARIABLE, "")).strip()
     if code not in mapping:
+        raw_division = str(row.get(DIVISION_VARIABLE, "") or "").strip()
+        raw_group = str(row.get(GROUP_VARIABLE, "") or "").strip()
+        if raw_division and raw_group:
+            return _classification_from_hierarchy(code, raw_division, raw_group)
         raise BuildError(f"unknown_article_code: {code!r}")
     article = mapping[code]
     # Expenditure rows themselves carry hierarchy fields in the official file.

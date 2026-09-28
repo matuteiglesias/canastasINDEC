@@ -249,6 +249,16 @@ def build_reference_artifact(
         (staging / "diagnostics.json").write_bytes(canonical_json(diagnostics))
 
         warnings = list(parent["warnings"])
+        if int(profile_diagnostics["negative_expenditure_rows"]) > 0:
+            warnings.append(
+                "negative_expenditure_rows_clipped_at_zero:"
+                + str(profile_diagnostics["negative_expenditure_rows"])
+            )
+        if int(profile_diagnostics["article_mapping_fallback_rows"]) > 0:
+            warnings.append(
+                "article_mapping_fallback_rows_from_expenditure_hierarchy:"
+                + str(profile_diagnostics["article_mapping_fallback_rows"])
+            )
         if bootstrap["number_of_replicates"] != bootstrap["expected_real_replicates"]:
             warnings.append("replicate_count_differs_from_real_engho_expected_200")
         qa = {
