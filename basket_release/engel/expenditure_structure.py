@@ -6,7 +6,7 @@ from decimal import Decimal, InvalidOperation
 
 from basket_release.core import BuildError
 from .article_classification import classify_expenditure_row
-from .contracts import DIVISION_IDS, IMPUTATION_VARIABLE
+from .contracts import DIVISION_IDS, IMPUTATION_VARIABLE, NEGATIVE_EXPENDITURE_POLICY
 from .reference_population import effective_sample_size
 
 
@@ -21,9 +21,8 @@ def _parsed_amount(value: str) -> Decimal:
 
 
 def _amount(value: str) -> Decimal:
-    """Return analysis amount; documented ENGHo sales are clipped to zero."""
-    amount = _parsed_amount(value)
-    return max(amount, Decimal(0))
+    """Return the source-semantic amount, preserving documented ENGHo sales."""
+    return _parsed_amount(value)
 
 
 def build_household_expenditure_profiles(
@@ -52,15 +51,13 @@ def build_household_expenditure_profiles(
         if classification.get("article_mapping_fallback"):
             article_mapping_fallback_rows += 1
         parsed_amount = _parsed_amount(row.get("monto", ""))
-        amount = max(parsed_amount, Decimal(0))
+        amount = parsed_amount
         mapped_rows += 1
         if amount == 0:
             zero_amount_rows += 1
         if amount < 0:
             negative_amount_rows += 1
-        if parsed_amount < 0:
-            negative_amount_rows += 1
-            negative_amount_total += parsed_amount
+            negative_amount_total += amount
         profile = profiles.setdefault(
             household_id,
             {
@@ -123,6 +120,8 @@ def build_household_expenditure_profiles(
             raise BuildError(f"division_reconciliation_failure: {household_id}")
 
     raw_total = observed_amount + imputed_amount
+    negative_sales_absolute_total = -negative_amount_total
+    purchase_only_counterfactual_total = raw_total + negative_sales_absolute_total
     diagnostics = {
         "input_expenditure_rows": len(expenditure_rows),
         "mapped_expenditure_rows": mapped_rows,
@@ -138,7 +137,13 @@ def build_household_expenditure_profiles(
         "article_mapping_fallback_rows": article_mapping_fallback_rows,
         "negative_expenditure_rows": negative_amount_rows,
         "negative_expenditure_raw_total": negative_amount_total,
-        "negative_expenditure_policy": "clip_at_zero_with_warning",
+        "negative_sales_absolute_total": negative_sales_absolute_total,
+        "purchase_only_counterfactual_total": purchase_only_counterfactual_total,
+        "negative_sales_share_of_purchase_only_counterfactual": (
+            negative_sales_absolute_total / purchase_only_counterfactual_total
+            if purchase_only_counterfactual_total > 0 else Decimal(0)
+        ),
+        "negative_expenditure_policy": NEGATIVE_EXPENDITURE_POLICY,
     }
     return profiles, diagnostics
 
@@ -220,6 +225,8 @@ def selected_accounting(
     divisions = defaultdict(Decimal)
     restaurants = Decimal(0)
     tobacco = Decimal(0)
+    negative_rows = 0
+    negative_total = Decimal(0)
     for row in expenditure_rows:
         if str(row.get("id", "")).strip() not in selected_ids:
             continue
@@ -227,6 +234,9 @@ def selected_accounting(
         classification = classify_expenditure_row(row, article_mapping)
         mapped_rows += 1
         amount = _amount(row.get("monto", ""))
+        if amount < 0:
+            negative_rows += 1
+            negative_total += amount
         raw_total += amount
         divisions[classification["division_id"]] += amount
         if classification["food"]:
@@ -248,4 +258,7 @@ def selected_accounting(
         "division_residual": raw_total - sum(divisions.values(), Decimal(0)),
         "restaurant_expenditure": restaurants,
         "tobacco_expenditure": tobacco,
+        "negative_expenditure_rows": negative_rows,
+        "negative_expenditure_raw_total": negative_total,
+        "negative_expenditure_policy": NEGATIVE_EXPENDITURE_POLICY,
     }
