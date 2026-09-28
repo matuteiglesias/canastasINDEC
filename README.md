@@ -2,7 +2,7 @@
 
 `canastasINDEC` is the poverty ecosystem's producer for governed **CBA/CBT threshold inputs** derived from exact official regional basket sources. It also hosts a separate experimental ENGHo/Engel research surface; that surface does not change the incumbent basket candidate or Poverty-input semantics.
 
-> **Current state:** the modern v2 basket candidate path remains the current threshold-input authority. Separately, ENGHo/Engel **Phase A** implements `research.argentina-engel-reference-structure/v1`: a candidate/diagnostic p29–p48 reference expenditure structure with article accounting and replicate-weight uncertainty, but no price trajectory, alternative CBT or poverty calculation.
+> **Current state:** the modern v2 basket candidate path remains the current threshold-input authority. Separately, the ENGHo/Engel research surface now has two bounded candidate/diagnostic layers: **Artifact A** (`research.argentina-engel-reference-structure/v1`) freezes the p29–p48 expenditure structure; **Artifact B** (`research.argentina-regional-baskets-engel-sensitivity/v1`) combines that frozen structure with direct official regional-division IPC and observed official CBA/CBT to expose level-only and level+trajectory threshold sensitivities. Neither artifact authorizes poverty calculation.
 
 ## Modern threshold path
 
@@ -73,6 +73,55 @@ make engel-reference-commission \
 
 See [`docs/ENGEL_REFERENCE_PHASE_A.md`](docs/ENGEL_REFERENCE_PHASE_A.md).
 
+## Experimental ENGHo / Engel Phase B
+
+Phase B consumes only immutable copies of:
+
+```text
+Artifact A: research.argentina-engel-reference-structure/v1
+        +
+direct official publicdata.indec-ipc-regional-divisions/v1
+        +
+observed nominal research.argentina-regional-baskets/v1
+        ↓
+research.argentina-regional-baskets-engel-sensitivity/v1
+```
+
+The required window is May 2018 through December 2025. All six regions and all twelve COICOP divisions must be complete; missing cells, duplicate cells, non-official IPC statuses, wrong bases, or incompatible parent methods are hard failures. Canastas performs no network retrieval and no interpolation in this path.
+
+The price system holds the Phase-A expenditure structure fixed at May 2018. Total expenditure uses all twelve division shares. The frozen food block remains **COICOP01 + alcoholic beverages group 021**: COICOP01 uses the regional division-01 index, while alcoholic beverages use the broader division-02 index. Tobacco also uses division 02 but remains non-food. Restaurants remain non-food and use division 11. These shared-price approximations are explicit diagnostics, not hidden recodes.
+
+For each region, Phase B exposes:
+
+- the official inverse Engel coefficient `CBT_official / CBA_official`;
+- the ENGHo17 fixed-base price-evolved inverse Engel coefficient;
+- a **level factor** at May 2018;
+- a **trajectory factor** relative to that base;
+- a **full factor = level × trajectory**;
+- three long-form line paths: `official`, `engho17_level_only`, and `engho17_level_plus_trajectory`;
+- division-level price contributions for every region/month.
+
+The official CBA is copied unchanged into the diagnostic surface. Artifact B never constructs a new nutritional CBA.
+
+### Phase-B commands
+
+```bash
+make engel-phase-b-test
+
+make engel-paths-build \
+  ENGEL_REFERENCE_RELEASE=/path/to/artifact-a \
+  ENGEL_IPC_RELEASE=/path/to/indec-regional-division-release \
+  ENGEL_OFFICIAL_BASKET_RELEASE=/path/to/current-v2-basket-release
+
+make engel-paths-check RELEASE_DIR=/path/to/engel-sensitivity-...
+
+make engel-paths-commission \
+  RELEASE_DIR=/path/to/engel-sensitivity-... \
+  ENGEL_PATH_COMMISSION_OUTPUT=/tmp/engel-phase-b-commissioning
+```
+
+Commissioning implements cross-parent gate **P**, arithmetic gate **A**, price-mapping gate **M**, and observability suite **G5**. See [`science/engel_commissioning/PHASE_B.md`](science/engel_commissioning/PHASE_B.md).
+
 ## Authority boundary
 
 This repository owns:
@@ -83,7 +132,8 @@ This repository owns:
 - deterministic basket candidate construction and QA;
 - explicit monetary-parent lineage without reimplementing IPC methodology;
 - bounded quarter-specific threshold inputs for Poverty;
-- experimental ENGHo reference-population expenditure/Engel-base construction and its commissioning diagnostics.
+- experimental ENGHo reference-population expenditure/Engel-base construction and its commissioning diagnostics;
+- experimental fixed-base regional IPC Engel level/trajectory sensitivity paths and their P/A/M/G5 diagnostics.
 
 It does **not** own:
 
@@ -92,7 +142,8 @@ It does **not** own:
 - ENGHo raw-microdata custody (`microdatos-EPH-INDEC`);
 - department/province → threshold-area membership (`argentina-geography`);
 - poverty classification, adult equivalence or FGT (`indice-pobreza-UBA`);
-- Census sampling or welfare inference.
+- Census sampling or welfare inference;
+- any promotion of ENGHo sensitivity lines to official or production poverty thresholds.
 
 The Phase-A Engel artifact is not an official poverty basket and has no downstream authorization by itself.
 
