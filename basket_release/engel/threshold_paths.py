@@ -64,6 +64,7 @@ def build_threshold_paths(price_rows: list[dict], official_basket: dict) -> list
                 "full_factor": full,
                 "CBT_level_only": cbt_level,
                 "CBT_level_plus_trajectory": cbt_full,
+                "food_base_share": p["food_base_share"],
                 "food_price_relative": p["food_price_relative"],
                 "total_expenditure_price_relative": p["total_expenditure_price_relative"],
                 "food_share_engho17": p["food_share_engho17"],
