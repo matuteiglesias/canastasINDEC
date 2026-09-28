@@ -42,6 +42,7 @@ def parser() -> argparse.ArgumentParser:
     commission_paths = sub.add_parser("commission-paths", help="run Phase-B P/A/M/G5 commissioning")
     commission_paths.add_argument("--release", type=Path, required=True)
     commission_paths.add_argument("--output", type=Path, required=True)
+    commission_paths.add_argument("--benchmarks", type=Path)
 
     return p
 
@@ -82,6 +83,7 @@ def main(argv=None) -> int:
             "commissioning": str(commission_sensitivity_artifact(
                 args.release,
                 args.output,
+                benchmark_registry=args.benchmarks,
             ))
         }
     print(json.dumps(result, indent=2, sort_keys=True))
