@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "artifact_type": "research.argentina-engel-reference-structure/v1",
-  "method_id": "research.argentina-engel-reference-structure/engho-2017-18-p29-p48-v1",
+  "method_id": "research.argentina-engel-reference-structure/engho-2017-18-p29-p48-signed-sales-v2",
   "status": "candidate",
   "parent": "publicdata.indec-engho-microdata/v1",
   "survey_vintage": "2017-2018",
@@ -16,6 +16,7 @@
     "missing_nonfinite_income": "hard_failure",
     "regionalization": "select_nationally_then_group_selected_households_by_region"
   },
+  "negative_expenditure_policy": "preserve_signed_sales",
   "food_scope": {
     "food": ["coicop01", "coicop021_alcoholic_beverages"],
     "restaurants_in_food": false,
