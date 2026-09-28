@@ -202,7 +202,9 @@ def commission_sensitivity_artifact(
                 "COICOP01 priced directly; alcoholic beverages 021 use COICOP02; "
                 "tobacco 022 also uses COICOP02 but remains non-food"
             ),
-            "restaurant_mapping": "restaurants_111 use COICOP11 and remain non-food",
+            "alcohol_mapping": "alcoholic_beverages_021 -> coicop02; food=true",
+            "tobacco_mapping": "tobacco_022 -> coicop02; food=false",
+            "restaurant_mapping": "restaurants_111 -> coicop11; food=false",
         },
         "scientific_poverty_execution_performed": False,
     }
