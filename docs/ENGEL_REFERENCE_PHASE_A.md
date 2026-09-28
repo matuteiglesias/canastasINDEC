@@ -10,7 +10,7 @@ The artifact is:
 
 with method:
 
-`research.argentina-engel-reference-structure/engho-2017-18-p29-p48-v1`.
+`research.argentina-engel-reference-structure/engho-2017-18-p29-p48-signed-sales-v2`.
 
 It is **candidate/diagnostic research evidence**, not an official INDEC basket and not a poverty result.
 
@@ -24,8 +24,9 @@ It is **candidate/diagnostic research evidence**, not an official INDEC basket a
 6. Zero and negative finite income values remain rankable. Missing/non-numeric/non-finite income fails closed.
 7. Select nationally before calculating the six regional structures.
 8. Estimate expenditure shares by weighting household-level monthly consumption profiles.
-9. Food is COICOP 01 plus COICOP group 021 alcoholic beverages. Tobacco (022) and restaurant services (111) are non-food but remain in total expenditure.
-10. Base inverse Engel coefficient is `1 / food_share`.
+9. Preserve signed ENGHo expenditure amounts. The source documents household sales as negative expenditure; those rows reduce the relevant household/division totals rather than being clipped or dropped.
+10. Food is COICOP 01 plus COICOP group 021 alcoholic beverages. Tobacco (022) and restaurant services (111) are non-food but remain in total expenditure.
+11. Base inverse Engel coefficient is `1 / food_share`.
 
 May 2018 is retained only as base-period metadata for later Phase B work. No price series is consumed here.
 
@@ -39,7 +40,7 @@ The current real M1 run reported a 50-row persons-table discrepancy against the 
 
 The ~902k expenditure rows are classified once and collapsed to household profiles. The 200 replicate calculations then operate on household profiles, not by rescanning the expenditure file 200 times.
 
-Unknown article codes, negative expenditure amounts, missing household identities, inconsistent article/division identities, or failed accounting identities stop the build.
+Unknown article codes without usable source hierarchy, missing household identities, inconsistent article/division identities, or failed accounting identities stop the build. Negative `monto` values are not treated as errors: they are preserved as documented sales. Diagnostics report their row count, signed total, and the purchases-only clipping counterfactual so the magnitude of this convention remains inspectable.
 
 ## Bootstrap diagnostics
 
@@ -70,3 +71,10 @@ The same commands have Make wrappers.
 ## Non-goals
 
 Phase A does not load IPC, evolve prices, calculate a time-varying Engel coefficient, construct alternative CBT paths, calculate adult equivalence, estimate poverty, or touch Census/Atlas products.
+
+
+## Real-data commissioning note — 2026-09-28
+
+The first real Phase-A/Phase-B run used a temporary `clip_at_zero` treatment for 1,000 negative expenditure rows and otherwise passed its structural gates. That run remains useful diagnostic evidence, but it is not the primary frozen candidate because clipping documented sales changes the ENGHo consumption accounting concept.
+
+The primary method is now `preserve_signed_sales`. The clipped real artifacts are retained as a bounded sensitivity and must be regenerated once under the signed-sales method before upstream Engel work is frozen for downstream Poverty ablation.
