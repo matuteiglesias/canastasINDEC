@@ -1,5 +1,7 @@
 # Poverty-slice basket readiness
 
+> **Historical readiness snapshot.** This page records the pre-candidate state of an earlier workspace. The modern v2 source-lock + immutable IPC parent + governed basket candidate path is now implemented and quarter-specific Poverty inputs have been exercised. Current status is governed by the repository README/SYSTEM and live release contracts, not the `not ready` finding below.
+
 ## Finding: not ready to construct a real candidate slice
 
 A `candidate` (never `approved`) could wrap unchanged values only after Matías supplies/approves the bounded consumer period and resolves immutable upstream identities. No `indice-pobreza-UBA` checkout or consumer audit is present in this workspace, so its provisional slice could not be verified read-only. Guessing its date would violate this packet. No downstream repository was accessed or changed.
