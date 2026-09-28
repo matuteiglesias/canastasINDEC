@@ -9,10 +9,86 @@ from pathlib import Path
 
 from .artifact import canonical_json
 from .phase_b_artifact import validate_sensitivity_artifact
-from .trajectory_contracts import BASE_PERIOD, DIVISION_IDS, REGIONS
+from .trajectory_contracts import BASE_PERIOD, DIVISION_IDS, METHOD_ID, REGIONS
 
 
-def commission_sensitivity_artifact(artifact_root: Path, output: Path) -> Path:
+def _load_external_benchmarks(path: Path | None) -> list[dict]:
+    if path is None:
+        return []
+    payload=json.loads(Path(path).read_text(encoding="utf-8"))
+    if payload.get("schema")!="engel-external-benchmarks/v1":
+        raise ValueError("engel_phase_b_benchmark_registry_wrong_schema")
+    benchmarks=payload.get("benchmarks")
+    if not isinstance(benchmarks,list):
+        raise ValueError("engel_phase_b_benchmark_registry_invalid")
+    return benchmarks
+
+
+def _compare_external_benchmarks(paths: list[dict[str,str]], benchmarks: list[dict]) -> list[dict]:
+    by_key={(r["period"],r["region_id"]):r for r in paths}
+    supported={
+        "base_ice_engho17",
+        "base_level_factor",
+        "level_factor",
+        "trajectory_factor",
+        "full_factor",
+        "threshold_ratio_to_official",
+        "threshold_level_gap_ratio",
+        "trajectory_gap_ratio",
+    }
+    results=[]
+    for benchmark in benchmarks:
+        metric=benchmark.get("metric")
+        region=benchmark.get("region_id")
+        period=benchmark.get("period")
+        if metric in {"base_ice_engho17","base_level_factor"}:
+            period=BASE_PERIOD
+        if metric not in supported or region not in REGIONS or (period,region) not in by_key:
+            results.append({**benchmark,"classification":"unresolved","reason":"unsupported_metric_region_or_period","estimator_input":False})
+            continue
+        row=by_key[(period,region)]
+        if metric=="base_ice_engho17":
+            observed=Decimal(row["ICE_engho17"])
+        elif metric in {"base_level_factor","level_factor"}:
+            observed=Decimal(row["level_factor"])
+        elif metric=="trajectory_factor":
+            observed=Decimal(row["trajectory_factor"])
+        elif metric=="full_factor":
+            observed=Decimal(row["full_factor"])
+        elif metric=="threshold_ratio_to_official":
+            observed=Decimal(row["CBT_level_plus_trajectory"])/Decimal(row["CBT_official"])
+        elif metric=="threshold_level_gap_ratio":
+            observed=Decimal(row["level_factor"])-Decimal(1)
+        else:
+            observed=Decimal(row["trajectory_factor"])-Decimal(1)
+        expected=Decimal(str(benchmark["value"]))
+        delta=observed-expected
+        if benchmark.get("method_id") not in (None,METHOD_ID):
+            classification="method_difference"
+        else:
+            tolerance=Decimal(str(benchmark.get("tolerance","0")))
+            classification="compatible" if tolerance>0 and abs(delta)<=tolerance else "unresolved"
+        results.append({
+            "benchmark_id":benchmark.get("id"),
+            "source":benchmark.get("source"),
+            "region_id":region,
+            "period":period,
+            "metric":metric,
+            "published_value":str(expected),
+            "observed_value":str(observed),
+            "delta":str(delta),
+            "classification":classification,
+            "estimator_input":False,
+        })
+    return results
+
+
+def commission_sensitivity_artifact(
+    artifact_root: Path,
+    output: Path,
+    *,
+    benchmark_registry: Path | None = None,
+) -> Path:
     artifact_root = Path(artifact_root).expanduser().resolve()
     output = Path(output).expanduser().resolve()
     validation = validate_sensitivity_artifact(artifact_root)
@@ -25,6 +101,8 @@ def commission_sensitivity_artifact(artifact_root: Path, output: Path) -> Path:
         contributions = list(csv.DictReader(h))
     with (artifact_root / "price_mapping.csv").open(newline="", encoding="utf-8") as h:
         mappings = list(csv.DictReader(h))
+    external_benchmarks=_load_external_benchmarks(benchmark_registry)
+    external_comparisons=_compare_external_benchmarks(paths,external_benchmarks)
 
     by_region = defaultdict(list)
     for row in paths:
@@ -139,6 +217,12 @@ def commission_sensitivity_artifact(artifact_root: Path, output: Path) -> Path:
         w = csv.DictWriter(h, fieldnames=fields, lineterminator="\n")
         w.writeheader(); w.writerows(divergence_rows)
     (output / "gates.json").write_bytes(canonical_json(gates))
+    (output / "g5_external_plausibility.json").write_bytes(canonical_json({
+        "schema":"engel-phase-b-external-plausibility/v1",
+        "benchmarks_are_estimator_inputs":False,
+        "comparison_count":len(external_comparisons),
+        "comparisons":external_comparisons,
+    }))
 
     summary = {
         "schema": "engel-phase-b-commissioning/v1",
@@ -151,6 +235,7 @@ def commission_sensitivity_artifact(artifact_root: Path, output: Path) -> Path:
         "regions": len(REGIONS),
         "months": qa["required_window"]["months"],
         "division_count": len(DIVISION_IDS),
+        "external_benchmark_count":len(external_comparisons),
         "warnings": manifest["warnings"],
         "scientific_poverty_execution_performed": False,
     }
@@ -165,6 +250,7 @@ def commission_sensitivity_artifact(artifact_root: Path, output: Path) -> Path:
         "A — arithmetic identities: PASS",
         "M — price mapping: PASS WITH DOCUMENTED APPROXIMATIONS",
         "G5 — level / trajectory observability: PASS",
+        f"External plausibility benchmarks: {len(external_comparisons)} (validation only)",
         "",
         "Shared-price approximations:",
         "- alcoholic beverages (021) and tobacco (022) use the official COICOP02 division index;",
