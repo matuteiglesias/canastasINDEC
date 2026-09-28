@@ -10,7 +10,7 @@ from basket_release.engel.article_classification import build_article_mapping
 from basket_release.engel.artifact import build_reference_artifact, validate_reference_artifact
 from basket_release.engel.commissioning import commission_reference_artifact
 from basket_release.engel.reference_population import select_reference_population
-from tests.engel_fixture_factory import create_engho_parent
+from engel_fixture_factory import create_engho_parent
 
 
 class EngelReferencePhaseATests(unittest.TestCase):
