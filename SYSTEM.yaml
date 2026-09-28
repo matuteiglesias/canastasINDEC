@@ -26,8 +26,8 @@ interfaces:
   - artifact:research.argentina-monetary-conversion/v1
     producer: repo.ipc-argentina
   produces:
-  - artifact:research.argentina-regional-baskets/v2-candidate
-  - artifact:research.poverty-basket-quarter-input/v1
+  - artifact:research.argentina-regional-baskets/v1
+  - artifact:research.argentina-regional-baskets-poverty-input/v1
   - artifact:publicdata.regional-baskets-derived@1 (legacy compatibility)
 upstream:
 - repo.ipc-argentina
