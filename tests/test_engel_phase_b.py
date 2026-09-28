@@ -157,6 +157,35 @@ class EngelPhaseBTests(unittest.TestCase):
             with self.assertRaisesRegex(BuildError,"ipc_required_window_missing"):
                 build_sensitivity_artifact(reference,ipc,basket,root/"out")
 
+
+    def test_missing_ipc_month_fails_closed(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp)
+            reference,ipc,basket=create_phase_b_parents(root/"parents")
+            missing_period=month_sequence()[10]
+            table=ipc/"regional_division_indices.csv"
+            with table.open(newline="",encoding="utf-8") as h:
+                rows=list(csv.DictReader(h))
+            fields=list(rows[0])
+            rows=[row for row in rows if row["period"]!=missing_period]
+            with table.open("w",newline="",encoding="utf-8") as h:
+                w=csv.DictWriter(h,fieldnames=fields,lineterminator="\n")
+                w.writeheader();w.writerows(rows)
+            rehash_ipc(ipc)
+            with self.assertRaisesRegex(BuildError,"ipc_required_window_missing"):
+                build_sensitivity_artifact(reference,ipc,basket,root/"out")
+
+    def test_wrong_ipc_product_identity_fails_closed(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp)
+            reference,ipc,basket=create_phase_b_parents(root/"parents")
+            manifest_path=ipc/"manifest.json"
+            manifest=json.loads(manifest_path.read_text())
+            manifest["artifact_type"]="research.argentina-price-consensus/v2"
+            manifest_path.write_text(json.dumps(manifest,indent=2,sort_keys=True)+"\n")
+            with self.assertRaisesRegex(BuildError,"ipc_wrong_artifact"):
+                build_sensitivity_artifact(reference,ipc,basket,root/"out")
+
     def test_duplicate_ipc_cell_fails_closed(self):
         with tempfile.TemporaryDirectory() as tmp:
             root=Path(tmp)
