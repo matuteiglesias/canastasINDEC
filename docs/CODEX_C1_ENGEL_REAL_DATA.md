@@ -1,5 +1,7 @@
 # Codex C1 — real ENGHo/Engel Phase A + Phase B commissioning
 
+> Historical commissioning handoff. C1 was executed on 2026-09-28. Its first real Artifact A/B run clipped documented negative ENGHo sales and is retained as diagnostic evidence. The primary follow-up is now `docs/CODEX_C2_ENGEL_SIGNED_SALES_RERUN.md`.
+
 This handoff executes the real-data path after the cloud implementation is merged.
 
 It does **not** change Poverty, EPH, Census, geography, or Atlas repositories.

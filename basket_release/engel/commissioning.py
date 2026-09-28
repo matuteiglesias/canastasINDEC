@@ -8,7 +8,7 @@ from pathlib import Path
 
 from basket_release.core import BuildError
 from .artifact import canonical_json, validate_reference_artifact
-from .contracts import ARTIFACT_TYPE, FOOD_SCOPE, REFERENCE_POPULATION_METHOD
+from .contracts import ARTIFACT_TYPE, NEGATIVE_EXPENDITURE_POLICY, FOOD_SCOPE, REFERENCE_POPULATION_METHOD
 
 
 def _read_structure(root: Path) -> list[dict[str, str]]:
@@ -122,10 +122,10 @@ def commission_reference_artifact(
         and Decimal(accounting["food_nonfood_residual"]) == 0
         and Decimal(accounting["division_residual"]) == 0
         and int(profile["unknown_article_rows"]) == 0
-        # ENGHo documents sales as negative expenditure amounts. They are
-        # clipped by the explicit source-compatibility policy and surfaced in
-        # diagnostics rather than silently dropped.
-        and int(profile["negative_expenditure_rows"]) >= 0
+        # ENGHo publishes sales as negative expenditure amounts. Primary
+        # accounting preserves the sign; any clipping is a separate sensitivity.
+        and profile["negative_expenditure_policy"] == NEGATIVE_EXPENDITURE_POLICY
+        and accounting["negative_expenditure_policy"] == NEGATIVE_EXPENDITURE_POLICY
     )
     g2 = {
         "gate": "G2_expenditure_accounting",
@@ -144,6 +144,11 @@ def commission_reference_artifact(
         "negative_expenditure_rows": profile["negative_expenditure_rows"],
         "negative_expenditure_raw_total": profile["negative_expenditure_raw_total"],
         "negative_expenditure_policy": profile["negative_expenditure_policy"],
+        "negative_sales_absolute_total_all_households": profile["negative_sales_absolute_total"],
+        "purchase_only_counterfactual_total_all_households": profile["purchase_only_counterfactual_total"],
+        "negative_sales_share_of_purchase_only_counterfactual": profile["negative_sales_share_of_purchase_only_counterfactual"],
+        "negative_expenditure_rows_selected": accounting["negative_expenditure_rows"],
+        "negative_expenditure_raw_total_selected": accounting["negative_expenditure_raw_total"],
     }
     if not g2_hard:
         raise BuildError("engel_g2_expenditure_accounting_failed")

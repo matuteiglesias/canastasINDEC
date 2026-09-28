@@ -86,7 +86,7 @@ class EngelReferencePhaseATests(unittest.TestCase):
         with self.assertRaisesRegex(BuildError, "invalid_ranking_income"):
             select_reference_population(rows)
 
-    def test_unknown_article_fails_but_documented_negative_sales_are_clipped_with_warning(self):
+    def test_unknown_article_fails_but_documented_negative_sales_preserve_sign(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             mapping = build_article_mapping([{"articulo": "A011", "division": "01", "grupo": "011"}])
@@ -102,8 +102,18 @@ class EngelReferencePhaseATests(unittest.TestCase):
             )
             diagnostics = json.loads((release / "diagnostics.json").read_text())
             self.assertEqual(diagnostics["expenditure_profile"]["negative_expenditure_rows"], 1)
-            self.assertEqual(diagnostics["expenditure_profile"]["negative_expenditure_policy"], "clip_at_zero_with_warning")
-            self.assertIn("negative_expenditure_rows_clipped_at_zero:1", json.loads((release / "qa.json").read_text())["warnings"])
+            profile = diagnostics["expenditure_profile"]
+            self.assertEqual(profile["negative_expenditure_policy"], "preserve_signed_sales")
+            self.assertEqual(Decimal(profile["negative_expenditure_raw_total"]), Decimal("-1"))
+            self.assertEqual(
+                Decimal(profile["purchase_only_counterfactual_total"])
+                - Decimal(profile["raw_total_expenditure"]),
+                Decimal("1"),
+            )
+            self.assertIn(
+                "negative_expenditure_sales_preserved_signed:1",
+                json.loads((release / "qa.json").read_text())["warnings"],
+            )
 
     def test_food_rule_is_coicop1_plus_alcohol_not_tobacco_or_restaurant(self):
         rows = [

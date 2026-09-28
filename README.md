@@ -2,7 +2,7 @@
 
 `canastasINDEC` is the poverty ecosystem's producer for governed **CBA/CBT threshold inputs** derived from exact official regional basket sources. It also hosts a separate experimental ENGHo/Engel research surface; that surface does not change the incumbent basket candidate or Poverty-input semantics.
 
-> **Current state:** the modern v2 basket candidate path remains the current threshold-input authority. Separately, the ENGHo/Engel research surface now has two bounded candidate/diagnostic layers: **Artifact A** (`research.argentina-engel-reference-structure/v1`) freezes the p29–p48 expenditure structure; **Artifact B** (`research.argentina-regional-baskets-engel-sensitivity/v1`) combines that frozen structure with direct official regional-division IPC and observed official CBA/CBT to expose level-only and level+trajectory threshold sensitivities. Neither artifact authorizes poverty calculation.
+> **Current state:** the modern v2 basket candidate path remains the current threshold-input authority. The ENGHo/Engel research surface has now completed a first real end-to-end commissioning run. That run is retained as a **clipped-sales diagnostic sensitivity**, not the primary freeze: INDEC documents household sales as negative expenditure amounts, so the primary Artifact-A method now preserves signed sales and requires one bounded real-data rerun. Artifact B remains candidate/diagnostic and no Poverty calculation is authorized.
 
 ## Modern threshold path
 
@@ -48,12 +48,19 @@ Frozen Phase-A choices:
 - weighted ECDF cutpoints, lower inclusive and upper exclusive;
 - zero/negative finite incomes remain rankable; missing/non-finite income fails closed;
 - national selection occurs before regional grouping;
+- documented negative ENGHo sales are preserved with their negative sign; clipping is only a named purchases-only sensitivity;
 - food = COICOP 01 + group 021 alcoholic beverages;
 - tobacco (022) and restaurant services (111) remain non-food while staying in total consumption;
 - May 2018 is metadata only for the future Phase-B base;
 - official ENGHo replicate weights provide diagnostic uncertainty using INDEC's MSE-bootstrap rule.
 
 The persons table is not consumed by the Phase-A estimator. A real M1 commissioning warning can be attached through `--upstream-receipt` and retained as lineage without filtering records.
+
+### Real commissioning review
+
+The 2026-09-28 real run proved G1/G2 and P/A/M/G5 end-to-end. Its initial Artifact A (`engel-reference-83557070694b9306`) and Artifact B (`engel-sensitivity-10ec46dfd65c0d21`) clipped 1,000 documented negative sales rows and are therefore retained only as a diagnostic sensitivity. The primary method identity is now `research.argentina-engel-reference-structure/engho-2017-18-p29-p48-signed-sales-v2`.
+
+See `science/engel_commissioning/real/2026-09-28/COMMISSIONING_REVIEW.md` for the durable review and `docs/CODEX_C2_ENGEL_SIGNED_SALES_RERUN.md` for the one remaining upstream rerun.
 
 ### Phase-A commands
 

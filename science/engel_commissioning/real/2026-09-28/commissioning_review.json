@@ -1,0 +1,117 @@
+{
+  "schema": "engel-real-commissioning-review/v1",
+  "review_date": "2026-09-28",
+  "repository": "matuteiglesias/canastasINDEC",
+  "review_status": "bounded_signed_sales_rerun_required",
+  "candidate_status": "diagnostic_not_promoted",
+  "code": {
+    "phase_a_commit": "cde69eb33054e6e247b36c57740a6becf840f21d",
+    "phase_b_commit": "468b76d4789870b02942f2032c77884e9ef08a74",
+    "real_compatibility_patch_pr": 26,
+    "real_compatibility_patch_commit": "60a36df7bf6d07ca1fe5f9f33ffd2d656bc748d9",
+    "real_compatibility_patch_merge": "08d8e10bcaaee023362878da6183737bacf5324e",
+    "reviewed_patch_ci": {
+      "readiness": "pass",
+      "snapshot_quality": "pass"
+    }
+  },
+  "parents": {
+    "engho": {
+      "artifact_type": "publicdata.indec-engho-microdata/v1",
+      "release_id": "engho-2017-2018-ff05578d65ae",
+      "producer_commit": null,
+      "producer_commit_status": "not_independently_reconstructed_from_cloud_review",
+      "local_m1_status": "pass_with_50_person_row_custody_warning"
+    },
+    "regional_ipc": {
+      "artifact_type": "publicdata.indec-ipc-regional-divisions/v1",
+      "release_id": "indec-ipc-regional-divisions-v1-2809f9093513-d84ce096c28f",
+      "producer_commit": "eccf1a6cabfff3f09e69871fca2cda9f1e1ad36f",
+      "commissioning": "P1_pass",
+      "coverage": "2018-05 through 2025-12; six regions; twelve divisions; no missing or duplicate cells"
+    },
+    "official_baskets": {
+      "artifact_type": "research.argentina-regional-baskets/v1",
+      "release_id": "regional-baskets-v2-price-fb884d2b770bbe6f",
+      "manifest_sha256": "5b3b8b035615b4c8087f6cad9240f15add6eba2a39fea0794aefa6dd427a2c86"
+    }
+  },
+  "commissioned_clipped_run": {
+    "artifact_a": {
+      "release_id": "engel-reference-83557070694b9306",
+      "manifest_sha256": "69f3c38e2295b0c6c3c924db4bc6ead61b11b07e4b12df5fcab68b8767fbf1d7",
+      "gates": {"G1": "pass", "G2": "pass", "G3": "diagnostic", "G4": "diagnostic"}
+    },
+    "artifact_b": {
+      "release_id": "engel-sensitivity-10ec46dfd65c0d21",
+      "manifest_sha256": "f5bcab3823b51a337d10faecce611c3c6ff78f584eca2ba9ade94e808ce165f3",
+      "gates": {"P": "pass", "A": "pass", "M": "pass_with_documented_approximations", "G5": "pass"}
+    },
+    "negative_expenditure_policy": "clip_at_zero_with_warning",
+    "negative_expenditure_rows": 1000,
+    "article_mapping_fallback_rows": 2,
+    "disposition": "retain_as_diagnostic_sensitivity_superseded_for_primary_freeze"
+  },
+  "base_level_factors_clipped_run": {
+    "gran_buenos_aires": "1.462752",
+    "pampeana": "1.499342",
+    "noreste": "1.403743",
+    "noroeste": "1.406719",
+    "cuyo": "1.418190",
+    "patagonia": "1.345944"
+  },
+  "trajectory_ranges_clipped_run": {
+    "gran_buenos_aires": {"min": "0.957411", "max": "1.036141", "largest_divergence_period": "2024-03"},
+    "pampeana": {"min": "0.948129", "max": "1.012497", "largest_divergence_period": "2024-02"},
+    "noreste": {"min": "0.950967", "max": "1.109744", "largest_divergence_period": "2025-10"},
+    "noroeste": {"min": "0.939744", "max": "1.073668", "largest_divergence_period": "2025-09"},
+    "cuyo": {"min": "0.947984", "max": "1.019890", "largest_divergence_period": "2019-04"},
+    "patagonia": {"min": "0.943330", "max": "1.041071", "largest_divergence_period": "2024-03"}
+  },
+  "review_classification": {
+    "negative_sales_clipping": "methodological_convention_inconsistent_with_primary_source_semantics",
+    "two_article_hierarchy_fallbacks": "source_data_limitation_with_transparent_source_hierarchy_fallback",
+    "coicop02_alcohol_tobacco_shared_price": "price_resolution_approximation",
+    "coicop11_restaurant_hotel_shared_price": "price_resolution_approximation",
+    "bootstrap_intervals": "sampling_uncertainty",
+    "cedlas_level_difference": "external_study_methodological_difference_plus_possible_negative_sales_effect"
+  },
+  "primary_method_after_review": {
+    "artifact_type": "research.argentina-engel-reference-structure/v1",
+    "method_id": "research.argentina-engel-reference-structure/engho-2017-18-p29-p48-signed-sales-v2",
+    "negative_expenditure_policy": "preserve_signed_sales",
+    "reference_population": "national weighted p29-p48",
+    "restaurants_in_food": false,
+    "tobacco_in_food": false,
+    "alcoholic_beverages_021_in_food": true,
+    "official_cba_held_fixed": true
+  },
+  "external_validation": {
+    "cedlas_dt370": {
+      "role": "validation_only",
+      "reference_population": "low and very-low educational climate households, not exact p29-p48",
+      "base_period": "2018-05",
+      "reported_national_ice": "2.86",
+      "reported_regional_ice": {
+        "gran_buenos_aires": "2.85",
+        "pampeana": "2.85",
+        "noreste": "2.67",
+        "noroeste": "2.65",
+        "cuyo": "3.03",
+        "patagonia": "3.24"
+      },
+      "interpretation": "same direction toward higher CBT than incumbent official method; levels are not directly comparable because the reference population and regional construction differ"
+    },
+    "sigaut_gravina_et_al_2025": {
+      "role": "validation_only",
+      "interpretation": "published exercise reports materially stronger threshold effects when restaurants are excluded from food, supporting restaurant treatment as an important ablation rather than a tuning target"
+    }
+  },
+  "required_next_action": {
+    "scope": "upstream_only",
+    "action": "rerun Artifact A and Artifact B once with preserve_signed_sales; compare against clipped sensitivity; freeze if G1/G2/P/A/M/G5 remain valid",
+    "downstream_changes_authorized": false
+  },
+  "poverty_calculation_performed": false,
+  "downstream_repository_changes_performed": false
+}

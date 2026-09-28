@@ -64,7 +64,7 @@ generated_paths:
 - run/
 - data/ (legacy)
 verification:
-  status: phase-a-b-cloud-contracts-implemented-real-engel-runs-pending
+  status: real-engel-mechanism-commissioned-signed-sales-rerun-pending
   last_verified: '2026-09-28'
   notes:
   - exact official basket-source lock and relocatable verification remain unchanged
@@ -76,9 +76,11 @@ verification:
   - Phase B requires the complete 2018-05 through 2025-12 six-region/twelve-division rectangle and performs no interpolation
   - Phase B exposes separate level-only and level-plus-trajectory line paths, division contributions, and P/A/M/G5 commissioning
   - official CBA remains unchanged and no poverty operation is performed
+  - first real Artifact A/B run passed structural gates but is retained as a clipped-sales diagnostic sensitivity
+  - primary Phase-A method now preserves documented negative ENGHo sales under method research.argentina-engel-reference-structure/engho-2017-18-p29-p48-signed-sales-v2
+  - durable review: science/engel_commissioning/real/2026-09-28/COMMISSIONING_REVIEW.md
   unknowns:
-  - real Phase-A ENGHo/Engel commissioning remains to be executed locally
-  - real Phase-B Artifact B and G5 commissioning remain to be executed locally after Artifact A materialization
+  - one bounded signed-sales rerun of real Artifact A and derived Artifact B remains before the primary upstream candidate is frozen
   - the current M1 real ENGHo persons-table count warning is lineage only because Phase A does not consume persons
   - durable child publication outside expiring Actions evidence remains tracked in issue #21
   - exact department_2010 to six-region geographic binding remains owned by argentina-geography issue #36
