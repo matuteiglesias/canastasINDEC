@@ -19,6 +19,7 @@ from .contracts import (
     DIVISION_IDS,
     FOOD_SCOPE,
     METHOD_ID,
+    NEGATIVE_EXPENDITURE_POLICY,
     PERCENTILE_HIGH,
     PERCENTILE_LOW,
     RANKING_VARIABLE,
@@ -176,6 +177,7 @@ def build_reference_artifact(
         "parent_release_id": parent["release_id"],
         "parent_manifest_sha256": parent["manifest_sha256"],
         "reference_population_id": reference_population_id,
+        "negative_expenditure_policy": NEGATIVE_EXPENDITURE_POLICY,
     }
     release_id = "engel-reference-" + hashlib.sha256(canonical_json(method_seed)).hexdigest()[:16]
     output_parent = Path(output_parent).expanduser().resolve()
@@ -251,7 +253,7 @@ def build_reference_artifact(
         warnings = list(parent["warnings"])
         if int(profile_diagnostics["negative_expenditure_rows"]) > 0:
             warnings.append(
-                "negative_expenditure_rows_clipped_at_zero:"
+                "negative_expenditure_sales_preserved_signed:"
                 + str(profile_diagnostics["negative_expenditure_rows"])
             )
         if int(profile_diagnostics["article_mapping_fallback_rows"]) > 0:
@@ -268,6 +270,7 @@ def build_reference_artifact(
             "g1_reference_population_integrity": "pass",
             "g2_expenditure_accounting": "pass",
             "g4_regional_stability_available": True,
+            "negative_expenditure_policy": NEGATIVE_EXPENDITURE_POLICY,
             "persons_table_consumed": False,
             "scientific_poverty_execution_performed": False,
             "price_trajectory_execution_performed": False,
@@ -300,6 +303,7 @@ def build_reference_artifact(
             "food_scope": FOOD_SCOPE,
             "restaurants_in_food": RESTAURANTS_IN_FOOD,
             "tobacco_in_food": TOBACCO_IN_FOOD,
+            "negative_expenditure_policy": NEGATIVE_EXPENDITURE_POLICY,
             "warnings": sorted(set(warnings)),
             "scientific_poverty_execution_performed": False,
             "price_trajectory_execution_performed": False,
