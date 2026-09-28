@@ -34,7 +34,12 @@ def _decimal(value: str, label: str, *, allow_zero: bool = True, allow_negative:
     return number
 
 
-def prepare_households(rows: list[dict[str, str]], weight_field: str = WEIGHT_VARIABLE) -> list[dict]:
+def prepare_households(
+    rows: list[dict[str, str]],
+    weight_field: str = WEIGHT_VARIABLE,
+    *,
+    allow_zero_weight: bool = False,
+) -> list[dict]:
     prepared = []
     seen = set()
     for row in rows:
@@ -47,7 +52,12 @@ def prepare_households(rows: list[dict[str, str]], weight_field: str = WEIGHT_VA
         # Zero and negative incomes remain rankable. Missing/non-numeric values fail closed
         # so the reference universe never changes silently.
         income = _decimal(row.get(RANKING_VARIABLE, ""), "ranking_income")
-        weight = _decimal(row.get(weight_field, ""), "household_weight", allow_zero=False, allow_negative=False)
+        weight = _decimal(
+            row.get(weight_field, ""),
+            "household_weight",
+            allow_zero=allow_zero_weight,
+            allow_negative=False,
+        )
         region_code = str(row.get(REGION_VARIABLE, "")).strip()
         if region_code not in REGION_CODE_MAP:
             raise BuildError(f"invalid_engho_region_code: {region_code!r}")
@@ -85,6 +95,7 @@ def select_reference_population(
     weight_field: str = WEIGHT_VARIABLE,
     percentile_low: Decimal = Decimal(PERCENTILE_LOW),
     percentile_high: Decimal = Decimal(PERCENTILE_HIGH),
+    allow_zero_weight: bool = False,
 ) -> dict:
     """Select the national weighted reference cohort.
 
@@ -93,7 +104,11 @@ def select_reference_population(
     This keeps all households tied at either income value together; consequently
     achieved mass can deviate from exactly 19 percentage points.
     """
-    prepared = prepare_households(household_rows, weight_field=weight_field)
+    prepared = prepare_households(
+        household_rows,
+        weight_field=weight_field,
+        allow_zero_weight=allow_zero_weight,
+    )
     lower = weighted_cutpoint(prepared, percentile_low)
     upper = weighted_cutpoint(prepared, percentile_high)
     if upper <= lower:
