@@ -1,5 +1,7 @@
 # Basket methodology decisions required from Matías
 
+> **Historical decision packet.** The modern source-lock/v2 basket candidate path now resolves the source custody, synthetic-tail exclusion, monetary-parent and value-classification problems described here. Current residues are durable child publication (#21) and the separately owned department→threshold-area binding (`argentina-geography#36`). Do not treat this page as the active work queue.
+
 | Decision | Current evidence | Consequence if unresolved |
 |---|---|---|
 | Official source vintage and license | Live datasets 445.1/446.1; no retained bytes, retrieval timestamp, checksum, or rights note | Cannot identify `observed` cells or issue an immutable source artifact. |
