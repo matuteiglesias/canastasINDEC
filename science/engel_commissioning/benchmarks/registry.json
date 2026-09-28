@@ -1,5 +1,5 @@
 {
   "schema": "engel-external-benchmarks/v1",
   "benchmarks": [],
-  "note": "Literature values may be pinned here for validation only. They are never estimator inputs."
+  "note": "Pinned literature values are validation-only evidence and never estimator inputs. Phase A supports food_share and ice_base; Phase B additionally supports base_ice_engho17, base_level_factor, level_factor, trajectory_factor, full_factor, threshold_ratio_to_official, threshold_level_gap_ratio, and trajectory_gap_ratio."
 }
