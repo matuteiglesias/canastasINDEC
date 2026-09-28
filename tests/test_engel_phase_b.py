@@ -116,6 +116,34 @@ class EngelPhaseBTests(unittest.TestCase):
                 contributions=list(csv.DictReader(h))
             self.assertEqual(len(contributions),6*12)
 
+
+    def test_external_benchmark_is_validation_only(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp)
+            reference,ipc,basket=create_phase_b_parents(root/"parents")
+            release=build_sensitivity_artifact(reference,ipc,basket,root/"out")
+            artifact_manifest_before=(release/"manifest.json").read_bytes()
+            registry=root/"benchmarks.json"
+            registry.write_text(json.dumps({
+                "schema":"engel-external-benchmarks/v1",
+                "benchmarks":[{
+                    "id":"synthetic-level-target",
+                    "source":"synthetic-test-only",
+                    "region_id":"pampeana",
+                    "metric":"base_level_factor",
+                    "value":"999",
+                    "tolerance":"0.000001"
+                }]
+            }))
+            out=commission_sensitivity_artifact(
+                release,root/"commission",benchmark_registry=registry
+            )
+            plausibility=json.loads((out/"g5_external_plausibility.json").read_text())
+            self.assertEqual(plausibility["comparison_count"],1)
+            self.assertFalse(plausibility["comparisons"][0]["estimator_input"])
+            self.assertEqual(plausibility["comparisons"][0]["classification"],"unresolved")
+            self.assertEqual((release/"manifest.json").read_bytes(),artifact_manifest_before)
+
     def test_missing_ipc_cell_fails_closed(self):
         with tempfile.TemporaryDirectory() as tmp:
             root=Path(tmp)
