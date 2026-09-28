@@ -1,110 +1,74 @@
-# Canastas regionales — artefacto analítico derivado
+# Canastas regionales INDEC — poverty-threshold input producer
 
-Este repositorio conserva una transformación histórica de las series regionales de Canasta Básica Alimentaria (CBA) y Canasta Básica Total (CBT). **`data/CB_Reg_defl_m.csv` no es una serie oficial observada de canastas mensuales.**
+`canastasINDEC` is the poverty ecosystem's producer for governed **CBA/CBT threshold inputs** derived from exact official regional basket sources. It preserves the historical analytical artifact, but new poverty work should use the source-lock/candidate path.
 
-> **Estado:** mantenimiento correctivo. El artefacto comprometido llega hasta diciembre de 2025, pero los valores observados identificables llegan hasta julio de 2025. Desde agosto de 2025 la cola repite valores por región. La fuente y el pipeline no fueron reejecutados en esta revisión.
+> **Current state:** the modern v2 candidate path is implemented. It acquires/pins exact official CBA/CBT source bytes, consumes one immutable `IPC-Argentina` conversion parent, builds an observed-nominal core plus explicitly derived views, validates lineage/coverage, and emits a quarter-specific Poverty input. Candidate status is not official publication or automatic scientific approval.
 
-## Qué representa realmente el archivo principal
+## Modern path
 
-`computar_canastas.py`:
-
-1. descarga series nominales regionales;
-2. las deflacta con el índice de `IPC-Argentina` a una referencia de enero de 2016;
-3. reindexa el resultado sobre el calendario del IPC desde 2003;
-4. completa faltantes con medias de columna;
-5. vuelve a expresar **toda la historia** al nivel de precios del mes de ejecución;
-6. escribe el resultado en `data/CB_Reg_defl_m.csv`.
-
-Por lo tanto, el archivo mezcla:
-
-- datos derivados de publicaciones oficiales;
-- períodos anteriores al inicio declarado de la fuente regional;
-- imputación por medias;
-- la fecha y proyecciones disponibles en `IPC-Argentina`;
-- una expresión monetaria dependiente del mes en que se ejecutó el script.
-
-No debe utilizarse para citar niveles oficiales corrientes de CBA o CBT.
-
-## Estado verificable
-
-La declaración auditable vive en [`DATA_STATUS.json`](DATA_STATUS.json). Para comprobar que el snapshot comprometido conserva las fronteras declaradas:
-
-```bash
-python scripts/verify_snapshot.py
+```text
+official regional CBA/CBT distributions
+        ↓ exact source lock
+observed nominal six-region evidence
+        +
+immutable IPC monetary-conversion parent
+        ↓
+governed basket v2 candidate
+        ↓
+quarter-specific Poverty threshold input
+        ↓
+indice-pobreza-UBA
 ```
 
-El chequeo es local y sin red. Valida:
+The source-native threshold areas are the six governed basket-region IDs:
 
-- esquema y cobertura del CSV;
-- seis regiones por período;
-- fecha máxima;
-- cola sintética repetida desde agosto de 2025.
+`gran_buenos_aires`, `cuyo`, `noreste`, `noroeste`, `pampeana`, `patagonia`.
 
-No valida la fuente oficial ni la corrección metodológica de la transformación.
+These are **threshold-area identities, not province IDs**. Geographic membership belongs to a separate governed binding; `argentina-geography` owns territorial interpretation and Poverty consumes the binding. In particular, Buenos Aires cannot be assigned wholesale to one basket region.
 
-## Linaje y contrato de lanzamiento
+## Authority boundary
 
-La [clasificación de familias](docs/BASKET_PRODUCT_FAMILIES.md), el
-[grafo de transformaciones](contracts/lineage_graph.json) y los diccionarios en
-`contracts/` documentan el snapshot sin cambiar sus valores. La clasificación
-por celda del artefacto principal se reproduce localmente con:
+This repository owns:
 
-```bash
-make basket-lineage-report
-```
+- exact source-locking for official regional CBA/CBT evidence;
+- basket/threshold source semantics and six source-native region IDs;
+- observed-vs-derived/imputed/projected value classification;
+- deterministic basket candidate construction and QA;
+- explicit monetary-parent lineage without reimplementing IPC methodology;
+- bounded quarter-specific threshold inputs for Poverty.
 
-Una entrega **completamente sintética** demuestra el sobre de manifiesto y el
-preflight de compatibilidad, sin representar umbrales reales:
+It does **not** own:
 
-```bash
-make release-fixture
-make release-check
-```
+- official CBA/CBT publication authority;
+- monetary-reference/IPC methodology (`IPC-Argentina`);
+- department/province → threshold-area membership (`argentina-geography`);
+- poverty classification, adult equivalence or FGT (`indice-pobreza-UBA`);
+- Census sampling or welfare inference.
 
-La [evaluación del slice](docs/POVERTY_SLICE_BASKET_READINESS.md) explica por
-qué todavía no puede emitirse un candidato real reproducible. Ninguno de estos
-comandos consulta la red ni sobrescribe los CSV reales comprometidos.
+## Legacy artifact
 
-## Constructor de candidatos observado-nominales
+`data/CB_Reg_defl_m.csv` is historical compatibility evidence. It mixes derived price re-expression, historical imputation/backfill and a repeated synthetic tail. It is **not** the current scientific authority and must not be used as an observed current CBA/CBT series.
 
-La adquisición queda separada de la construcción. `basket-source-lock` es la
-única etapa que contacta las distribuciones oficiales 445.1 y 446.1; el
-candidato se reconstruye sin red desde ese lock y una **copia inmutable** de un
-release candidato de precios. Nunca consulta una rama de `IPC-Argentina` ni
-ejecuta un checkout hermano:
+`DATA_STATUS.json` and `scripts/verify_snapshot.py` remain useful for auditing that legacy snapshot; they do not define the modern candidate boundary.
+
+## Current commands
 
 ```bash
 make basket-source-probe
 make basket-source-lock
 make basket-source-lock-check SOURCE_LOCK=run/source_lock.json
-make basket-candidate SOURCE_LOCK=run/source_lock.json PRICE_RELEASE=/copias/ipc-release-id
-make basket-candidate-check RELEASE_DIR=artifacts/basket_releases/release-id
-make poverty-basket-2024q1 RELEASE_DIR=artifacts/basket_releases/release-id
+
+# with a copied immutable IPC v2 conversion release:
+make basket-candidate-v2 SOURCE_LOCK=run/source_lock.json PRICE_RELEASE=/path/to/ipc-release
+make basket-candidate-v2-check RELEASE_DIR=/path/to/basket-release
 ```
 
-El núcleo incluye solamente meses completos observados en fuente, sin backcast,
-relleno ni cola repetida. La conversión a referencia enero de 2016 y las medias
-trimestrales son derivados separados. El bundle 2024-Q1 es sólo un insumo de
-investigación de seis regiones: no calcula pobreza ni inventa un mapa provincial.
+The scheduled Monday job proves the durable source + IPC → basket candidate seam. It deliberately does not promote candidates to reviewed/approved status.
 
-## Uso recomendado
+## Publication boundary
 
-Para análisis nuevos, preferir las series oficiales nominales como entrada y construir un producto nuevo con:
+The current scheduled path retains candidate evidence as workflow artifacts. Durable cross-repository publication of validated basket candidates remains separately tracked; consumers must never depend on an expiring Actions artifact or a mutable checkout as if it were an immutable release.
 
-- procedencia y fecha de descarga;
-- períodos observados separados de imputaciones y proyecciones;
-- unidad monetaria explícita;
-- una política de deflación versionada;
-- un manifest de ejecución.
+## Interpretation
 
-Este repositorio puede seguir siendo útil como evidencia histórica del método, pero no debe propagarse como una capa de datos actuales sin esa reparación.
-
-## Dependencia
-
-El pipeline consume:
-
-```text
-IPC-Argentina/data/info/indice_precios_M.csv
-```
-
-Si esa serie contiene meses proyectados, esos meses pueden propagarse a este output. La frescura de este repositorio nunca puede ser mayor que la de esa dependencia.
+A basket candidate is a research input, not an official INDEC poverty result. Poverty measurement begins only after `indice-pobreza-UBA` combines governed threshold values, adult-equivalence semantics, welfare and an exact threshold-area binding under a named method/release.
