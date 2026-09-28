@@ -10,16 +10,20 @@ from .contracts import DIVISION_IDS, IMPUTATION_VARIABLE
 from .reference_population import effective_sample_size
 
 
-def _amount(value: str) -> Decimal:
+def _parsed_amount(value: str) -> Decimal:
     try:
         amount = Decimal(str(value).strip().replace(",", "."))
     except (InvalidOperation, ValueError) as exc:
         raise BuildError(f"invalid_expenditure_amount: {value!r}") from exc
     if not amount.is_finite():
         raise BuildError("invalid_expenditure_amount: nonfinite")
-    if amount < 0:
-        raise BuildError(f"negative_expenditure_amount: {value!r}")
     return amount
+
+
+def _amount(value: str) -> Decimal:
+    """Return analysis amount; documented ENGHo sales are clipped to zero."""
+    amount = _parsed_amount(value)
+    return max(amount, Decimal(0))
 
 
 def build_household_expenditure_profiles(
@@ -31,6 +35,9 @@ def build_household_expenditure_profiles(
     profiles: dict[str, dict] = {}
     mapped_rows = 0
     zero_amount_rows = 0
+    negative_amount_rows = 0
+    negative_amount_total = Decimal(0)
+    article_mapping_fallback_rows = 0
     imputed_amount = Decimal(0)
     observed_amount = Decimal(0)
     restaurant_amount = Decimal(0)
@@ -42,10 +49,18 @@ def build_household_expenditure_profiles(
         if household_id not in known_households:
             raise BuildError(f"expenditure_unknown_household: {household_id!r}")
         classification = classify_expenditure_row(row, article_mapping)
-        amount = _amount(row.get("monto", ""))
+        if classification.get("article_mapping_fallback"):
+            article_mapping_fallback_rows += 1
+        parsed_amount = _parsed_amount(row.get("monto", ""))
+        amount = max(parsed_amount, Decimal(0))
         mapped_rows += 1
         if amount == 0:
             zero_amount_rows += 1
+        if amount < 0:
+            negative_amount_rows += 1
+        if parsed_amount < 0:
+            negative_amount_rows += 1
+            negative_amount_total += parsed_amount
         profile = profiles.setdefault(
             household_id,
             {
@@ -120,7 +135,10 @@ def build_household_expenditure_profiles(
         "raw_tobacco_expenditure": tobacco_amount,
         "raw_alcohol_expenditure": alcohol_amount,
         "unknown_article_rows": 0,
-        "negative_expenditure_rows": 0,
+        "article_mapping_fallback_rows": article_mapping_fallback_rows,
+        "negative_expenditure_rows": negative_amount_rows,
+        "negative_expenditure_raw_total": negative_amount_total,
+        "negative_expenditure_policy": "clip_at_zero_with_warning",
     }
     return profiles, diagnostics
 

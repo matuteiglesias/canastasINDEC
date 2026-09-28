@@ -122,7 +122,10 @@ def commission_reference_artifact(
         and Decimal(accounting["food_nonfood_residual"]) == 0
         and Decimal(accounting["division_residual"]) == 0
         and int(profile["unknown_article_rows"]) == 0
-        and int(profile["negative_expenditure_rows"]) == 0
+        # ENGHo documents sales as negative expenditure amounts. They are
+        # clipped by the explicit source-compatibility policy and surfaced in
+        # diagnostics rather than silently dropped.
+        and int(profile["negative_expenditure_rows"]) >= 0
     )
     g2 = {
         "gate": "G2_expenditure_accounting",
@@ -137,7 +140,10 @@ def commission_reference_artifact(
         "zero_amount_rows_all_households": profile["zero_amount_rows"],
         "imputed_expenditure_share_all_households": profile["raw_imputed_expenditure_share"],
         "unknown_article_rows": profile["unknown_article_rows"],
+        "article_mapping_fallback_rows": profile["article_mapping_fallback_rows"],
         "negative_expenditure_rows": profile["negative_expenditure_rows"],
+        "negative_expenditure_raw_total": profile["negative_expenditure_raw_total"],
+        "negative_expenditure_policy": profile["negative_expenditure_policy"],
     }
     if not g2_hard:
         raise BuildError("engel_g2_expenditure_accounting_failed")

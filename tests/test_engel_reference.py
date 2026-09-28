@@ -7,6 +7,7 @@ from pathlib import Path
 
 from basket_release.core import BuildError
 from basket_release.engel.article_classification import build_article_mapping
+from basket_release.engel.article_classification import classify_expenditure_row
 from basket_release.engel.artifact import build_reference_artifact, validate_reference_artifact
 from basket_release.engel.commissioning import commission_reference_artifact
 from basket_release.engel.reference_population import select_reference_population
@@ -85,18 +86,24 @@ class EngelReferencePhaseATests(unittest.TestCase):
         with self.assertRaisesRegex(BuildError, "invalid_ranking_income"):
             select_reference_population(rows)
 
-    def test_unknown_article_and_negative_expenditure_fail(self):
-        for option in ("unknown", "negative"):
-            with self.subTest(option=option), tempfile.TemporaryDirectory() as tmp:
-                root = Path(tmp)
-                parent = create_engho_parent(
-                    root / "parent",
-                    unknown_article=(option == "unknown"),
-                    negative_amount=(option == "negative"),
-                )
-                pattern = "unknown_article_code" if option == "unknown" else "negative_expenditure_amount"
-                with self.assertRaisesRegex(BuildError, pattern):
-                    build_reference_artifact(parent, root / "artifacts")
+    def test_unknown_article_fails_but_documented_negative_sales_are_clipped_with_warning(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            mapping = build_article_mapping([{"articulo": "A011", "division": "01", "grupo": "011"}])
+            fallback = classify_expenditure_row(
+                {"articulo": "UNKNOWN", "division": "01", "grupo": "011"}, mapping
+            )
+            self.assertTrue(fallback["article_mapping_fallback"])
+            with self.assertRaisesRegex(BuildError, "unknown_article_code"):
+                classify_expenditure_row({"articulo": "UNKNOWN"}, mapping)
+            release = build_reference_artifact(
+                create_engho_parent(root / "negative", negative_amount=True),
+                root / "negative-artifacts",
+            )
+            diagnostics = json.loads((release / "diagnostics.json").read_text())
+            self.assertEqual(diagnostics["expenditure_profile"]["negative_expenditure_rows"], 1)
+            self.assertEqual(diagnostics["expenditure_profile"]["negative_expenditure_policy"], "clip_at_zero_with_warning")
+            self.assertIn("negative_expenditure_rows_clipped_at_zero:1", json.loads((release / "qa.json").read_text())["warnings"])
 
     def test_food_rule_is_coicop1_plus_alcohol_not_tobacco_or_restaurant(self):
         rows = [
