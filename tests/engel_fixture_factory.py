@@ -39,7 +39,7 @@ def create_engho_parent(root: Path, *, unknown_article: bool = False, negative_a
             "whog_rep1": "1",
             "whog_rep2": "1.05" if i % 2 else "0.95",
             "whog_rep3": "1.10" if i % 3 == 0 else "0.95",
-            "whog_rep4": "0.90" if i % 5 == 0 else "1.02",
+            "whog_rep4": "0" if i % 10 == 0 else ("0.90" if i % 5 == 0 else "1.02"),
         })
         persons.append({"id": household_id, "miembro": "1"})
 
