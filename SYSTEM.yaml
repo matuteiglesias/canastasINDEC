@@ -5,42 +5,57 @@ repository:
   id: repo.canastasindec
   github: matuteiglesias/canastasINDEC
 domain: public-data
-system: publicdata.prices
-role: derived-basket-artifact-producer
-lifecycle: maintenance
+system: argentina-poverty
+role: poverty-threshold-input-producer
+lifecycle: active-maintenance
 authority:
-  status: proposed
+  status: current-candidate-authority
   owns:
-  - versioned derived regional basket artifact and transformation history
-  - synthetic-tail and dependency declarations
+  - exact official regional CBA/CBT source locks and provenance
+  - six source-native basket/threshold-area identities
+  - observed-versus-derived value classification
+  - governed basket candidate construction, validation and quarter slicing
+  - exact monetary-conversion parent lineage
   does_not_own:
-  - official CBA/CBT authority
-  - direct observed monthly basket series
-  - independent price-index truth
+  - official CBA/CBT publication authority
+  - monetary-reference or IPC methodology
+  - province/department to threshold-area geographic membership
+  - poverty method, adult equivalence, classification or FGT
 interfaces:
   consumes:
-  - artifact:publicdata.price-index@1
+  - artifact:research.argentina-monetary-conversion/v1
+    producer: repo.ipc-argentina
   produces:
-  - artifact:publicdata.regional-baskets-derived@1
+  - artifact:research.argentina-regional-baskets/v2-candidate
+  - artifact:research.poverty-basket-quarter-input/v1
+  - artifact:publicdata.regional-baskets-derived@1 (legacy compatibility)
 upstream:
 - repo.ipc-argentina
 downstream:
 - repo.indice-pobreza-uba
 canonical_commands:
 - make check
-- make smoke
-- make regenerate
+- make basket-source-lock
+- make basket-source-lock-check
+- make basket-candidate-v2
+- make basket-candidate-v2-check
 generated_paths:
-- data/
-- CB.jpg
+- artifacts/
+- build/
+- run/
+- data/ (legacy)
 verification:
-  status: partial
-  last_verified: '2026-08-04'
-  command: make check
+  status: real-source-plus-immutable-ipc-candidate-path
+  last_verified: '2026-09-11'
+  notes:
+  - exact official basket-source lock and relocatable verification are implemented
+  - v2 candidate consumes an immutable IPC monetary-conversion release and preserves parent identity
+  - legacy synthetic tail/backcast is excluded from the modern candidate core
+  - scheduled Monday source/IPC handoff proves the candidate seam without auto-promotion
   unknowns:
-  - Make targets require execution from a local checkout
-  - methodological repair is required before consequential downstream reuse
-  - source compatibility and IPC dependency require a live regeneration
+  - durable child publication outside expiring Actions evidence remains tracked in issue #21
+  - exact department_2010 to six-region geographic binding remains owned by argentina-geography issue #36
+  - candidate status is not official publication or automatic approval
 maintenance:
-  cadence: annual
-  next_review: '2027-02-01'
+  cadence: weekly-source-candidate
+  next_review: '2026-10-05'
