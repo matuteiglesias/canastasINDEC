@@ -6,31 +6,38 @@ repository:
   github: matuteiglesias/canastasINDEC
 domain: public-data
 system: argentina-poverty
-role: poverty-threshold-input-producer
+role: poverty-threshold-input-and-engel-research-producer
 lifecycle: active-maintenance
 authority:
-  status: current-candidate-authority
+  status: current-basket-candidate-authority-plus-diagnostic-engel-phase-a
   owns:
   - exact official regional CBA/CBT source locks and provenance
   - six source-native basket/threshold-area identities
   - observed-versus-derived value classification
   - governed basket candidate construction, validation and quarter slicing
   - exact monetary-conversion parent lineage
+  - experimental ENGHo reference-population expenditure structure and base Engel diagnostics
   does_not_own:
   - official CBA/CBT publication authority
+  - raw ENGHo microdata custody
   - monetary-reference or IPC methodology
   - province/department to threshold-area geographic membership
   - poverty method, adult equivalence, classification or FGT
+  - Phase-B price trajectories until separately commissioned
 interfaces:
   consumes:
   - artifact:research.argentina-monetary-conversion/v1
     producer: repo.ipc-argentina
+  - artifact:publicdata.indec-engho-microdata/v1
+    producer: repo.microdatos-eph-indec
   produces:
   - artifact:research.argentina-regional-baskets/v1
   - artifact:research.argentina-regional-baskets-poverty-input/v1
+  - artifact:research.argentina-engel-reference-structure/v1
   - artifact:publicdata.regional-baskets-derived@1 (legacy compatibility)
 upstream:
 - repo.ipc-argentina
+- repo.microdatos-eph-indec
 downstream:
 - repo.indice-pobreza-uba
 canonical_commands:
@@ -39,20 +46,27 @@ canonical_commands:
 - make basket-source-lock-check
 - make basket-candidate-v2
 - make basket-candidate-v2-check
+- make engel-reference-test
+- make engel-reference-build
+- make engel-reference-check
+- make engel-reference-commission
 generated_paths:
 - artifacts/
 - build/
 - run/
 - data/ (legacy)
 verification:
-  status: real-source-plus-immutable-ipc-candidate-path
-  last_verified: '2026-09-11'
+  status: phase-a-cloud-contract-implemented-real-engel-run-pending
+  last_verified: '2026-09-28'
   notes:
-  - exact official basket-source lock and relocatable verification are implemented
-  - v2 candidate consumes an immutable IPC monetary-conversion release and preserves parent identity
-  - legacy synthetic tail/backcast is excluded from the modern candidate core
-  - scheduled Monday source/IPC handoff proves the candidate seam without auto-promotion
+  - exact official basket-source lock and relocatable verification remain unchanged
+  - v2 basket candidate still consumes an immutable IPC monetary-conversion release
+  - ENGHo/Engel Phase A is a separate candidate/diagnostic family
+  - Phase A verifies immutable ENGHo parents, selects national weighted p29-p48, accounts expenditures, and implements INDEC replicate-weight diagnostics
+  - Phase A never consumes IPC regional divisions or constructs a time-varying ICE/CBT
   unknowns:
+  - real Phase-A ENGHo/Engel commissioning remains to be executed after cloud implementation
+  - the current M1 real ENGHo persons-table count warning is lineage only because Phase A does not consume persons
   - durable child publication outside expiring Actions evidence remains tracked in issue #21
   - exact department_2010 to six-region geographic binding remains owned by argentina-geography issue #36
   - candidate status is not official publication or automatic approval

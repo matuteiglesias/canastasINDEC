@@ -1,0 +1,5 @@
+{
+  "schema": "engel-external-benchmarks/v1",
+  "benchmarks": [],
+  "note": "Literature values may be pinned here for validation only. They are never estimator inputs."
+}

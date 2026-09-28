@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "artifact_type": "research.argentina-engel-reference-structure/v1",
+  "method_id": "research.argentina-engel-reference-structure/engho-2017-18-p29-p48-v1",
+  "status": "candidate",
+  "parent": "publicdata.indec-engho-microdata/v1",
+  "survey_vintage": "2017-2018",
+  "reference_population": {
+    "scope": "national",
+    "ranking_variable": "ingpch",
+    "weight_variable": "pondera",
+    "percentile_low": 0.29,
+    "percentile_high": 0.48,
+    "algorithm": "weighted-ecdf-cutpoints-lower-inclusive-upper-exclusive/v1",
+    "zero_negative_income": "retained_and_ranked",
+    "missing_nonfinite_income": "hard_failure",
+    "regionalization": "select_nationally_then_group_selected_households_by_region"
+  },
+  "food_scope": {
+    "food": ["coicop01", "coicop021_alcoholic_beverages"],
+    "restaurants_in_food": false,
+    "tobacco_in_food": false
+  },
+  "regions": [
+    "national",
+    "gran_buenos_aires",
+    "pampeana",
+    "noreste",
+    "noroeste",
+    "cuyo",
+    "patagonia"
+  ],
+  "division_ids": [
+    "coicop01", "coicop02", "coicop03", "coicop04", "coicop05", "coicop06",
+    "coicop07", "coicop08", "coicop09", "coicop10", "coicop11", "coicop12"
+  ],
+  "base_period_metadata": "2018-05",
+  "replicate_variance": {
+    "method": "indec-engho-nt4-mse-bootstrap-v1",
+    "expected_real_replicates": 200,
+    "formula": "variance=(1/B)*sum((theta_rep-theta_point)^2)",
+    "reference_population_reselected_per_replicate": true
+  },
+  "forbidden_phase_a_operations": [
+    "IPC or price trajectory loading",
+    "time-varying Engel coefficient",
+    "alternative CBA or CBT",
+    "adult-equivalence calculation",
+    "EPH poverty or FGT calculation",
+    "Census inference",
+    "Atlas publication"
+  ]
+}
