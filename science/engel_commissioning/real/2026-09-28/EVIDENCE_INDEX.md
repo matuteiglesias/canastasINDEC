@@ -15,3 +15,7 @@ The first real releases:
 remain diagnostic evidence for the temporary clipped-sales convention. They are superseded for primary freeze by the signed-sales method and must not be silently promoted downstream.
 
 The bounded rerun is specified in `docs/CODEX_C2_ENGEL_SIGNED_SALES_RERUN.md`.
+
+The aggregate-only CEDLAS DT370 low-education provenance outputs are now
+committed under `cedlas_low_education/`. They are diagnostic evidence for
+the forensic bridge; no respondent-level ENGHo records are committed.

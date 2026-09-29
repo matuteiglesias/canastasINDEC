@@ -1,0 +1,22 @@
+{
+  "equal_group_average_max_abs_pp_difference_vs_published_combined": "0.074657595461558969238975706",
+  "excluded_nonpositive_gastot_by_climate": {
+    "1": {
+      "rows": 4,
+      "weight": "3076",
+      "weighted_signed_gastot": "-1690431.714"
+    },
+    "2": {
+      "rows": 4,
+      "weight": "1557",
+      "weighted_signed_gastot": "-4333630.451200000099"
+    }
+  },
+  "excluded_nonpositive_gastot_rows": 8,
+  "low_max_abs_pp_difference_vs_published_table1": "0.092540828821039480559172565",
+  "pooled_vs_equal_max_abs_pp_difference": "2.502456197724470704729862430",
+  "published_combined_is_exact_mean_of_published_subgroups": true,
+  "respondent_level_output_written": false,
+  "result": "diagnostic",
+  "very_low_max_abs_pp_difference_vs_published_table1": "0.056774362102078457918778847"
+}
