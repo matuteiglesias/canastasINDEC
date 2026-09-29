@@ -137,6 +137,8 @@ The paper-exact lane uses the published low/very-low educational-climate divisio
 
 The implementation also exposes a `coicop02_food_fraction` switch, an aggregate-only ENGHo provenance audit for `clima_educativo`, direct regional low-education structures, an alcohol/tobacco split diagnostic, and an old-method IPC reconstruction control.
 
+A second artifact, `research.argentina-regional-baskets-cedlas-choice-attribution/v1`, turns those ingredients into explicit threshold variants. It separates the published equal-group vector from literal pooled low+very-low households, inherited historical regional ICE ratios from direct regional structures, and full-COICOP02 food treatment from alcohol-only treatment. These variants are forensic diagnostics only and never mutate the primary signed-sales p29-p48 Artifact A/B.
+
 See `science/engel_commissioning/cedlas_dt370/README.md` and `contracts/cedlas_dt370_replication_v1.json`.
 
 ## Authority boundary
