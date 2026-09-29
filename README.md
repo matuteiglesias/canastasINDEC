@@ -2,7 +2,7 @@
 
 `canastasINDEC` is the poverty ecosystem's producer for governed **CBA/CBT threshold inputs** derived from exact official regional basket sources. It also hosts a separate experimental ENGHo/Engel research surface; that surface does not change the incumbent basket candidate or Poverty-input semantics.
 
-> **Current state:** the modern v2 basket candidate path remains the current threshold-input authority. The ENGHo/Engel research surface has now completed a first real end-to-end commissioning run. That run is retained as a **clipped-sales diagnostic sensitivity**, not the primary freeze: INDEC documents household sales as negative expenditure amounts, so the primary Artifact-A method now preserves signed sales and requires one bounded real-data rerun. Artifact B remains candidate/diagnostic and no Poverty calculation is authorized.
+> **Current state:** the modern v2 basket candidate path remains the current threshold-input authority. The ENGHo/Engel research surface is now commissioned with signed-sales accounting. The first clipped-sales real run is retained as a diagnostic sensitivity; the primary candidate/diagnostic pair is Artifact A `engel-reference-080d0d1bdf25fd2f` and Artifact B `engel-sensitivity-95d0632b226c375d`. No Poverty calculation is authorized by these upstream artifacts.
 
 ## Modern threshold path
 
@@ -60,7 +60,7 @@ The persons table is not consumed by the Phase-A estimator. A real M1 commission
 
 The 2026-09-28 real run proved G1/G2 and P/A/M/G5 end-to-end. Its initial Artifact A (`engel-reference-83557070694b9306`) and Artifact B (`engel-sensitivity-10ec46dfd65c0d21`) clipped 1,000 documented negative sales rows and are therefore retained only as a diagnostic sensitivity. The primary method identity is now `research.argentina-engel-reference-structure/engho-2017-18-p29-p48-signed-sales-v2`.
 
-See `science/engel_commissioning/real/2026-09-28/COMMISSIONING_REVIEW.md` for the durable review and `docs/CODEX_C2_ENGEL_SIGNED_SALES_RERUN.md` for the one remaining upstream rerun.
+See `science/engel_commissioning/real/2026-09-28/COMMISSIONING_REVIEW.md` for the durable review. `docs/CODEX_C2_ENGEL_SIGNED_SALES_RERUN.md` is retained as the historical execution handoff for the completed rerun.
 
 ### Phase-A commands
 
