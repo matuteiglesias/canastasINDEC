@@ -2,8 +2,8 @@
   "schema": "engel-real-commissioning-review/v1",
   "review_date": "2026-09-28",
   "repository": "matuteiglesias/canastasINDEC",
-  "review_status": "bounded_signed_sales_rerun_required",
-  "candidate_status": "diagnostic_not_promoted",
+  "review_status": "closed_signed_sales_pass",
+  "candidate_status": "candidate_diagnostic_frozen",
   "code": {
     "phase_a_commit": "cde69eb33054e6e247b36c57740a6becf840f21d",
     "phase_b_commit": "468b76d4789870b02942f2032c77884e9ef08a74",
@@ -40,12 +40,22 @@
     "artifact_a": {
       "release_id": "engel-reference-83557070694b9306",
       "manifest_sha256": "69f3c38e2295b0c6c3c924db4bc6ead61b11b07e4b12df5fcab68b8767fbf1d7",
-      "gates": {"G1": "pass", "G2": "pass", "G3": "diagnostic", "G4": "diagnostic"}
+      "gates": {
+        "G1": "pass",
+        "G2": "pass",
+        "G3": "diagnostic",
+        "G4": "diagnostic"
+      }
     },
     "artifact_b": {
       "release_id": "engel-sensitivity-10ec46dfd65c0d21",
       "manifest_sha256": "f5bcab3823b51a337d10faecce611c3c6ff78f584eca2ba9ade94e808ce165f3",
-      "gates": {"P": "pass", "A": "pass", "M": "pass_with_documented_approximations", "G5": "pass"}
+      "gates": {
+        "P": "pass",
+        "A": "pass",
+        "M": "pass_with_documented_approximations",
+        "G5": "pass"
+      }
     },
     "negative_expenditure_policy": "clip_at_zero_with_warning",
     "negative_expenditure_rows": 1000,
@@ -61,12 +71,36 @@
     "patagonia": "1.345944"
   },
   "trajectory_ranges_clipped_run": {
-    "gran_buenos_aires": {"min": "0.957411", "max": "1.036141", "largest_divergence_period": "2024-03"},
-    "pampeana": {"min": "0.948129", "max": "1.012497", "largest_divergence_period": "2024-02"},
-    "noreste": {"min": "0.950967", "max": "1.109744", "largest_divergence_period": "2025-10"},
-    "noroeste": {"min": "0.939744", "max": "1.073668", "largest_divergence_period": "2025-09"},
-    "cuyo": {"min": "0.947984", "max": "1.019890", "largest_divergence_period": "2019-04"},
-    "patagonia": {"min": "0.943330", "max": "1.041071", "largest_divergence_period": "2024-03"}
+    "gran_buenos_aires": {
+      "min": "0.957411",
+      "max": "1.036141",
+      "largest_divergence_period": "2024-03"
+    },
+    "pampeana": {
+      "min": "0.948129",
+      "max": "1.012497",
+      "largest_divergence_period": "2024-02"
+    },
+    "noreste": {
+      "min": "0.950967",
+      "max": "1.109744",
+      "largest_divergence_period": "2025-10"
+    },
+    "noroeste": {
+      "min": "0.939744",
+      "max": "1.073668",
+      "largest_divergence_period": "2025-09"
+    },
+    "cuyo": {
+      "min": "0.947984",
+      "max": "1.019890",
+      "largest_divergence_period": "2019-04"
+    },
+    "patagonia": {
+      "min": "0.943330",
+      "max": "1.041071",
+      "largest_divergence_period": "2024-03"
+    }
   },
   "review_classification": {
     "negative_sales_clipping": "methodological_convention_inconsistent_with_primary_source_semantics",
@@ -108,10 +142,55 @@
     }
   },
   "required_next_action": {
-    "scope": "upstream_only",
-    "action": "rerun Artifact A and Artifact B once with preserve_signed_sales; compare against clipped sensitivity; freeze if G1/G2/P/A/M/G5 remain valid",
-    "downstream_changes_authorized": false
+    "scope": "downstream_observed_eph_only",
+    "action": "consume frozen signed-sales Artifact B in Poverty M3; no further upstream ENGHo/Engel work required before observed-EPH ablation",
+    "downstream_changes_authorized": "M3 observed-EPH diagnostic only"
   },
   "poverty_calculation_performed": false,
-  "downstream_repository_changes_performed": false
+  "downstream_repository_changes_performed": false,
+  "signed_sales_run": {
+    "status": "pass",
+    "artifact_a": {
+      "release_id": "engel-reference-080d0d1bdf25fd2f",
+      "manifest_sha256": "b3b24b76da2664de73dd16e210d60c2ecdd21670e5b7afddb709a4b7327e32ff",
+      "gates": {
+        "G1": "pass",
+        "G2": "pass",
+        "G3": "diagnostic",
+        "G4": "diagnostic"
+      },
+      "negative_expenditure_policy": "preserve_signed_sales"
+    },
+    "artifact_b": {
+      "release_id": "engel-sensitivity-95d0632b226c375d",
+      "manifest_sha256": null,
+      "manifest_sha256_status": "not_supplied_in_local_agent_notification; downstream consumer must hash local manifest directly",
+      "gates": {
+        "P": "pass",
+        "A": "pass",
+        "M": "pass_with_documented_approximations",
+        "G5": "pass"
+      }
+    },
+    "signed_sales": {
+      "negative_rows": 1000,
+      "purchases_only_counterfactual_share": "0.01846",
+      "selected_p29_p48_negative_rows": 142,
+      "selected_p29_p48_signed_total": "-913904"
+    },
+    "scientific_delta_vs_clipped": {
+      "national_food_share_old": "0.272523",
+      "national_food_share_new": "0.275894",
+      "national_food_share_delta": "0.003371",
+      "national_ice_old": "3.669412",
+      "national_ice_new": "3.624574",
+      "national_ice_delta": "-0.044837",
+      "national_ice_percent_delta": "-0.0122",
+      "level_factor_direction": "decreased_in_all_six_regions",
+      "level_factor_delta_range": "-0.009970_to_-0.026404",
+      "trajectory_change": "small",
+      "largest_divergence_month_change": "noreste_only:2025-10_to_2025-07"
+    },
+    "code_changes": "none"
+  }
 }
