@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "artifact_type": "research.argentina-regional-baskets-cedlas-dt370-replication/v1",
+  "method_id": "research.argentina-regional-baskets-cedlas-dt370/published-low-education-v1",
+  "status": "candidate_diagnostic_replication",
+  "paper": {
+    "id": "cedlas-dt370-2026",
+    "title": "Medición de la pobreza en contextos de inflación cambiante: el caso de Argentina"
+  },
+  "base_period": "2018-05-01",
+  "published_reference_structure": {
+    "very_low_education_pct": [36.0,2.6,6.3,14.0,5.6,6.8,10.4,4.8,6.6,0.4,3.0,3.3],
+    "low_education_pct": [29.1,2.3,7.4,14.0,4.7,5.8,13.3,5.5,7.4,1.4,5.3,3.8],
+    "combined_rule": "simple arithmetic mean of the two published subgroup vectors",
+    "combined_pct": [32.55,2.45,6.85,14.0,5.15,6.3,11.85,5.15,7.0,0.9,4.15,3.55]
+  },
+  "primary_food_scope": {
+    "coicop01": true,
+    "coicop02_fraction": 1.0,
+    "tobacco_in_food": true,
+    "note": "paper-exact replication treats the whole alcoholic-beverages-and-tobacco division as food"
+  },
+  "regionalization": "inherit published old ICE_region / ICE_national ratios",
+  "parents": [
+    "publicdata.indec-ipc-regional-divisions/v1",
+    "research.argentina-regional-baskets/v1"
+  ],
+  "forbidden": [
+    "poverty calculation in canastasINDEC",
+    "mutation of primary p29-p48 Artifact A/B",
+    "tuning to Table 5 poverty results"
+  ]
+}
