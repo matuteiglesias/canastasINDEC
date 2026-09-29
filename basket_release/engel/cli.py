@@ -16,6 +16,7 @@ from .cedlas_dt370 import build_replication_artifact, validate_replication_artif
 from .cedlas_provenance import commission_low_education_provenance
 from .cedlas_old_reconstruction import reconstruct_old_method
 from .cedlas_commissioning import commission_replication
+from .cedlas_choice_attribution import build_choice_attribution
 
 
 def parser() -> argparse.ArgumentParser:
@@ -71,6 +72,12 @@ def parser() -> argparse.ArgumentParser:
     cedlas_old.add_argument("--ipc-release", type=Path, required=True)
     cedlas_old.add_argument("--official-basket-release", type=Path, required=True)
     cedlas_old.add_argument("--output", type=Path, required=True)
+
+    cedlas_choices = sub.add_parser("build-cedlas-choice-attribution")
+    cedlas_choices.add_argument("--provenance-dir", type=Path, required=True)
+    cedlas_choices.add_argument("--ipc-release", type=Path, required=True)
+    cedlas_choices.add_argument("--official-basket-release", type=Path, required=True)
+    cedlas_choices.add_argument("--output", type=Path, required=True)
     return p
 
 
@@ -96,8 +103,10 @@ def main(argv=None) -> int:
         result = {"commissioning": str(commission_replication(args.release,args.output))}
     elif args.command == "cedlas-low-education-provenance":
         result = {"commissioning": str(commission_low_education_provenance(args.engho_release,args.output))}
-    else:
+    elif args.command == "cedlas-old-method-reconstruction":
         result = {"commissioning": str(reconstruct_old_method(args.ipc_release,args.official_basket_release,args.output))}
+    else:
+        result = {"release": str(build_choice_attribution(args.provenance_dir,args.ipc_release,args.official_basket_release,args.output))}
     print(json.dumps(result, indent=2, sort_keys=True))
     return 0
 
