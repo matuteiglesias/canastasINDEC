@@ -16,6 +16,7 @@ CEDLAS_OUTPUT ?= artifacts/cedlas_dt370
 CEDLAS_COMMISSION_OUTPUT ?= artifacts/cedlas_dt370_commissioning
 CEDLAS_PROVENANCE_OUTPUT ?= artifacts/cedlas_dt370_provenance
 CEDLAS_OLD_OUTPUT ?= artifacts/cedlas_dt370_old_reconstruction
+CEDLAS_CHOICE_OUTPUT ?= artifacts/cedlas_dt370_choice_attribution
 CEDLAS_COICOP02_FOOD_FRACTION ?= 1
 
 .PHONY: help check smoke regenerate release-fixture release-check basket-lineage-report basket-source-probe basket-source-lock basket-source-lock-check basket-candidate basket-candidate-check basket-candidate-smoke basket-candidate-v2 basket-candidate-v2-check poverty-basket-2024q1 poverty-basket-2024q1-check poverty-basket-2024q1-v2 poverty-basket-2024q1-v2-check candidate-fixtures engel-reference-test engel-reference-build engel-reference-check engel-reference-commission engel-phase-b-test engel-paths-build engel-paths-check engel-paths-commission
@@ -179,3 +180,10 @@ cedlas-dt370-old-reconstruction:
 	@test -n "$(ENGEL_IPC_RELEASE)" || (echo "ENGEL_IPC_RELEASE is required" >&2; exit 2)
 	@test -n "$(ENGEL_OFFICIAL_BASKET_RELEASE)" || (echo "ENGEL_OFFICIAL_BASKET_RELEASE is required" >&2; exit 2)
 	$(PY) -m basket_release.engel cedlas-old-method-reconstruction 	  --ipc-release "$(ENGEL_IPC_RELEASE)" 	  --official-basket-release "$(ENGEL_OFFICIAL_BASKET_RELEASE)" 	  --output "$(CEDLAS_OLD_OUTPUT)"
+
+
+cedlas-dt370-choice-attribution:
+	@test -n "$(CEDLAS_PROVENANCE_OUTPUT)" || (echo "CEDLAS_PROVENANCE_OUTPUT is required" >&2; exit 2)
+	@test -n "$(ENGEL_IPC_RELEASE)" || (echo "ENGEL_IPC_RELEASE is required" >&2; exit 2)
+	@test -n "$(ENGEL_OFFICIAL_BASKET_RELEASE)" || (echo "ENGEL_OFFICIAL_BASKET_RELEASE is required" >&2; exit 2)
+	$(PY) -m basket_release.engel build-cedlas-choice-attribution 	  --provenance-dir "$(CEDLAS_PROVENANCE_OUTPUT)" 	  --ipc-release "$(ENGEL_IPC_RELEASE)" 	  --official-basket-release "$(ENGEL_OFFICIAL_BASKET_RELEASE)" 	  --output "$(CEDLAS_CHOICE_OUTPUT)"
