@@ -40,6 +40,7 @@ interfaces:
   - artifact:research.argentina-engel-reference-structure/v1
   - artifact:research.argentina-regional-baskets-engel-sensitivity/v1
   - artifact:research.argentina-regional-baskets-cedlas-dt370-replication/v1
+  - artifact:research.argentina-regional-baskets-cedlas-choice-attribution/v1
   - artifact:publicdata.regional-baskets-derived@1 (legacy compatibility)
 upstream:
 - repo.ipc-argentina
@@ -65,6 +66,7 @@ canonical_commands:
 - make cedlas-dt370-commission
 - make cedlas-dt370-provenance
 - make cedlas-dt370-old-reconstruction
+- make cedlas-dt370-choice-attribution
 generated_paths:
 - artifacts/
 - build/
