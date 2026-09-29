@@ -75,6 +75,7 @@ def commission_low_education_provenance(engho_release: Path, output: Path) -> Pa
     hh_path,hh_delim=_role_file(engho_release,"households")
     ex_path,ex_delim=_role_file(engho_release,"expenditures")
     groups={1:[],2:[]}; household_meta={}
+    excluded_nonpositive_gastot=defaultdict(lambda: {"rows":0,"weight":Decimal(0),"signed_gastot":Decimal(0)})
     for raw in _read(hh_path,hh_delim):
         if not REQUIRED_HOUSEHOLD_FIELDS.issubset(raw):
             missing=sorted(REQUIRED_HOUSEHOLD_FIELDS-set(raw))
@@ -90,8 +91,14 @@ def commission_low_education_provenance(engho_release: Path, output: Path) -> Pa
             "weight":_decimal(raw["pondera"],"pondera"),
             "gastot":_decimal(raw["gastot"],"gastot"),
         }
-        if row["weight"]<=0 or row["gastot"]<=0:
+        if row["weight"]<=0:
             raise BuildError("cedlas_provenance_nonpositive_weight_or_gastot")
+        if row["gastot"]<=0:
+            x=excluded_nonpositive_gastot[climate]
+            x["rows"]+=1
+            x["weight"]+=row["weight"]
+            x["signed_gastot"]+=row["weight"]*row["gastot"]
+            continue
         for i,d in enumerate(DIVISION_IDS,1):
             row[d]=_decimal(raw[f"gc_{i:02d}"],f"gc_{i:02d}")
         groups[climate].append(row); household_meta[row["id"]]=row
@@ -133,10 +140,16 @@ def commission_low_education_provenance(engho_release: Path, output: Path) -> Pa
         meta=household_meta.get(raw["id"])
         if meta is None:
             continue
-        division=str(raw["division"]).strip().zfill(2)
+        division=str(raw["division"]).strip().upper()
+        if division.startswith("A") and division[1:].isdigit():
+            division=division[1:]
+        division=division.zfill(2)
         if division!="02":
             continue
-        group=str(raw["grupo"]).strip().zfill(3)
+        group=str(raw["grupo"]).strip().upper()
+        if group.startswith("A") and group[1:].isdigit():
+            group=group[1:]
+        group=group.zfill(3)
         amount=_decimal(raw["monto"],"monto")
         weighted=meta["weight"]*amount
         key=(meta["climate"],meta["region"])
@@ -183,6 +196,11 @@ def commission_low_education_provenance(engho_release: Path, output: Path) -> Pa
         "equal_group_average_max_abs_pp_difference_vs_published_combined":str(max_pp(equal,PUBLISHED_COMBINED_PCT)),
         "pooled_vs_equal_max_abs_pp_difference":str(max(abs(pooled[d]-equal[d])*100 for d in DIVISION_IDS)),
         "published_combined_is_exact_mean_of_published_subgroups":all((a+b)/2==c for a,b,c in zip(VERY_LOW_PCT,LOW_PCT,PUBLISHED_COMBINED_PCT)),
+        "excluded_nonpositive_gastot_rows":sum(x["rows"] for x in excluded_nonpositive_gastot.values()),
+        "excluded_nonpositive_gastot_by_climate":{
+            str(c):{"rows":x["rows"],"weight":str(x["weight"]),"weighted_signed_gastot":str(x["signed_gastot"])}
+            for c,x in sorted(excluded_nonpositive_gastot.items())
+        },
         "respondent_level_output_written":False,
     }
     output=Path(output).expanduser().resolve(); output.mkdir(parents=True,exist_ok=True)
@@ -200,5 +218,6 @@ def commission_low_education_provenance(engho_release: Path, output: Path) -> Pa
         "expenditure_split_fields":["id","division","grupo","monto"],
         "outputs_are_aggregates_only":True,
         "qa":qa,
+        "warnings":["nonpositive_gastot_rows_excluded_from_low_education_shares"],
     }))
     return output
