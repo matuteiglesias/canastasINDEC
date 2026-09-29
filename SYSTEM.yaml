@@ -18,6 +18,7 @@ authority:
   - exact monetary-conversion parent lineage
   - experimental ENGHo reference-population expenditure structure and base Engel diagnostics
   - experimental ENGHo fixed-base regional IPC level/trajectory threshold sensitivity and commissioning diagnostics
+  - forensic CEDLAS DT370 updated-consumption replication and choice-attribution diagnostics
   does_not_own:
   - official CBA/CBT publication authority
   - raw ENGHo microdata custody
@@ -38,6 +39,7 @@ interfaces:
   - artifact:research.argentina-regional-baskets-poverty-input/v1
   - artifact:research.argentina-engel-reference-structure/v1
   - artifact:research.argentina-regional-baskets-engel-sensitivity/v1
+  - artifact:research.argentina-regional-baskets-cedlas-dt370-replication/v1
   - artifact:publicdata.regional-baskets-derived@1 (legacy compatibility)
 upstream:
 - repo.ipc-argentina
@@ -58,6 +60,11 @@ canonical_commands:
 - make engel-paths-build
 - make engel-paths-check
 - make engel-paths-commission
+- make cedlas-dt370-test
+- make cedlas-dt370-build
+- make cedlas-dt370-commission
+- make cedlas-dt370-provenance
+- make cedlas-dt370-old-reconstruction
 generated_paths:
 - artifacts/
 - build/
@@ -80,6 +87,7 @@ verification:
   - signed-sales rerun passed G1/G2 and P/A/M/G5 with no code changes; Artifact A engel-reference-080d0d1bdf25fd2f and Artifact B engel-sensitivity-95d0632b226c375d are the primary candidate/diagnostic pair
   - primary Phase-A method now preserves documented negative ENGHo sales under method research.argentina-engel-reference-structure/engho-2017-18-p29-p48-signed-sales-v2
   - durable review: science/engel_commissioning/real/2026-09-28/COMMISSIONING_REVIEW.md
+  - CEDLAS DT370 forensic lane is implementation-complete in cloud; real parent/provenance commissioning remains local
   unknowns:
   - the current M1 real ENGHo persons-table count warning is lineage only because Phase A does not consume persons
   - durable child publication outside expiring Actions evidence remains tracked in issue #21

@@ -129,6 +129,16 @@ make engel-paths-commission \
 
 Commissioning implements cross-parent gate **P**, arithmetic gate **A**, price-mapping gate **M**, and observability suite **G5**. See [`science/engel_commissioning/PHASE_B.md`](science/engel_commissioning/PHASE_B.md).
 
+## CEDLAS DT370 forensic replication
+
+A separate validation lane reproduces the published updated-consumption exercise in Albina, Gasparini and Tornarolli (CEDLAS DT 370, 2026). It does not modify the primary p29–p48 signed-sales method.
+
+The paper-exact lane uses the published low/very-low educational-climate division vector, treats the whole COICOP-02 alcohol+tobacco division as food, inherits the paper's old regional/national ICE ratios, evolves the resulting regional weights with the governed regional-division IPC parent, and reconstructs monthly CBT from the unchanged official CBA.
+
+The implementation also exposes a `coicop02_food_fraction` switch, an aggregate-only ENGHo provenance audit for `clima_educativo`, direct regional low-education structures, an alcohol/tobacco split diagnostic, and an old-method IPC reconstruction control.
+
+See `science/engel_commissioning/cedlas_dt370/README.md` and `contracts/cedlas_dt370_replication_v1.json`.
+
 ## Authority boundary
 
 This repository owns:

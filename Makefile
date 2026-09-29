@@ -12,6 +12,11 @@ ENGEL_IPC_RELEASE ?=
 ENGEL_OFFICIAL_BASKET_RELEASE ?=
 ENGEL_SENSITIVITY_OUTPUT ?= artifacts/engel_sensitivity
 ENGEL_PATH_COMMISSION_OUTPUT ?= artifacts/engel_path_commissioning
+CEDLAS_OUTPUT ?= artifacts/cedlas_dt370
+CEDLAS_COMMISSION_OUTPUT ?= artifacts/cedlas_dt370_commissioning
+CEDLAS_PROVENANCE_OUTPUT ?= artifacts/cedlas_dt370_provenance
+CEDLAS_OLD_OUTPUT ?= artifacts/cedlas_dt370_old_reconstruction
+CEDLAS_COICOP02_FOOD_FRACTION ?= 1
 
 .PHONY: help check smoke regenerate release-fixture release-check basket-lineage-report basket-source-probe basket-source-lock basket-source-lock-check basket-candidate basket-candidate-check basket-candidate-smoke basket-candidate-v2 basket-candidate-v2-check poverty-basket-2024q1 poverty-basket-2024q1-check poverty-basket-2024q1-v2 poverty-basket-2024q1-v2-check candidate-fixtures engel-reference-test engel-reference-build engel-reference-check engel-reference-commission engel-phase-b-test engel-paths-build engel-paths-check engel-paths-commission
 
@@ -44,6 +49,7 @@ help:
 check:
 	$(PY) scripts/verify_snapshot.py
 	PYTHONPATH=.:tests $(PY) -m unittest discover -s tests -p 'test_engel*.py' -v
+	PYTHONPATH=.:tests $(PY) -m unittest discover -s tests -p 'test_cedlas*.py' -v
 
 smoke: check
 
@@ -148,3 +154,28 @@ candidate-fixtures:
 
 regenerate:
 	$(PY) computar_canastas.py
+
+cedlas-dt370-test:
+	PYTHONPATH=.:tests $(PY) -m unittest discover -s tests -p 'test_cedlas*.py' -v
+
+cedlas-dt370-build:
+	@test -n "$(ENGEL_IPC_RELEASE)" || (echo "ENGEL_IPC_RELEASE is required" >&2; exit 2)
+	@test -n "$(ENGEL_OFFICIAL_BASKET_RELEASE)" || (echo "ENGEL_OFFICIAL_BASKET_RELEASE is required" >&2; exit 2)
+	$(PY) -m basket_release.engel build-cedlas-dt370 	  --ipc-release "$(ENGEL_IPC_RELEASE)" 	  --official-basket-release "$(ENGEL_OFFICIAL_BASKET_RELEASE)" 	  --coicop02-food-fraction "$(CEDLAS_COICOP02_FOOD_FRACTION)" 	  --output "$(CEDLAS_OUTPUT)"
+
+cedlas-dt370-check:
+	@test -n "$(RELEASE_DIR)" || (echo "RELEASE_DIR is required" >&2; exit 2)
+	$(PY) -m basket_release.engel validate-cedlas-dt370 "$(RELEASE_DIR)"
+
+cedlas-dt370-commission:
+	@test -n "$(RELEASE_DIR)" || (echo "RELEASE_DIR is required" >&2; exit 2)
+	$(PY) -m basket_release.engel commission-cedlas-dt370 --release "$(RELEASE_DIR)" --output "$(CEDLAS_COMMISSION_OUTPUT)"
+
+cedlas-dt370-provenance:
+	@test -n "$(ENGHO_RELEASE)" || (echo "ENGHO_RELEASE is required" >&2; exit 2)
+	$(PY) -m basket_release.engel cedlas-low-education-provenance --engho-release "$(ENGHO_RELEASE)" --output "$(CEDLAS_PROVENANCE_OUTPUT)"
+
+cedlas-dt370-old-reconstruction:
+	@test -n "$(ENGEL_IPC_RELEASE)" || (echo "ENGEL_IPC_RELEASE is required" >&2; exit 2)
+	@test -n "$(ENGEL_OFFICIAL_BASKET_RELEASE)" || (echo "ENGEL_OFFICIAL_BASKET_RELEASE is required" >&2; exit 2)
+	$(PY) -m basket_release.engel cedlas-old-method-reconstruction 	  --ipc-release "$(ENGEL_IPC_RELEASE)" 	  --official-basket-release "$(ENGEL_OFFICIAL_BASKET_RELEASE)" 	  --output "$(CEDLAS_OLD_OUTPUT)"
