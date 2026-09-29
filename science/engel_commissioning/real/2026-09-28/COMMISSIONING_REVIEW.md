@@ -2,17 +2,17 @@
 
 ## Decision
 
-The real C1 bundle proves that the Phase-A and Phase-B machinery works end to end on the commissioned parents, but the first real artifacts are **not the primary frozen candidate**.
+The real C1 bundle and the subsequent signed-sales rerun prove that the Phase-A and Phase-B machinery works end to end on the commissioned parents. The first clipped-sales artifacts are retained only as a sensitivity; the signed-sales pair is now the primary frozen candidate/diagnostic pair.
 
 The blocking issue is narrow: the first run clipped 1,000 negative ENGHo expenditure rows to zero. INDEC documents household sales as negative expenditure amounts. Clipping therefore changes the consumption accounting concept rather than merely cleaning invalid data.
 
-Primary policy is now:
+Primary policy is:
 
 ```text
 negative_expenditure_policy = preserve_signed_sales
 ```
 
-The clipped artifacts remain valuable as a named diagnostic sensitivity.
+The signed-sales rerun passed G1/G2 and P/A/M/G5 with no code changes. The clipped artifacts remain valuable as a named diagnostic sensitivity.
 
 ## Exact reviewed bundle
 
@@ -23,6 +23,17 @@ The clipped artifacts remain valuable as a named diagnostic sensitivity.
 - Clipped Artifact B: `engel-sensitivity-10ec46dfd65c0d21`, manifest `f5bcab3823b51a337d10faecce611c3c6ff78f584eca2ba9ade94e808ce165f3`; P/A/G5 PASS and M PASS with documented approximations.
 
 PR #26 correctly made the 1,000 negative rows and two hierarchy fallbacks observable, but its clipping convention is superseded for the primary method.
+
+## Signed-sales primary pair
+
+- Artifact A: `engel-reference-080d0d1bdf25fd2f`, manifest `b3b24b76da2664de73dd16e210d60c2ecdd21670e5b7afddb709a4b7327e32ff`; G1/G2 PASS, G3/G4 diagnostic.
+- Artifact B: `engel-sensitivity-95d0632b226c375d`; P/A/G5 PASS and M PASS with documented approximations.
+- 1,000 signed sales rows remain in source accounting; they are 1.846% of the purchases-only counterfactual.
+- Inside the selected p29–p48 cohort: 142 negative rows, signed total -913,904.
+- National food share moved 0.272523 → 0.275894 and national ICE 3.669412 → 3.624574 (-1.22%) versus the clipped sensitivity.
+- Level factors fell in all six regions; trajectory ranges changed only slightly. The largest-divergence month changed only for Noreste (2025-10 → 2025-07).
+
+The Artifact-B manifest hash was not included in the local agent notification. Downstream consumers must hash the local immutable manifest directly rather than inventing it.
 
 ## Classification of findings
 
@@ -69,7 +80,7 @@ p29-p48 Engel reference machinery           commissioned
 regional ENGHo17 ICE machinery              commissioned
 level/trajectory decomposition              commissioned
 clipped alternative threshold paths         diagnostic sensitivity
-primary signed-sales threshold paths        ONE BOUNDED RERUN REQUIRED
+primary signed-sales threshold paths        COMMISSIONED CANDIDATE / DIAGNOSTIC
 ```
 
-After the signed-sales rerun passes the same gates and its delta from the clipped sensitivity is recorded, no further upstream methodological work is required before handing the **candidate/diagnostic** threshold paths to Poverty for a separately authorized ablation.
+No further upstream ENGHo/Engel methodological work is required before handing the **candidate/diagnostic** signed-sales threshold paths to Poverty for a separately authorized observed-EPH ablation.
