@@ -1,0 +1,58 @@
+{
+  "schema": "engel-signed-sales-commissioning-evidence/v1",
+  "producer_repository": "matuteiglesias/canastasINDEC",
+  "producer_main_commit": "34bcd4fad83d48f611b6e8678becd140fbfff730",
+  "compatibility_fix_commit": "cf16b51",
+  "signed_sales_rerun_release_ids": {
+    "artifact_a": "engel-reference-080d0d1bdf25fd2f",
+    "artifact_b": "engel-sensitivity-95d0632b226c375d"
+  },
+  "manifest_sha256": {
+    "artifact_a": "b3b24b76da2664de73dd16e210d60c2ecdd21670e5b7afddb709a4b7327e32ff",
+    "artifact_b": "6fa8bde9a02c879e7d7dee2b005607fd7462a5193e08a651550d30f1450b380c"
+  },
+  "input_manifest_sha256": {
+    "engho_parent": "e182f22f69dfeea268859bea3a1acc74dd32abdf3fd71ba98e5d1597cd3300c3",
+    "regional_ipc": "f5c4365d7513f38935fe2aebc701d5ac5170f34cdc0770169e208fe21e5b7b99",
+    "official_basket": "5b3b8b035615b4c8087f6cad9240f15add6eba2a39fea0794aefa6dd427a2c86"
+  },
+  "negative_expenditure_policy": "preserve_signed_sales",
+  "negative_expenditure_rows": 1000,
+  "negative_expenditure_signed_total": "-9028963.752",
+  "negative_sales_absolute_total": "9028963.752",
+  "negative_sales_share_of_purchase_only_counterfactual": "0.01846026938487938955138616104",
+  "selected_p29_p48": {
+    "negative_rows": 142,
+    "negative_signed_total": "-913904"
+  },
+  "aggregate_outputs_only": true,
+  "poverty_execution_performed": false,
+  "source_delta_files": {
+    "artifact_a_region_delta.csv": "a946b38386c0c5ae99ed028bccfa1e80d698e75077ea477711027177cd182913",
+    "artifact_b_level_trajectory_delta.csv": "cf32813d01e118860cd96f0c1113ba7657bc1390821f886a549ed2f3cf852d24"
+  },
+  "gates": {
+    "artifact_a": "pass_with_diagnostics",
+    "artifact_b": "pass_with_documented_approximations"
+  },
+  "warnings": [
+    "Observed persons rows = 68725 versus INDEC manual published dimension = 68675 (+50). All person keys are unique, all 21547 household IDs are represented, and no rows were filtered or recoded.",
+    "The strict commissioning command therefore reports blocked on the published persons dimension; this M1 adjudication accepts the source-faithful release with warning for downstream review.",
+    "article_mapping_fallback_rows_from_expenditure_hierarchy:2",
+    "negative_expenditure_sales_preserved_signed:1000",
+    "Observed persons rows = 68725 versus INDEC manual published dimension = 68675 (+50). All person keys are unique, all 21547 household IDs are represented, and no rows were filtered or recoded.",
+    "The strict commissioning command therefore reports blocked on the published persons dimension; this M1 adjudication accepts the source-faithful release with warning for downstream review.",
+    "article_mapping_fallback_rows_from_expenditure_hierarchy:2",
+    "artifact_b_does_not_authorize_poverty_estimation",
+    "coicop02_shared_price_for_alcohol_and_tobacco",
+    "coicop11_shared_price_for_restaurants_and_hotels",
+    "engho_food_block_not_identical_to_official_cba",
+    "fixed_base_engho_expenditure_structure_is_experimental_sensitivity",
+    "legacy_backcast_excluded",
+    "negative_expenditure_sales_preserved_signed:1000",
+    "price_candidate_has_provenance_warnings",
+    "province_mapping_out_of_scope",
+    "source_unit_metadata_wording_incomplete",
+    "synthetic_tail_excluded"
+  ]
+}

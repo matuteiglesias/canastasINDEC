@@ -1,0 +1,17 @@
+{
+  "interpretation": [
+    "Table 3 proves the published national-vector/regionalization algebra.",
+    "Table 4 tests whether the governed regional-division IPC surface reproduces the paper's price trajectory.",
+    "Poverty Table 5 replication belongs downstream in indice-pobreza-UBA."
+  ],
+  "poverty_replication_status": "not_run_in_canastas",
+  "primary_paper_specification": true,
+  "release_id": "cedlas-dt370-replication-2eedcb977b47232e",
+  "schema": "cedlas-dt370-replication-commissioning/v1",
+  "scientific_poverty_execution_performed": false,
+  "table3_ice_rounding": "pass",
+  "table3_max_share_round_1_pp_error": "0.1",
+  "table3_regional_share_rounding": "pass",
+  "table4_max_abs_ice_difference": "0.005713733492377840734031360",
+  "table4_rounded_0_01_match": "pass"
+}

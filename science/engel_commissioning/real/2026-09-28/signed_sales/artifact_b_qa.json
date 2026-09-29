@@ -1,0 +1,62 @@
+{
+  "adult_equivalence_calculated": false,
+  "articles_reclassified": false,
+  "cba_modified": false,
+  "divisions": [
+    "coicop01",
+    "coicop02",
+    "coicop03",
+    "coicop04",
+    "coicop05",
+    "coicop06",
+    "coicop07",
+    "coicop08",
+    "coicop09",
+    "coicop10",
+    "coicop11",
+    "coicop12"
+  ],
+  "gate_A_arithmetic_identities": "pass",
+  "gate_M_price_mapping": "pass_with_documented_approximations",
+  "gate_P_cross_parent_integrity": "pass",
+  "hard_failures": [],
+  "interpolation_performed": false,
+  "line_path_ids": [
+    "official",
+    "engho17_level_only",
+    "engho17_level_plus_trajectory"
+  ],
+  "network_retrieval_performed": false,
+  "reference_population_recomputed": false,
+  "regions": [
+    "gran_buenos_aires",
+    "pampeana",
+    "noreste",
+    "noroeste",
+    "cuyo",
+    "patagonia"
+  ],
+  "required_window": {
+    "end": "2025-12-01",
+    "months": 92,
+    "start": "2018-05-01"
+  },
+  "result": "pass_with_warnings",
+  "scientific_poverty_execution_performed": false,
+  "warnings": [
+    "Observed persons rows = 68725 versus INDEC manual published dimension = 68675 (+50). All person keys are unique, all 21547 household IDs are represented, and no rows were filtered or recoded.",
+    "The strict commissioning command therefore reports blocked on the published persons dimension; this M1 adjudication accepts the source-faithful release with warning for downstream review.",
+    "article_mapping_fallback_rows_from_expenditure_hierarchy:2",
+    "artifact_b_does_not_authorize_poverty_estimation",
+    "coicop02_shared_price_for_alcohol_and_tobacco",
+    "coicop11_shared_price_for_restaurants_and_hotels",
+    "engho_food_block_not_identical_to_official_cba",
+    "fixed_base_engho_expenditure_structure_is_experimental_sensitivity",
+    "legacy_backcast_excluded",
+    "negative_expenditure_sales_preserved_signed:1000",
+    "price_candidate_has_provenance_warnings",
+    "province_mapping_out_of_scope",
+    "source_unit_metadata_wording_incomplete",
+    "synthetic_tail_excluded"
+  ]
+}

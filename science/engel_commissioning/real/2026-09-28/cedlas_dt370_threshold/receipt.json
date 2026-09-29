@@ -1,0 +1,39 @@
+{
+  "schema": "cedlas-dt370-threshold-commissioning-evidence/v1",
+  "producer_repository": "matuteiglesias/canastasINDEC",
+  "producer_main_commit": "34bcd4fad83d48f611b6e8678becd140fbfff730",
+  "release_id": "cedlas-dt370-replication-2eedcb977b47232e",
+  "release_manifest_sha256": "eabf4e7f96da630cb2780d33dbf6ef1f1cad706a1c96dba8ee5a049411453db6",
+  "method_id": "research.argentina-regional-baskets-cedlas-dt370/published-low-education-v1",
+  "specification": {
+    "food": "COICOP01 + full COICOP02",
+    "tobacco_in_food": true,
+    "reference_vector": "published equal average of low and very-low education groups",
+    "regionalization": "paper_published_ratio",
+    "base_period": "2018-05"
+  },
+  "table3": {
+    "max_share_error_pp": "0.1",
+    "max_ice_discrepancy": 0.004285714285714448,
+    "rounding_checks": "pass"
+  },
+  "table4": {
+    "max_abs_ice_difference": "0.005713733492377840734031360",
+    "rounded_match": "pass"
+  },
+  "old_method_control": {
+    "max_abs_ice_discrepancy": "0.273161601339243678483070570",
+    "max_relative_ice_discrepancy": "0.131327691074389752928113140"
+  },
+  "poverty_execution_performed": false,
+  "respondent_level_data_present": false,
+  "files": {
+    "commissioning.json": "9da987beb2e8bc256328e28c4c5bb3c38ae8c4aa9b5bdfc6ba96ddeab3ac3148",
+    "threshold_manifest.json": "eabf4e7f96da630cb2780d33dbf6ef1f1cad706a1c96dba8ee5a049411453db6",
+    "table4_validation.csv": "0fb0d5f873cc656c303a4c5cd28b2b0c29f341c82e45e2ab6e7b0e68f94eaec6",
+    "threshold_qa.json": "1cf7fc275b6b37a2c37f2f06e9df359fd47871eb38cb3fc89146a6b885d7285b",
+    "README.md": "792713d80d9d3187b9eda125af167954749d87235e227141f177c1586d765cca",
+    "old_method_qa.json": "d2f2bd4a6e0682a9d12b9a81b506caaa8a05375bb48a3e09a2f6d68f07373d4f",
+    "table3_validation.csv": "d13e69bd2dcf43489e595a5e20aabef900a24c954aa5341e16449695ebabb5eb"
+  }
+}

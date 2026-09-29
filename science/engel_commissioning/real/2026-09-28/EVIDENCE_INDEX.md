@@ -19,3 +19,11 @@ The bounded rerun is specified in `docs/CODEX_C2_ENGEL_SIGNED_SALES_RERUN.md`.
 The aggregate-only CEDLAS DT370 low-education provenance outputs are now
 committed under `cedlas_low_education/`. They are diagnostic evidence for
 the forensic bridge; no respondent-level ENGHo records are committed.
+
+The remaining compact September 28 evidence is committed under:
+
+- `signed_sales/` — signed-sales Artifact A/B manifests, QA, receipt, and aggregate deltas.
+- `cedlas_dt370_threshold/` — paper-exact DT370 threshold validation and old-method control.
+
+These directories contain only small governed metadata and aggregate outputs;
+raw ENGHo files and full local release trees remain local.

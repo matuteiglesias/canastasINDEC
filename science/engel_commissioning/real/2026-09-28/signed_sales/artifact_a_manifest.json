@@ -1,0 +1,79 @@
+{
+  "artifact_type": "research.argentina-engel-reference-structure/v1",
+  "base_period": "2018-05",
+  "cbt_execution_performed": false,
+  "division_ids": [
+    "coicop01",
+    "coicop02",
+    "coicop03",
+    "coicop04",
+    "coicop05",
+    "coicop06",
+    "coicop07",
+    "coicop08",
+    "coicop09",
+    "coicop10",
+    "coicop11",
+    "coicop12"
+  ],
+  "engho_parent": {
+    "artifact_type": "publicdata.indec-engho-microdata/v1",
+    "manifest_sha256": "e182f22f69dfeea268859bea3a1acc74dd32abdf3fd71ba98e5d1597cd3300c3",
+    "release_id": "engho-2017-2018-ff05578d65ae",
+    "upstream_receipt": {
+      "path_name": "M1-commissioning-receipt.json",
+      "receipt_type": "publicdata.indec-engho-microdata-m1-local-commissioning/v1",
+      "sha256": "4e5841c3ec67e3cd583f82a2ed63ddfcb20162749722b220eb47d69edd43448b",
+      "status": "PASS"
+    },
+    "warnings": [
+      "Observed persons rows = 68725 versus INDEC manual published dimension = 68675 (+50). All person keys are unique, all 21547 household IDs are represented, and no rows were filtered or recoded.",
+      "The strict commissioning command therefore reports blocked on the published persons dimension; this M1 adjudication accepts the source-faithful release with warning for downstream review."
+    ]
+  },
+  "files": {
+    "article_mapping.csv": {
+      "bytes": 183968,
+      "sha256": "e75c13a342ef8a1a957afbc85b4500a7f2624aabf95d0f673e62eb7284138d1c"
+    },
+    "diagnostics.json": {
+      "bytes": 13698,
+      "sha256": "b9fc447710e3c1c21e1e73546078ca7d609f81250feee1e414914720c76c4b5f"
+    },
+    "qa.json": {
+      "bytes": 954,
+      "sha256": "722a3f8f27ffa6568f6d1e88860959f8fb59c91ac76a239a97c8308b746a7ddc"
+    },
+    "reference_structure.csv": {
+      "bytes": 10364,
+      "sha256": "1386ec5d988630e7e5ae80085a56d1f7ec4d6fbe4a0d486bf9dd0870a266b79f"
+    }
+  },
+  "food_scope": "coicop01_plus_coicop021_alcoholic_beverages",
+  "method_id": "research.argentina-engel-reference-structure/engho-2017-18-p29-p48-signed-sales-v2",
+  "negative_expenditure_policy": "preserve_signed_sales",
+  "price_trajectory_execution_performed": false,
+  "reference_population_id": "engho17-refpop-32cac7da278175c0",
+  "regions": [
+    "national",
+    "gran_buenos_aires",
+    "pampeana",
+    "noreste",
+    "noroeste",
+    "cuyo",
+    "patagonia"
+  ],
+  "release_id": "engel-reference-080d0d1bdf25fd2f",
+  "restaurants_in_food": false,
+  "schema": "research-artifact-manifest/v1",
+  "scientific_poverty_execution_performed": false,
+  "status": "candidate",
+  "survey_vintage": "2017-2018",
+  "tobacco_in_food": false,
+  "warnings": [
+    "Observed persons rows = 68725 versus INDEC manual published dimension = 68675 (+50). All person keys are unique, all 21547 household IDs are represented, and no rows were filtered or recoded.",
+    "The strict commissioning command therefore reports blocked on the published persons dimension; this M1 adjudication accepts the source-faithful release with warning for downstream review.",
+    "article_mapping_fallback_rows_from_expenditure_hierarchy:2",
+    "negative_expenditure_sales_preserved_signed:1000"
+  ]
+}

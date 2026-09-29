@@ -1,0 +1,9 @@
+{
+  "base_period": "2018-05-01",
+  "food_scope": "coicop01_plus_full_coicop02",
+  "interpretation": "approximation diagnostic; IPC divisions do not exactly equal poverty-basket items",
+  "max_abs_ice_difference": "0.273161601339243678483070570",
+  "max_abs_relative_difference": "0.131327691074389752928113140",
+  "schema": "cedlas-dt370-old-method-reconstruction/v1",
+  "scientific_poverty_execution_performed": false
+}

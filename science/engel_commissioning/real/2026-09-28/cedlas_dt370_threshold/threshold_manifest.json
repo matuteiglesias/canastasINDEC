@@ -1,0 +1,53 @@
+{
+  "artifact_type": "research.argentina-regional-baskets-cedlas-dt370-replication/v1",
+  "base_period": "2018-05-01",
+  "coicop02_food_fraction": "1",
+  "files": {
+    "division_contributions.csv": {
+      "bytes": 922944,
+      "sha256": "b259e6c25093edc11ef0d7ca2d3d80bef2dabcce603f219db32cc3aeb9068a38"
+    },
+    "paper_targets.json": {
+      "bytes": 1355,
+      "sha256": "16ac14757e4c5e038e5c0cd97fc21cefc913b749642338ef4a534d99c3be1613"
+    },
+    "parent_locks.json": {
+      "bytes": 390,
+      "sha256": "7b251f32ba771330f1c13185c77af20a54d9d52fddbf4083f80e64501622025f"
+    },
+    "qa.json": {
+      "bytes": 852,
+      "sha256": "1cf7fc275b6b37a2c37f2f06e9df359fd47871eb38cb3fc89146a6b885d7285b"
+    },
+    "regional_weights.csv": {
+      "bytes": 10840,
+      "sha256": "0a4d2ba7566bde48e9bf6766d2c708f3f99d771cdf015191b2ff42e7255a3470"
+    },
+    "table3_validation.csv": {
+      "bytes": 405,
+      "sha256": "d13e69bd2dcf43489e595a5e20aabef900a24c954aa5341e16449695ebabb5eb"
+    },
+    "table4_validation.csv": {
+      "bytes": 3164,
+      "sha256": "0fb0d5f873cc656c303a4c5cd28b2b0c29f341c82e45e2ab6e7b0e68f94eaec6"
+    },
+    "threshold_paths.csv": {
+      "bytes": 204528,
+      "sha256": "2b6e47fbd03796b94ca531cd441fd1051ab28ebf0819d18a217718b07db466da"
+    }
+  },
+  "ipc_regional_divisions_release_id": "indec-ipc-regional-divisions-v1-2809f9093513-d84ce096c28f",
+  "method_id": "research.argentina-regional-baskets-cedlas-dt370/published-low-education-v1",
+  "official_basket_release_id": "regional-baskets-v2-price-fb884d2b770bbe6f",
+  "paper_id": "cedlas-dt370-2026",
+  "parent_manifest_sha256": {
+    "ipc_regional_divisions": "f5c4365d7513f38935fe2aebc701d5ac5170f34cdc0770169e208fe21e5b7b99",
+    "official_baskets": "5b3b8b035615b4c8087f6cad9240f15add6eba2a39fea0794aefa6dd427a2c86"
+  },
+  "regionalization": "paper_published_ratio",
+  "release_id": "cedlas-dt370-replication-2eedcb977b47232e",
+  "schema": "research-artifact-manifest/v1",
+  "scientific_poverty_execution_performed": false,
+  "status": "candidate_diagnostic_replication",
+  "tobacco_in_food": true
+}

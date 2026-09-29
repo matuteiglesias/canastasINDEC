@@ -1,0 +1,210 @@
+{
+  "artifact_a": {
+    "path": "/home/matias/data/engho-2017-18/engel-reference-signed-sales/engel-reference-080d0d1bdf25fd2f",
+    "release_id": "engel-reference-080d0d1bdf25fd2f",
+    "manifest_sha256": "b3b24b76da2664de73dd16e210d60c2ecdd21670e5b7afddb709a4b7327e32ff",
+    "method_id": "research.argentina-engel-reference-structure/engho-2017-18-p29-p48-signed-sales-v2",
+    "negative_expenditure_policy": "preserve_signed_sales",
+    "commissioning": {
+      "artifact_release_id": "engel-reference-080d0d1bdf25fd2f",
+      "artifact_type": "research.argentina-engel-reference-structure/v1",
+      "cbt_execution_performed": false,
+      "g1": "pass",
+      "g2": "pass",
+      "g3": "diagnostic",
+      "g4": "diagnostic",
+      "national_food_share": "0.2758944828671499050386133375",
+      "national_ice_base": "3.624574111115969705187400315",
+      "price_trajectory_execution_performed": false,
+      "result": "pass_with_diagnostics",
+      "schema": "engel-reference-commissioning/v1",
+      "scientific_poverty_execution_performed": false,
+      "warnings": [
+        "Observed persons rows = 68725 versus INDEC manual published dimension = 68675 (+50). All person keys are unique, all 21547 household IDs are represented, and no rows were filtered or recoded.",
+        "The strict commissioning command therefore reports blocked on the published persons dimension; this M1 adjudication accepts the source-faithful release with warning for downstream review.",
+        "article_mapping_fallback_rows_from_expenditure_hierarchy:2",
+        "negative_expenditure_sales_preserved_signed:1000"
+      ]
+    }
+  },
+  "artifact_b": {
+    "path": "/home/matias/data/engho-2017-18/engel-sensitivity-signed-sales/engel-sensitivity-95d0632b226c375d",
+    "release_id": "engel-sensitivity-95d0632b226c375d",
+    "manifest_sha256": "6fa8bde9a02c879e7d7dee2b005607fd7462a5193e08a651550d30f1450b380c",
+    "method_id": "research.argentina-regional-baskets-engel-sensitivity/engho17-fixed-base-regional-ipc-v1",
+    "commissioning": {
+      "A_arithmetic": "pass",
+      "G5_level_trajectory_observability": "pass",
+      "M_price_mapping": "pass_with_documented_approximations",
+      "P_cross_parent_integrity": "pass",
+      "artifact_release_id": "engel-sensitivity-95d0632b226c375d",
+      "division_count": 12,
+      "external_benchmark_count": 0,
+      "months": 92,
+      "regions": 6,
+      "result": "pass_with_documented_approximations",
+      "schema": "engel-phase-b-commissioning/v1",
+      "scientific_poverty_execution_performed": false,
+      "warnings": [
+        "Observed persons rows = 68725 versus INDEC manual published dimension = 68675 (+50). All person keys are unique, all 21547 household IDs are represented, and no rows were filtered or recoded.",
+        "The strict commissioning command therefore reports blocked on the published persons dimension; this M1 adjudication accepts the source-faithful release with warning for downstream review.",
+        "article_mapping_fallback_rows_from_expenditure_hierarchy:2",
+        "artifact_b_does_not_authorize_poverty_estimation",
+        "coicop02_shared_price_for_alcohol_and_tobacco",
+        "coicop11_shared_price_for_restaurants_and_hotels",
+        "engho_food_block_not_identical_to_official_cba",
+        "fixed_base_engho_expenditure_structure_is_experimental_sensitivity",
+        "legacy_backcast_excluded",
+        "negative_expenditure_sales_preserved_signed:1000",
+        "price_candidate_has_provenance_warnings",
+        "province_mapping_out_of_scope",
+        "source_unit_metadata_wording_incomplete",
+        "synthetic_tail_excluded"
+      ]
+    }
+  },
+  "signed_sales": {
+    "negative_expenditure_rows": 1000,
+    "negative_expenditure_raw_total": "-9028963.752",
+    "negative_sales_absolute_total": "9028963.752",
+    "purchase_only_counterfactual_total": "489102491.6134500315111",
+    "negative_sales_share_of_purchase_only_counterfactual": "0.01846026938487938955138616104",
+    "negative_expenditure_rows_selected": 142,
+    "negative_expenditure_raw_total_selected": "-913904"
+  },
+  "old_clipped": {
+    "artifact_a": "/home/matias/data/engho-2017-18/engel-reference/engel-reference-83557070694b9306",
+    "artifact_b": "/home/matias/data/engho-2017-18/engel-sensitivity/engel-sensitivity-10ec46dfd65c0d21"
+  },
+  "comparison_files": [
+    "artifact_a_region_delta.csv",
+    "artifact_b_level_trajectory_delta.csv"
+  ],
+  "gates": {
+    "phase_a": "pass_with_diagnostics",
+    "phase_b": "pass_with_documented_approximations"
+  },
+  "national_delta": {
+    "region_id": "national",
+    "old_food_share": 0.2725232629779447,
+    "new_food_share": 0.2758944828671499,
+    "delta_food_share": 0.0033712198892051903,
+    "old_ice_base": 3.669411517654292,
+    "new_ice_base": 3.6245741111159697,
+    "delta_ice_base": -0.044837406538322355,
+    "pct_delta_ice_base": -0.012219236333292242
+  },
+  "regional_level_factors": [
+    {
+      "region_id": "gran_buenos_aires",
+      "old_level_factor": 1.4627520682748056,
+      "new_level_factor": 1.45278223051102,
+      "delta_level_factor": -0.009969837763785572
+    },
+    {
+      "region_id": "pampeana",
+      "old_level_factor": 1.499341903989261,
+      "new_level_factor": 1.4745162053730503,
+      "delta_level_factor": -0.024825698616210756
+    },
+    {
+      "region_id": "noreste",
+      "old_level_factor": 1.403742531423145,
+      "new_level_factor": 1.3815750778209666,
+      "delta_level_factor": -0.022167453602178533
+    },
+    {
+      "region_id": "noroeste",
+      "old_level_factor": 1.4067192102569355,
+      "new_level_factor": 1.3912089399793774,
+      "delta_level_factor": -0.015510270277558025
+    },
+    {
+      "region_id": "cuyo",
+      "old_level_factor": 1.4181897595940678,
+      "new_level_factor": 1.3917859154590748,
+      "delta_level_factor": -0.02640384413499297
+    },
+    {
+      "region_id": "patagonia",
+      "old_level_factor": 1.3459443793485337,
+      "new_level_factor": 1.3279266103738343,
+      "delta_level_factor": -0.018017768974699422
+    }
+  ],
+  "trajectory_range_changes": [
+    {
+      "region_id": "gran_buenos_aires",
+      "old_trajectory_min": 0.9574108447368824,
+      "new_trajectory_min": 0.95678375254796,
+      "trajectory_min_delta": -0.000627092188922429,
+      "old_trajectory_max": 1.036140878926342,
+      "new_trajectory_max": 1.0357635952939432,
+      "trajectory_max_delta": -0.0003772836323987505,
+      "old_largest_divergence_period": "2024-03-01",
+      "new_largest_divergence_period": "2024-03-01",
+      "largest_divergence_period_changed": false
+    },
+    {
+      "region_id": "pampeana",
+      "old_trajectory_min": 0.9481285633568932,
+      "new_trajectory_min": 0.9456103502332924,
+      "trajectory_min_delta": -0.0025182131236007876,
+      "old_trajectory_max": 1.0124965408284272,
+      "new_trajectory_max": 1.0108546855450076,
+      "trajectory_max_delta": -0.0016418552834196465,
+      "old_largest_divergence_period": "2024-02-01",
+      "new_largest_divergence_period": "2024-02-01",
+      "largest_divergence_period_changed": false
+    },
+    {
+      "region_id": "noreste",
+      "old_trajectory_min": 0.9509672991778256,
+      "new_trajectory_min": 0.9500941493183428,
+      "trajectory_min_delta": -0.0008731498594828357,
+      "old_trajectory_max": 1.1097441524123584,
+      "new_trajectory_max": 1.1077566733607147,
+      "trajectory_max_delta": -0.001987479051643648,
+      "old_largest_divergence_period": "2025-10-01",
+      "new_largest_divergence_period": "2025-07-01",
+      "largest_divergence_period_changed": true
+    },
+    {
+      "region_id": "noroeste",
+      "old_trajectory_min": 0.9397440022950078,
+      "new_trajectory_min": 0.9399621307851264,
+      "trajectory_min_delta": 0.00021812849011859647,
+      "old_trajectory_max": 1.0736677128544043,
+      "new_trajectory_max": 1.0737793361737216,
+      "trajectory_max_delta": 0.00011162331931724445,
+      "old_largest_divergence_period": "2025-09-01",
+      "new_largest_divergence_period": "2025-09-01",
+      "largest_divergence_period_changed": false
+    },
+    {
+      "region_id": "cuyo",
+      "old_trajectory_min": 0.9479842148621396,
+      "new_trajectory_min": 0.9471669663721612,
+      "trajectory_min_delta": -0.0008172484899783283,
+      "old_trajectory_max": 1.0198901481926628,
+      "new_trajectory_max": 1.0185459783002568,
+      "trajectory_max_delta": -0.001344169892405933,
+      "old_largest_divergence_period": "2019-04-01",
+      "new_largest_divergence_period": "2019-04-01",
+      "largest_divergence_period_changed": false
+    },
+    {
+      "region_id": "patagonia",
+      "old_trajectory_min": 0.943330257272627,
+      "new_trajectory_min": 0.9404702746670635,
+      "trajectory_min_delta": -0.002859982605563527,
+      "old_trajectory_max": 1.0410709003853502,
+      "new_trajectory_max": 1.0396762416434362,
+      "trajectory_max_delta": -0.0013946587419140233,
+      "old_largest_divergence_period": "2024-03-01",
+      "new_largest_divergence_period": "2024-03-01",
+      "largest_divergence_period_changed": false
+    }
+  ],
+  "code_changes": "NONE"
+}

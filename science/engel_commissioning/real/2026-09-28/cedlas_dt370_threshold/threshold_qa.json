@@ -1,0 +1,20 @@
+{
+  "coicop02_food_fraction": "1",
+  "national_ice": "2.857142857142857142857142857",
+  "network_retrieval_performed": false,
+  "paper_id": "cedlas-dt370-2026",
+  "published_vector_authority": "CEDLAS DT370 Cuadro 1",
+  "regionalization": "paper_published_ratio",
+  "result": "mechanism_complete_real_ipc_validation_pending",
+  "scientific_poverty_execution_performed": false,
+  "table3_all_ice_round_2_match": true,
+  "table3_max_share_round_1_pp_error": "0.1",
+  "table4_max_abs_ice_difference": "0.005713733492377840734031360",
+  "tobacco_in_food": true,
+  "warnings": [
+    "published_table1_vector_sums_to_99_9_due_to_display_rounding",
+    "cedlas_primary_food_scope_includes_full_coicop02_alcohol_and_tobacco",
+    "regional_ice_relativities_inherited_from_old_official_method",
+    "ipc_divisions_are_approximation_to_exact_basket_items"
+  ]
+}

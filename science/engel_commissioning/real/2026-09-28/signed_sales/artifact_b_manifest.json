@@ -1,0 +1,98 @@
+{
+  "adult_equivalence_calculated": false,
+  "articles_reclassified": false,
+  "artifact_type": "research.argentina-regional-baskets-engel-sensitivity/v1",
+  "base_period": "2018-05-01",
+  "cba_modified": false,
+  "division_ids": [
+    "coicop01",
+    "coicop02",
+    "coicop03",
+    "coicop04",
+    "coicop05",
+    "coicop06",
+    "coicop07",
+    "coicop08",
+    "coicop09",
+    "coicop10",
+    "coicop11",
+    "coicop12"
+  ],
+  "engho_reference_release_id": "engel-reference-080d0d1bdf25fd2f",
+  "files": {
+    "division_contributions.csv": {
+      "bytes": 1770083,
+      "sha256": "ce4b161d6d211453f4ea4bbc1129820fada30cca4899100873d98308736784a1"
+    },
+    "limitations.md": {
+      "bytes": 833,
+      "sha256": "75278897cea9f6bf58a3491f21a8b1d9a84d3c948bd39de02d93a50b9056cbcf"
+    },
+    "line_paths.csv": {
+      "bytes": 317208,
+      "sha256": "a7d0349713872f248ba589d846cde083ce421a77478caeb5ca364432368b1a7c"
+    },
+    "parent_locks.json": {
+      "bytes": 1837,
+      "sha256": "c13001eb4e77eb077a02e9de2fb3ea77f586386b20f7d6b470c74500ddce0c62"
+    },
+    "price_mapping.csv": {
+      "bytes": 14794,
+      "sha256": "ca935905b73cabf96dd6eb30b170f59814c0a4c7e6d409abaf0089e1bbfc159d"
+    },
+    "qa.json": {
+      "bytes": 2038,
+      "sha256": "42a491b1b69b7daa3b2512138cbd0bc21fd3c075b894e6a01b50044c1178ff60"
+    },
+    "threshold_paths.csv": {
+      "bytes": 543444,
+      "sha256": "76188affac5a234ab5d00c4a2df58ef4e0e489a556d4f7cc9d701977a0545e42"
+    }
+  },
+  "ipc_regional_divisions_release_id": "indec-ipc-regional-divisions-v1-2809f9093513-d84ce096c28f",
+  "line_path_ids": [
+    "official",
+    "engho17_level_only",
+    "engho17_level_plus_trajectory"
+  ],
+  "method_id": "research.argentina-regional-baskets-engel-sensitivity/engho17-fixed-base-regional-ipc-v1",
+  "official_basket_release_id": "regional-baskets-v2-price-fb884d2b770bbe6f",
+  "parent_manifest_sha256": {
+    "engho_reference": "b3b24b76da2664de73dd16e210d60c2ecdd21670e5b7afddb709a4b7327e32ff",
+    "ipc_regional_divisions": "f5c4365d7513f38935fe2aebc701d5ac5170f34cdc0770169e208fe21e5b7b99",
+    "official_baskets": "5b3b8b035615b4c8087f6cad9240f15add6eba2a39fea0794aefa6dd427a2c86"
+  },
+  "reference_population_recomputed": false,
+  "regions": [
+    "gran_buenos_aires",
+    "pampeana",
+    "noreste",
+    "noroeste",
+    "cuyo",
+    "patagonia"
+  ],
+  "release_id": "engel-sensitivity-95d0632b226c375d",
+  "schema": "research-artifact-manifest/v1",
+  "scientific_poverty_execution_performed": false,
+  "status": "candidate",
+  "warnings": [
+    "Observed persons rows = 68725 versus INDEC manual published dimension = 68675 (+50). All person keys are unique, all 21547 household IDs are represented, and no rows were filtered or recoded.",
+    "The strict commissioning command therefore reports blocked on the published persons dimension; this M1 adjudication accepts the source-faithful release with warning for downstream review.",
+    "article_mapping_fallback_rows_from_expenditure_hierarchy:2",
+    "artifact_b_does_not_authorize_poverty_estimation",
+    "coicop02_shared_price_for_alcohol_and_tobacco",
+    "coicop11_shared_price_for_restaurants_and_hotels",
+    "engho_food_block_not_identical_to_official_cba",
+    "fixed_base_engho_expenditure_structure_is_experimental_sensitivity",
+    "legacy_backcast_excluded",
+    "negative_expenditure_sales_preserved_signed:1000",
+    "price_candidate_has_provenance_warnings",
+    "province_mapping_out_of_scope",
+    "source_unit_metadata_wording_incomplete",
+    "synthetic_tail_excluded"
+  ],
+  "window": {
+    "end": "2025-12-01",
+    "start": "2018-05-01"
+  }
+}

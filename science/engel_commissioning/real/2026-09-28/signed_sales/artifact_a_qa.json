@@ -1,0 +1,18 @@
+{
+  "cbt_execution_performed": false,
+  "g1_reference_population_integrity": "pass",
+  "g2_expenditure_accounting": "pass",
+  "g4_regional_stability_available": true,
+  "hard_failures": [],
+  "negative_expenditure_policy": "preserve_signed_sales",
+  "persons_table_consumed": false,
+  "price_trajectory_execution_performed": false,
+  "result": "pass_with_warnings",
+  "scientific_poverty_execution_performed": false,
+  "warnings": [
+    "Observed persons rows = 68725 versus INDEC manual published dimension = 68675 (+50). All person keys are unique, all 21547 household IDs are represented, and no rows were filtered or recoded.",
+    "The strict commissioning command therefore reports blocked on the published persons dimension; this M1 adjudication accepts the source-faithful release with warning for downstream review.",
+    "article_mapping_fallback_rows_from_expenditure_hierarchy:2",
+    "negative_expenditure_sales_preserved_signed:1000"
+  ]
+}
