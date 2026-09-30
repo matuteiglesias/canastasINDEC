@@ -141,6 +141,20 @@ A second artifact, `research.argentina-regional-baskets-cedlas-choice-attributio
 
 See `science/engel_commissioning/cedlas_dt370/README.md` and `contracts/cedlas_dt370_replication_v1.json`.
 
+### Real CEDLAS commissioning evidence
+
+The Sep-28/29 forensic lane is now materialized and published under
+`science/engel_commissioning/real/2026-09-28/`.
+
+Key governed evidence includes:
+
+- threshold release `cedlas-dt370-replication-2eedcb977b47232e`;
+- paper-exact Table-3/4 threshold validation;
+- signed-sales primary Engel reference/sensitivity parents;
+- explicit choice-attribution variants separating reference population, food scope and regionalization choices.
+
+These remain validation/attribution surfaces. They do not mutate the primary signed-sales p29–p48 method and they do not promote a new official poverty threshold.
+
 ## Authority boundary
 
 This repository owns:
