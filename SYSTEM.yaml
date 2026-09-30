@@ -74,7 +74,7 @@ generated_paths:
 - data/ (legacy)
 verification:
   status: real-engel-signed-sales-candidate-commissioned
-  last_verified: '2026-09-28'
+  last_verified: '2026-09-29'
   notes:
   - exact official basket-source lock and relocatable verification remain unchanged
   - v2 basket candidate still consumes an immutable IPC monetary-conversion release
@@ -89,7 +89,9 @@ verification:
   - signed-sales rerun passed G1/G2 and P/A/M/G5 with no code changes; Artifact A engel-reference-080d0d1bdf25fd2f and Artifact B engel-sensitivity-95d0632b226c375d are the primary candidate/diagnostic pair
   - primary Phase-A method now preserves documented negative ENGHo sales under method research.argentina-engel-reference-structure/engho-2017-18-p29-p48-signed-sales-v2
   - durable review: science/engel_commissioning/real/2026-09-28/COMMISSIONING_REVIEW.md
-  - CEDLAS DT370 forensic lane is implementation-complete in cloud; real parent/provenance commissioning remains local
+  - CEDLAS DT370 forensic lane is real-data commissioned and published under science/engel_commissioning/real/2026-09-28
+  - threshold release cedlas-dt370-replication-2eedcb977b47232e reproduces the paper-exact threshold path within its declared validation tolerances
+  - explicit choice-attribution evidence separates reference-population, food-scope and regionalization choices without treating the deltas as additive
   unknowns:
   - the current M1 real ENGHo persons-table count warning is lineage only because Phase A does not consume persons
   - durable child publication outside expiring Actions evidence remains tracked in issue #21
