@@ -6,7 +6,7 @@ on:
     - cron: "7 10 * * 1"
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: scheduled-basket-source-probe
@@ -57,6 +57,42 @@ jobs:
           test -n "$release"
           make basket-candidate-v2-check RELEASE_DIR="$release"
 
+      - name: Package immutable basket candidate
+        run: |
+          release=$(find artifacts/basket_releases -mindepth 1 -maxdepth 1 -type d | sort | tail -1)
+          test -n "$release"
+          make basket-package-v2-candidate RELEASE_DIR="$release"
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          d=json.loads(Path('build/basket-publication/discovery.json').read_text())
+          with open(os.environ['GITHUB_ENV'],'a',encoding='utf-8') as f:
+              f.write(f"BASKET_PUBLICATION_TAG={d['github_release']['tag']}\n")
+              f.write(f"BASKET_PUBLICATION_ASSET={d['github_release']['asset_name']}\n")
+              f.write(f"BASKET_PUBLICATION_RELEASE_ID={d['release_id']}\n")
+          PY
+
+      - name: Publish or verify immutable basket candidate
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -eu
+          asset="build/basket-publication/$BASKET_PUBLICATION_ASSET"
+          discovery="build/basket-publication/discovery.json"
+          if gh release view "$BASKET_PUBLICATION_TAG" >/dev/null 2>&1; then
+            mkdir -p build/existing-basket-release
+            gh release download "$BASKET_PUBLICATION_TAG" -p "$BASKET_PUBLICATION_ASSET" -p discovery.json -D build/existing-basket-release
+            cmp "$asset" "build/existing-basket-release/$BASKET_PUBLICATION_ASSET"
+            cmp "$discovery" build/existing-basket-release/discovery.json
+            echo "Existing immutable basket release matches byte-for-byte: $BASKET_PUBLICATION_TAG"
+          else
+            gh release create "$BASKET_PUBLICATION_TAG" "$asset" "$discovery" \
+              --prerelease \
+              --target "$GITHUB_SHA" \
+              --title "$BASKET_PUBLICATION_RELEASE_ID (candidate)" \
+              --notes "Immutable candidate transport for research.argentina-regional-baskets/v1. Candidate publication is not scientific approval."
+          fi
+
       - name: Summarize source-side maintenance state
         if: always()
         run: |
@@ -65,7 +101,7 @@ jobs:
             echo
             echo 'This job performs one exact basket-source acquisition and discovers one immutable IPC GitHub Release through its discovery manifest. The consumer verifies asset and manifest hashes and persists run/ipc_release_lock.json before using the already-governed v2 basket builder.'
             echo
-            echo 'A successful run proves the durable cross-repo IPC → canastas seam. It does not promote either candidate to reviewed/approved status.'
+            echo 'A successful run proves the durable cross-repo IPC → canastas seam and publishes the validated basket candidate under an immutable GitHub Release identity. It does not promote the basket candidate to reviewed/approved status.'
             echo
             echo '```text'
             find run artifacts build -maxdepth 5 -type f -printf '%p\n' 2>/dev/null | sort | head -300 || true
@@ -84,5 +120,6 @@ jobs:
             run/ipc_release
             artifacts
             build
+            build/basket-publication
           if-no-files-found: warn
           retention-days: 14
