@@ -201,7 +201,7 @@ The scheduled Monday job proves the durable source + IPC → basket candidate se
 
 ## Publication boundary
 
-The current scheduled threshold path retains candidate evidence as workflow artifacts. Durable cross-repository publication of validated basket candidates remains separately tracked; consumers must never depend on an expiring Actions artifact or a mutable checkout as if it were an immutable release.
+The scheduled threshold path now retains workflow evidence **and** packages each validated basket v2 candidate under an immutable GitHub prerelease/discovery identity. Consumers should pin that release identity/hash; they must not depend on an expiring Actions artifact or mutable checkout. Scientific status remains `candidate` until a separate review/promotion decision.
 
 A basket candidate or Engel reference artifact is research input, not an official INDEC poverty result. Poverty measurement begins only after `indice-pobreza-UBA` combines governed threshold values, adult-equivalence semantics, welfare and an exact threshold-area binding under a named method/release.
 
