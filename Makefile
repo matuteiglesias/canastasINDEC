@@ -34,6 +34,8 @@ help:
 	@echo "  make basket-source-lock     Download and pin both official sources into one relocatable lock bundle"
 	@echo "  make basket-candidate       Build legacy-compatible candidate from copied PRICE_RELEASE"
 	@echo "  make basket-candidate-v2    Build opt-in candidate from copied IPC v2 conversion release"
+	@echo "  make basket-candidate-v2-approved-parent Build candidate requiring an approved IPC parent"
+	@echo "  make basket-package-v2-candidate Package validated basket candidate for immutable transport"
 	@echo "  make basket-candidate-check Validate legacy-compatible RELEASE_DIR offline"
 	@echo "  make basket-candidate-v2-check Validate IPC-v2 RELEASE_DIR offline"
 	@echo "  make engel-reference-test   Run bounded synthetic ENGHo/Engel Phase-A tests"
@@ -187,3 +189,13 @@ cedlas-dt370-choice-attribution:
 	@test -n "$(ENGEL_IPC_RELEASE)" || (echo "ENGEL_IPC_RELEASE is required" >&2; exit 2)
 	@test -n "$(ENGEL_OFFICIAL_BASKET_RELEASE)" || (echo "ENGEL_OFFICIAL_BASKET_RELEASE is required" >&2; exit 2)
 	$(PY) -m basket_release.engel build-cedlas-choice-attribution 	  --provenance-dir "$(CEDLAS_PROVENANCE_OUTPUT)" 	  --ipc-release "$(ENGEL_IPC_RELEASE)" 	  --official-basket-release "$(ENGEL_OFFICIAL_BASKET_RELEASE)" 	  --output "$(CEDLAS_CHOICE_OUTPUT)"
+
+.PHONY: basket-candidate-v2-approved-parent basket-package-v2-candidate
+
+basket-candidate-v2-approved-parent:
+	@test -n "$(PRICE_RELEASE)" || (echo "PRICE_RELEASE must be an approved research.argentina-monetary-conversion/v1 release" >&2; exit 2)
+	$(PY) -m basket_release build-v2 --source-lock "$(SOURCE_LOCK)" --price-release "$(PRICE_RELEASE)" --require-approved-price-parent
+
+basket-package-v2-candidate:
+	@test -n "$(RELEASE_DIR)" || (echo "RELEASE_DIR is required" >&2; exit 2)
+	PYTHONPATH=. $(PY) scripts/package_v2_candidate.py "$(RELEASE_DIR)" --output "$${BASKET_PUBLICATION_OUTPUT:-build/basket-publication}"

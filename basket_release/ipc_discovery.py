@@ -55,17 +55,22 @@ def validate_discovery(discovery: dict, release: dict) -> dict:
         raise ValueError("incompatible_discovery_method")
     if discovery.get("monetary_reference_id") != MONETARY_REFERENCE_ID:
         raise ValueError("incompatible_discovery_monetary_reference")
-    if discovery.get("status") != "candidate":
+    status = discovery.get("status")
+    if status not in {"candidate", "approved"}:
         raise ValueError("unsupported_discovery_status")
 
     release_id = discovery.get("release_id")
     transport = discovery.get("github_release") or {}
     tag = transport.get("tag")
     asset_name = transport.get("asset_name")
-    if not release_id or tag != f"candidate-{release_id}":
+    if not release_id or tag != f"{status}-{release_id}":
         raise ValueError("release_tag_identity_mismatch")
-    if release.get("tag_name") != tag or not release.get("prerelease") or release.get("draft"):
+    if release.get("tag_name") != tag or release.get("draft"):
         raise ValueError("incompatible_github_release_state")
+    if status == "candidate" and not release.get("prerelease"):
+        raise ValueError("candidate_release_must_be_prerelease")
+    if status == "approved" and release.get("prerelease"):
+        raise ValueError("approved_release_must_not_be_prerelease")
     if asset_name != f"{release_id}.zip":
         raise ValueError("release_asset_identity_mismatch")
     _asset(release, "discovery.json")
@@ -77,8 +82,13 @@ def validate_discovery(discovery: dict, release: dict) -> dict:
     return discovery
 
 
-def select_release(releases: list[dict], fetch_bytes=_request, token: str | None = None) -> tuple[dict, dict]:
-    """Select newest compatible producer publication; malformed candidate releases fail closed."""
+def select_release(
+    releases: list[dict],
+    fetch_bytes=_request,
+    token: str | None = None,
+    required_status: str | None = None,
+) -> tuple[dict, dict]:
+    """Select newest compatible publication, optionally requiring candidate/approved status."""
     for release in releases:
         if release.get("draft"):
             continue
@@ -88,6 +98,8 @@ def select_release(releases: list[dict], fetch_bytes=_request, token: str | None
         discovery_asset = _asset(release, "discovery.json")
         raw = fetch_bytes(discovery_asset["browser_download_url"], token=token)
         discovery = json.loads(raw.decode("utf-8"))
+        if required_status is not None and discovery.get("status") != required_status:
+            continue
         return release, validate_discovery(discovery, release)
     raise ValueError("no_compatible_ipc_release_discovered")
 
@@ -121,13 +133,28 @@ def _safe_extract(raw_zip: bytes, release_id: str, destination: Path) -> Path:
     return release_root
 
 
-def materialize(output_root: Path, lock_path: Path, *, token: str | None = None, releases: list[dict] | None = None, fetch_bytes=_request) -> dict:
+def materialize(
+    output_root: Path,
+    lock_path: Path,
+    *,
+    token: str | None = None,
+    releases: list[dict] | None = None,
+    fetch_bytes=_request,
+    required_status: str | None = None,
+) -> dict:
     output_root = Path(output_root).resolve()
     lock_path = Path(lock_path).resolve()
     token = token or os.environ.get("GITHUB_TOKEN")
     if releases is None:
         releases = json.loads(fetch_bytes(RELEASES_API, token=token).decode("utf-8"))
-    release, discovery = select_release(releases, fetch_bytes=fetch_bytes, token=token)
+    if required_status not in {None, "candidate", "approved"}:
+        raise ValueError("unsupported_required_status")
+    release, discovery = select_release(
+        releases,
+        fetch_bytes=fetch_bytes,
+        token=token,
+        required_status=required_status,
+    )
     transport = discovery["github_release"]
     asset = _asset(release, transport["asset_name"])
     raw_zip = fetch_bytes(asset["browser_download_url"], token=token)
@@ -183,8 +210,9 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--output", type=Path, default=Path("run/ipc_release"))
     parser.add_argument("--lock", type=Path, default=Path("run/ipc_release_lock.json"))
+    parser.add_argument("--require-status", choices=("candidate", "approved"))
     args = parser.parse_args()
-    lock = materialize(args.output, args.lock)
+    lock = materialize(args.output, args.lock, required_status=args.require_status)
     print(json.dumps(lock, indent=2, sort_keys=True))
     return 0
 
