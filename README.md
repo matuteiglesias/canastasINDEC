@@ -204,3 +204,28 @@ The scheduled Monday job proves the durable source + IPC → basket candidate se
 The current scheduled threshold path retains candidate evidence as workflow artifacts. Durable cross-repository publication of validated basket candidates remains separately tracked; consumers must never depend on an expiring Actions artifact or a mutable checkout as if it were an immutable release.
 
 A basket candidate or Engel reference artifact is research input, not an official INDEC poverty result. Poverty measurement begins only after `indice-pobreza-UBA` combines governed threshold values, adult-equivalence semantics, welfare and an exact threshold-area binding under a named method/release.
+
+## Durable IPC → basket handoff
+
+The existing scheduled candidate lane remains candidate-safe: it may consume the newest compatible IPC candidate and may explicitly retain thin-coverage periods for diagnostic candidate construction.
+
+For consequential integration after IPC scientific approval, use the separate approved-parent path:
+
+```bash
+python -m basket_release.ipc_discovery \
+  --require-status approved \
+  --output run/ipc_release \
+  --lock run/ipc_release_lock.json
+
+make basket-candidate-v2-approved-parent \
+  SOURCE_LOCK=run/source_lock.json \
+  PRICE_RELEASE="$(python - <<'PY'
+from basket_release.ipc_discovery import resolve_locked_release
+print(resolve_locked_release('run/ipc_release_lock.json'))
+PY
+)"
+```
+
+This path requires `status=approved` on the immutable `research.argentina-monetary-conversion/v1` parent and still produces a basket **candidate**. Approval does not propagate transitively.
+
+The scheduled workflow now packages each validated v2 basket candidate as an immutable GitHub prerelease with `ecosystem-release-discovery/v1`. Re-running the same candidate verifies the existing asset and discovery bytes instead of replacing them.
