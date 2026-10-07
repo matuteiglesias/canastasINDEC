@@ -8,6 +8,8 @@ import json
 import zipfile
 from pathlib import Path
 
+from basket_release.v2_core import validate_v2_candidate
+
 EXPECTED_TYPE = "research.argentina-regional-baskets/v1"
 EXPECTED_METHOD = "research.argentina-regional-baskets/source-observed-plus-price-consensus-v2"
 SCHEMA = "ecosystem-release-discovery/v1"
@@ -29,6 +31,7 @@ def canonical_json(value: object) -> bytes:
 def package(release_dir: Path, output_dir: Path) -> dict:
     release_dir = release_dir.resolve()
     output_dir = output_dir.resolve()
+    validate_v2_candidate(release_dir)
     manifest_path = release_dir / "manifest.json"
     if not manifest_path.is_file():
         raise ValueError("missing_manifest")
