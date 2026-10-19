@@ -41,6 +41,21 @@ WARNINGS = [
 ]
 
 
+def _immutable_source_provenance(lock: dict) -> dict:
+    """Return source provenance without run-local acquisition metadata.
+
+    The exact acquisition lock remains available as workflow evidence.  The
+    published candidate records every stable source contract field, but omits
+    the retrieval clock and local cache path so an unchanged source snapshot
+    rebuilds byte-for-byte.
+    """
+    stable = json.loads(json.dumps(lock))
+    for snapshot in stable.get("snapshots", []):
+        snapshot.pop("retrieved_at_utc", None)
+        snapshot.pop("cache_file", None)
+    return stable
+
+
 def _safe_file(root: Path, name: str) -> Path:
     pure = PurePosixPath(name)
     if pure.is_absolute() or ".." in pure.parts or name in {"", "."}:
@@ -139,8 +154,10 @@ def build_v2(
     )
     inherited = list(price_manifest.get("warnings", []))
     warnings = WARNINGS + (["incomplete_period_omitted_outside_requested_slice"] if coverage["incomplete_periods"] else []) + (["price_candidate_has_provenance_warnings"] if inherited else []) + (["thin_price_coverage_accepted_for_candidate"] if thin_periods else [])
-    provenance_time = max(s["retrieved_at_utc"] for s in lock["snapshots"])
-    identity_seed = {"sources": [s["sha256"] for s in lock["snapshots"]], "price_manifest_sha256": price_hash, "method_id": METHOD_ID}
+    source_provenance = _immutable_source_provenance(lock)
+    eligibility_mode = "candidate_allow_thin" if thin_periods else ("approved_parent_required" if require_price_status == "approved" else "approved_rows_only")
+    dependency={"release_id":price_manifest["release_id"],"manifest_sha256":price_hash,"artifact_type":PRICE_ARTIFACT,"method_id":PRICE_METHOD,"monetary_reference_id":MONETARY_REFERENCE_ID,"status":price_manifest.get("status"),"warnings":inherited,"thin_coverage_periods_used":thin_periods,"eligibility_mode":eligibility_mode}
+    identity_seed = {"source_provenance": source_provenance, "price_dependency": dependency, "method_id": METHOD_ID}
     release_id = "regional-baskets-v2-price-" + sha(canonical_json(identity_seed))[:16]
     root = Path(output_parent) / release_id
     if root.exists(): shutil.rmtree(root)
@@ -169,8 +186,7 @@ def build_v2(
     _write_csv(root/"reference_2016_01_monthly.csv",["period","region_id","measure","value_2016_01","unit","monetary_reference_id","value_status","price_row_status","release_id"],referenced)
     _write_csv(root/"reference_2016_01_quarterly.csv",["period","representative_date","region_id","measure","value_2016_01","unit","monetary_reference_id","value_status","monthly_input_periods","price_release_id","release_id"],quarterly)
     _write_csv(root/"cell_lineage.csv",["period","region_id","measure","source_id","source_snapshot_sha256","source_cell_identity","price_release_id","price_manifest_sha256","price_period","price_row_status","formula"],lineage)
-    (root/"coverage.json").write_bytes(canonical_json(coverage)); (root/"source_lock.json").write_bytes(canonical_json(lock))
-    dependency={"release_id":price_manifest["release_id"],"manifest_sha256":price_hash,"artifact_type":PRICE_ARTIFACT,"method_id":PRICE_METHOD,"monetary_reference_id":MONETARY_REFERENCE_ID,"status":price_manifest.get("status"),"warnings":inherited,"thin_coverage_periods_used":thin_periods,"eligibility_mode":"candidate_allow_thin" if thin_periods else ("approved_parent_required" if require_price_status == "approved" else "approved_rows_only")}
+    (root/"coverage.json").write_bytes(canonical_json(coverage)); (root/"source_lock.json").write_bytes(canonical_json(source_provenance))
     (root/"price_dependency_lock.json").write_bytes(canonical_json(dependency))
     qa={"result":"pass_with_warnings" if warnings else "pass","warnings":warnings,"hard_failures":[],"scientific_poverty_execution_performed":False}
     thin_note = ""
@@ -181,7 +197,7 @@ def build_v2(
     (root/"compatibility.json").write_bytes(canonical_json(compatibility))
     payload_names=[p.name for p in root.iterdir()]
     files={n:{"bytes":(root/n).stat().st_size,"sha256":sha((root/n).read_bytes())} for n in sorted(payload_names)}
-    manifest={"schema":"research-artifact-manifest/v1","artifact_type":ARTIFACT_TYPE,"release_id":release_id,"status":"candidate","method_id":METHOD_ID,"created_at_utc":provenance_time,"monetary_reference_id":MONETARY_REFERENCE_ID,"unit":"ARS_per_equivalent_adult","regions":list(REGIONS),"complete_core":{"start":coverage["complete_core_period_start"],"end":coverage["complete_core_period_end"]},"source_snapshot_identities":[s["sha256"] for s in lock["snapshots"]],"price_dependency":dependency,"warnings":warnings,"files":files}
+    manifest={"schema":"research-artifact-manifest/v1","artifact_type":ARTIFACT_TYPE,"release_id":release_id,"status":"candidate","method_id":METHOD_ID,"monetary_reference_id":MONETARY_REFERENCE_ID,"unit":"ARS_per_equivalent_adult","regions":list(REGIONS),"complete_core":{"start":coverage["complete_core_period_start"],"end":coverage["complete_core_period_end"]},"source_snapshot_identities":[s["sha256"] for s in lock["snapshots"]],"price_dependency":dependency,"warnings":warnings,"files":files}
     (root/"manifest.json").write_bytes(canonical_json(manifest)); write_checksums(root)
     validate_v2_candidate(root)
     bundle = build_v2_integration(root, integration_parent) if integration_parent else None
@@ -220,7 +236,8 @@ def build_v2_integration(release: Path, parent: Path) -> Path:
     values={(r["region_id"],r["measure"]):r for r in rows}; missing=[(r,m) for r in REGIONS for m in MEASURES if (r,m) not in values]
     if missing: raise BuildError(f"missing_required_region_or_measure_in_requested_slice: 2024-Q1 {missing}")
     table=[{"period":"2024-Q1","representative_date":"2024-02-15","region_id":r,"CBA_2016_01":values[r,"CBA"]["value_2016_01"],"CBT_2016_01":values[r,"CBT"]["value_2016_01"],"unit":values[r,"CBA"]["unit"],"monetary_reference_id":MONETARY_REFERENCE_ID,"status":"candidate"} for r in REGIONS]
-    bundle_id="poverty-baskets-v2-price-2024q1-"+sha(canonical_json(table))[:16]; root=Path(parent)/bundle_id
+    bundle_seed={"table":table,"source_basket_release_id":manifest["release_id"],"price_dependency":manifest["price_dependency"]}
+    bundle_id="poverty-baskets-v2-price-2024q1-"+sha(canonical_json(bundle_seed))[:16]; root=Path(parent)/bundle_id
     if root.exists(): shutil.rmtree(root)
     root.mkdir(parents=True); _write_csv(root/"regional_baskets.csv",list(table[0]),table)
     shutil.copy(Path(release)/"compatibility.json",root/"compatibility.json"); shutil.copy(Path(release)/"limitations.md",root/"limitations.md")
