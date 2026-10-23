@@ -228,4 +228,4 @@ PY
 
 This path requires `status=approved` on the immutable `research.argentina-monetary-conversion/v1` parent and still produces a basket **candidate**. Approval does not propagate transitively.
 
-The scheduled workflow now packages each validated v2 basket candidate as an immutable GitHub prerelease with `ecosystem-release-discovery/v1`. Re-running the same candidate verifies the existing asset and discovery bytes instead of replacing them.
+The scheduled workflow now packages each validated v2 basket candidate as an immutable GitHub prerelease with `ecosystem-release-discovery/v1`. Candidate identity includes stable source provenance, the exact IPC parent and the eligibility mode. Run-local retrieval timestamps and cache paths remain in workflow evidence rather than the immutable candidate, so an unchanged candidate rebuilds byte-for-byte while a substantive provenance or eligibility change receives a new tag.

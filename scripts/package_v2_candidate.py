@@ -71,7 +71,6 @@ def package(release_dir: Path, output_dir: Path) -> dict:
         "status": "candidate",
         "method_id": manifest["method_id"],
         "monetary_reference_id": manifest.get("monetary_reference_id"),
-        "created_at": manifest.get("created_at_utc"),
         "price_dependency": dependency,
         "github_release": {
             "tag": tag,
@@ -80,6 +79,8 @@ def package(release_dir: Path, output_dir: Path) -> dict:
             "manifest_sha256": sha256(manifest_path),
         },
     }
+    if manifest.get("created_at_utc") is not None:
+        discovery["created_at"] = manifest["created_at_utc"]
     discovery_path = output_dir / "discovery.json"
     discovery_path.write_bytes(canonical_json(discovery))
     return {
