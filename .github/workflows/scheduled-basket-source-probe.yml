@@ -6,7 +6,8 @@ on:
     - cron: "7 10 * * 1"
 
 permissions:
-  contents: write
+  contents: write  # Existing permission required for immutable prerelease publication
+  id-token: write  # Keyless Cloud Logging receipt transport only
 
 concurrency:
   group: scheduled-basket-source-probe
@@ -17,6 +18,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
+      - name: Capture exact producer start
+        run: echo "PRODUCER_STARTED_AT=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_ENV"
+
       - name: Check out repository
         uses: actions/checkout@v4
 
@@ -26,17 +30,21 @@ jobs:
           python-version: "3.12"
 
       - name: Verify committed snapshot and contracts
+        id: preflight
         run: |
           make check
           python -m unittest discover -s tests
 
       - name: Discover, parse and lock official basket source bytes once
+        id: source_acquire
         run: make basket-source-lock
 
       - name: Verify exact relocatable basket source lock
+        id: source_lock
         run: make basket-source-lock-check SOURCE_LOCK=run/source_lock.json
 
       - name: Discover and lock one immutable IPC conversion release
+        id: ipc_parent
         run: |
           python -m basket_release.ipc_discovery --output run/ipc_release --lock run/ipc_release_lock.json
           python - <<'PY'
@@ -49,15 +57,18 @@ jobs:
           PY
 
       - name: Build basket candidate from exact IPC parent
+        id: candidate_build
         run: make basket-candidate-v2 SOURCE_LOCK=run/source_lock.json PRICE_RELEASE="$IPC_RELEASE" ALLOW_THIN_PRICE_COVERAGE=1
 
       - name: Independently validate basket candidate
+        id: candidate_qa
         run: |
           release=$(find artifacts/basket_releases -mindepth 1 -maxdepth 1 -type d | sort | tail -1)
           test -n "$release"
           make basket-candidate-v2-check RELEASE_DIR="$release"
 
       - name: Package immutable basket candidate
+        id: packaging
         run: |
           release=$(find artifacts/basket_releases -mindepth 1 -maxdepth 1 -type d | sort | tail -1)
           test -n "$release"
@@ -72,25 +83,113 @@ jobs:
               f.write(f"BASKET_PUBLICATION_RELEASE_ID={d['release_id']}\n")
           PY
 
-      - name: Publish or verify immutable basket candidate
+      - name: Publish and verify immutable basket prerelease
+        id: publication
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          set -eu
+          set -euo pipefail
           asset="build/basket-publication/$BASKET_PUBLICATION_ASSET"
           discovery="build/basket-publication/discovery.json"
-          if gh release view "$BASKET_PUBLICATION_TAG" >/dev/null 2>&1; then
-            mkdir -p build/existing-basket-release
-            gh release download "$BASKET_PUBLICATION_TAG" -p "$BASKET_PUBLICATION_ASSET" -p discovery.json -D build/existing-basket-release
-            cmp "$asset" "build/existing-basket-release/$BASKET_PUBLICATION_ASSET"
-            cmp "$discovery" build/existing-basket-release/discovery.json
-            echo "Existing immutable basket release matches byte-for-byte: $BASKET_PUBLICATION_TAG"
-          else
+          if ! gh release view "$BASKET_PUBLICATION_TAG" >/dev/null 2>&1; then
             gh release create "$BASKET_PUBLICATION_TAG" "$asset" "$discovery" \
               --prerelease \
               --target "$GITHUB_SHA" \
               --title "$BASKET_PUBLICATION_RELEASE_ID (candidate)" \
               --notes "Immutable candidate transport for research.argentina-regional-baskets/v1. Candidate publication is not scientific approval."
+          fi
+          # Check even a newly created release, never infer transport from gh exit 0.
+          test "$(gh release view "$BASKET_PUBLICATION_TAG" --json isPrerelease --jq .isPrerelease)" = true
+          mkdir -p build/existing-basket-release
+          gh release download "$BASKET_PUBLICATION_TAG" \
+            -p "$BASKET_PUBLICATION_ASSET" -p discovery.json -D build/existing-basket-release
+          cmp "$asset" "build/existing-basket-release/$BASKET_PUBLICATION_ASSET"
+          cmp "$discovery" build/existing-basket-release/discovery.json
+          python - <<'PY'
+          import hashlib, json
+          from pathlib import Path
+          folder=Path("build/basket-publication")
+          d=json.loads((folder/"discovery.json").read_text())
+          proof={
+            "verification": "byte_equivalent_prerelease",
+            "is_prerelease": True,
+            "tag": d["github_release"]["tag"],
+            "release_id": d["release_id"],
+            "asset_sha256": d["github_release"]["asset_sha256"],
+            "discovery_sha256": hashlib.sha256((folder/"discovery.json").read_bytes()).hexdigest(),
+          }
+          (folder/"publication_verified.json").write_text(json.dumps(proof,sort_keys=True)+"\n")
+          PY
+          echo "Verified published prerelease bytes: $BASKET_PUBLICATION_TAG"
+
+      - name: Emit governed basket producer receipt
+        id: basket_receipt
+        if: always()
+        env:
+          PRODUCER_JOB_STATUS: ${{ job.status }}
+          PRODUCER_EVENT_NAME: ${{ github.event_name }}
+          PRODUCER_RUN_ID: ${{ github.run_id }}
+          PRODUCER_RUN_ATTEMPT: ${{ github.run_attempt }}
+          PREFLIGHT: ${{ steps.preflight.outcome }}
+          SOURCE_ACQUIRE: ${{ steps.source_acquire.outcome }}
+          SOURCE_LOCK: ${{ steps.source_lock.outcome }}
+          IPC_PARENT: ${{ steps.ipc_parent.outcome }}
+          CANDIDATE_BUILD: ${{ steps.candidate_build.outcome }}
+          CANDIDATE_QA: ${{ steps.candidate_qa.outcome }}
+          PACKAGING: ${{ steps.packaging.outcome }}
+          PUBLICATION: ${{ steps.publication.outcome }}
+        run: |
+          python3 scripts/emit_basket_producer_receipt.py \
+            --scheduler-run-id "$PRODUCER_RUN_ID" \
+            --run-attempt "$PRODUCER_RUN_ATTEMPT" \
+            --event-name "$PRODUCER_EVENT_NAME" \
+            --job-status "$PRODUCER_JOB_STATUS" \
+            --started-at "${PRODUCER_STARTED_AT:-$(date -u +%Y-%m-%dT%H:%M:%SZ)}" \
+            --step-outcomes "$(python3 - <<'PY'
+          import json,os
+          names=("preflight","source_acquire","source_lock","ipc_parent","candidate_build","candidate_qa","packaging","publication")
+          print(json.dumps({n:os.environ[n.upper()] for n in names}))
+          PY
+          )" \
+            --output "build/basket-producer-receipt-${PRODUCER_RUN_ID}-${PRODUCER_RUN_ATTEMPT}.json"
+
+      # Credential acquisition and export are independent of basket acceptance.
+      - name: Authenticate keyless basket receipt writer
+        id: gcp_auth
+        if: always() && steps.basket_receipt.outcome == 'success' && github.ref == 'refs/heads/main' && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')
+        continue-on-error: true
+        uses: google-github-actions/auth@v3
+        with:
+          project_id: estate-observability-510700
+          workload_identity_provider: projects/456183330588/locations/global/workloadIdentityPools/estate-producer-github/providers/basket-source-main-oidc
+          service_account: estate-basket-receipt-writer@estate-observability-510700.iam.gserviceaccount.com
+
+      - name: Export semantic basket receipt
+        id: gcp_export
+        if: always() && steps.basket_receipt.outcome == 'success' && steps.gcp_auth.outcome == 'success'
+        continue-on-error: true
+        env:
+          PRODUCER_RUN_ID: ${{ github.run_id }}
+          PRODUCER_RUN_ATTEMPT: ${{ github.run_attempt }}
+        run: |
+          python -m pip install 'google-auth>=2.30,<3' 'requests>=2.31,<3'
+          python3 scripts/export_basket_producer_gcp.py \
+            --receipt "build/basket-producer-receipt-${PRODUCER_RUN_ID}-${PRODUCER_RUN_ATTEMPT}.json" \
+            --scheduler-run-id "$PRODUCER_RUN_ID" \
+            --run-attempt "$PRODUCER_RUN_ATTEMPT" --write
+
+      - name: Report observation transport separately
+        if: always()
+        env:
+          RECEIPT_STATUS: ${{ steps.basket_receipt.outcome }}
+          GCP_AUTH_STATUS: ${{ steps.gcp_auth.outcome }}
+          GCP_EXPORT_STATUS: ${{ steps.gcp_export.outcome }}
+        run: |
+          if [[ "$GCP_EXPORT_STATUS" == "success" ]]; then
+            echo "Semantic basket receipt exported to Cloud Logging." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "Receipt transport: source=${RECEIPT_STATUS}, auth=${GCP_AUTH_STATUS}, export=${GCP_EXPORT_STATUS}. Candidate publication is unaffected." >> "$GITHUB_STEP_SUMMARY"
+            echo "::warning::Basket semantic receipt transport incomplete; use source Actions receipt artifact for recovery."
           fi
 
       - name: Summarize source-side maintenance state
@@ -99,14 +198,17 @@ jobs:
           {
             echo "## Scheduled basket source + IPC handoff"
             echo
-            echo 'This job performs one exact basket-source acquisition and discovers one immutable IPC GitHub Release through its discovery manifest. The consumer verifies asset and manifest hashes and persists run/ipc_release_lock.json before using the already-governed v2 basket builder.'
-            echo
-            echo 'A successful run proves the durable cross-repo IPC → canastas seam and publishes the validated basket candidate under an immutable GitHub Release identity. It does not promote the basket candidate to reviewed/approved status.'
-            echo
-            echo '```text'
-            find run artifacts build -maxdepth 5 -type f -printf '%p\n' 2>/dev/null | sort | head -300 || true
-            echo '```'
+            echo "Candidate scientific/data publication is separate from canonical producer-run observation and does not constitute scientific approval."
           } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload metadata receipt for recovery
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: basket-producer-receipt-${{ github.run_id }}-${{ github.run_attempt }}
+          path: build/basket-producer-receipt-*.json
+          if-no-files-found: warn
+          retention-days: 14
 
       - name: Upload exact handoff evidence
         if: always()
